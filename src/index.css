@@ -53,11 +53,19 @@ html,
 @media (min-width: 768px) {
   /*
     The small hover type and the large reformer word share the same 50% axis.
-    This is only a font-metric correction; the previous correction sat about
-    five pixels too low in the measured desktop render.
+    This is only a font-metric correction.
   */
   .rpm-premium .hover-title-layer {
     transform: translateY(calc(-50% + clamp(21px, 2vw, 31px))) !important;
+  }
+
+  /*
+    The outer grid slice already clips each typography layer to its column.
+    This inner overflow was redundant and clipped glyph descenders such as the
+    tail of the lowercase g. Keep vertical overflow visible here.
+  */
+  .rpm-premium .hover-title-layer > div {
+    overflow: visible !important;
   }
 
   /*
@@ -123,17 +131,18 @@ html,
   }
 
   /*
-    The two groups are 50vw each. Every group has three structural slots and
-    each slot paints two copies of the active word (centre + boundary), giving
-    a regular 8.333vw rhythm. The fragments therefore pass through the 1/6
-    viewport grid naturally instead of pausing as a single centred word.
+    Each duplicate set remains 50vw and the full track remains 100vw, so the
+    -50% loop is still mathematically seamless. Instead of one word per grid
+    column, one structural span now paints four copies with controlled word
+    spacing. This gives the requested begin begin begin rhythm inside the two
+    active slices without bringing back the dense old eight-span prototype.
   */
   .rpm-premium .hero-hover-marquee {
     display: flex;
     width: 100vw;
     max-width: none;
     justify-content: flex-start;
-    animation: rpm-hover-marquee 20s linear infinite;
+    animation: rpm-hover-marquee 24s linear infinite;
     will-change: transform;
   }
 
@@ -141,40 +150,41 @@ html,
     display: flex;
     flex: 0 0 50vw;
     width: 50vw;
+    min-width: 50vw;
     align-items: center;
   }
 
   .rpm-premium .hero-hover-word {
+    display: none !important;
+  }
+
+  .rpm-premium .hero-hover-word:first-child {
     position: relative;
-    display: flex;
-    flex: 0 0 calc(50vw / 3);
-    width: calc(50vw / 3);
+    display: flex !important;
+    flex: 0 0 50vw !important;
+    width: 50vw !important;
+    min-width: 50vw !important;
     margin: 0 !important;
+    padding: 0 1vw 0.14em !important;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    overflow: visible !important;
     font-size: 0 !important;
     color: transparent !important;
-    line-height: 1;
+    line-height: 1.12 !important;
     filter: none !important;
   }
 
-  .rpm-premium .hero-hover-word::before,
-  .rpm-premium .hero-hover-word::after {
-    content: var(--hero-hover-copy);
+  .rpm-premium .hero-hover-word:first-child::before {
+    content: var(--hero-hover-copy) " " var(--hero-hover-copy) " " var(--hero-hover-copy) " " var(--hero-hover-copy);
     color: #25271f;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: clamp(34px, 3.35vw, 52px);
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.12;
     letter-spacing: -0.035em;
-    white-space: nowrap;
-  }
-
-  .rpm-premium .hero-hover-word::after {
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    word-spacing: clamp(34px, 3vw, 58px);
+    white-space: pre;
   }
 
   /* Quiet lowercase top rail. */
