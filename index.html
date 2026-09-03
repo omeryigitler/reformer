@@ -9,6 +9,28 @@
     <meta property="og:description" content="Premium boutique Reformer Pilates studio in St Julian's, Malta." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem('rpm-theme');
+          const theme = saved === 'light' || saved === 'dark'
+            ? saved
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+          document.documentElement.dataset.rpmTheme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch (_) {
+          document.documentElement.dataset.rpmTheme = 'light';
+        }
+      })();
+    </script>
+    <style>
+      html[data-rpm-theme="light"],
+      html[data-rpm-theme="light"] body { background: #f6f3ec; color: #25271f; }
+      html[data-rpm-theme="dark"],
+      html[data-rpm-theme="dark"] body { background: #1e201a; color: #f4f0e7; }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
@@ -18,4 +40,3 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
