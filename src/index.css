@@ -62,9 +62,9 @@ html,
   }
 
   /*
-    The outer hero grid column already provides the required clipping. Keeping
-    this inner wrapper vertically visible prevents descenders (notably the g in
-    "begin") from being cut off.
+    The outer hero grid column already provides the required clipping. Keep the
+    inner wrapper vertically visible so descenders such as the g in "begin" are
+    never clipped by an unnecessary second overflow boundary.
   */
   .rpm-premium .hover-title-layer > div {
     overflow: visible !important;
@@ -72,47 +72,53 @@ html,
   }
 
   /*
-    One active column, one local marquee. The React activeCol state decides
-    which large reformer slice disappears and which small word track appears.
-    No neighbouring columns are modified.
+    One active column, one local marquee. React's activeCol remains the only
+    source of truth for which reformer slice disappears and which hover track
+    appears.
   */
   .rpm-premium .hero-hover-marquee {
     display: flex;
-    width: 200% !important;
-    max-width: none;
+    width: max-content !important;
+    min-width: max-content !important;
+    max-width: none !important;
     align-items: center;
     justify-content: flex-start;
     animation: rpm-hover-marquee 24s linear infinite;
     will-change: transform;
   }
 
+  /*
+    Each group sizes itself from its real text width instead of percentage
+    slots. The right padding equals the inter-word gap, so the boundary between
+    group A and group B has exactly the same spacing as the words inside a group.
+  */
   .rpm-premium .hero-hover-marquee-set {
+    --hover-word-gap: clamp(30px, 2.4vw, 46px);
     display: flex;
-    flex: 0 0 50% !important;
-    width: 50% !important;
-    min-width: 50% !important;
+    flex: 0 0 auto !important;
+    width: max-content !important;
+    min-width: max-content !important;
     align-items: center;
+    gap: var(--hover-word-gap);
+    padding-right: var(--hover-word-gap);
   }
 
   /*
-    Each duplicate group contains exactly three words across one grid column.
-    This creates a readable "begin begin begin" rhythm while the duplicate
-    group guarantees a seamless infinite loop.
+    Words keep their intrinsic width. This prevents the previous overlap where
+    a full word was forced into one-sixth of a grid column.
   */
   .rpm-premium .hero-hover-word {
-    display: flex !important;
-    flex: 0 0 33.333333% !important;
-    width: 33.333333% !important;
-    min-width: 33.333333% !important;
+    display: block !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
     margin: 0 !important;
-    padding: 0 0 0.18em !important;
-    align-items: center;
-    justify-content: center;
+    padding: 0 0 0.22em !important;
     overflow: visible !important;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: clamp(34px, 3.35vw, 52px) !important;
     font-weight: 500 !important;
-    line-height: 1.15 !important;
+    line-height: 1.2 !important;
     letter-spacing: -0.035em;
     color: #25271f !important;
     filter: none !important;
