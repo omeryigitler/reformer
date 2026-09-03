@@ -11,7 +11,7 @@ It is intentionally separate from the production booking application while the h
 - Vite 6
 - Tailwind CSS 4
 - GSAP + ScrollTrigger
-- Motion for the current hero hover text track
+- CSS keyframe animation for the hero hover marquee
 - Lucide React icons
 
 No Gemini / Google GenAI runtime is required by this prototype.
@@ -32,10 +32,11 @@ The desktop hero uses a six-column grid with:
 - a sliced, viewport-aligned `reformer` word
 - an opening sequence that morphs circular image windows into the final capsules
 - hover-specific lowercase text tracks (`begin`, `build`, `sculpt`, `private`)
-- a duplicated continuous marquee track that loops by exactly half of its total width, preventing a visible restart seam
-- a shared optical type axis for the large word and hover typography
+- two identical 100vw hover-text groups, each split into three equal word slots
+- one 200vw CSS marquee track translated by exactly `-50%`, so the second group replaces the first without a visible restart seam
+- one shared optical type axis for the large word and hover typography
 
-The hover marquee is intentionally slower and slightly heavier than the first prototype. The active word track runs continuously rather than behaving like a fast UI ticker.
+The hover marquee is intentionally slow and readable rather than behaving like a fast UI ticker. The small text uses a measured optical Y correction while remaining tied to the same 50% hero type axis as `reformer`.
 
 ## Development
 
@@ -84,5 +85,7 @@ Removed from the prototype:
 - AI Studio-only HMR/file-watching logic in `vite.config.ts`
 - unused GenAI / Express runtime dependencies from `package.json`
 - stale Bun and npm lockfiles that still referenced the removed template dependencies
+- the redundant Motion-based hero marquee and its `motion` dependency
+- dead hero transform utility classes that were being overridden by inline transforms
 
 The remaining `src/App.tsx` mock state is intentional prototype scaffolding, not AI runtime code.
