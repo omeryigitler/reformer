@@ -26,88 +26,69 @@ body, html, .rpm-premium {
   user-select: none;
 }
 
-/*
-  Desktop hero typography corrections.
+@keyframes rpm-hover-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
 
-  The hover word used to be a viewport-wide moving marquee that was then clipped
-  by the active grid column. That is why descenders / final letters (notably the
-  "g" in "begin") could be cut at a column edge and why the word did not read as
-  genuinely centred. Keep the existing DOM, but make the active hover label a
-  local, stationary word centred inside its own column and on the exact same
-  50% type axis as the large "reformer" word.
-*/
 @media (min-width: 768px) {
+  /*
+    Keep the hover words on the exact same hero type axis as "reformer".
+    The +4px is an optical correction for the smaller Plus Jakarta Sans glyphs;
+    it is not a separate layout axis.
+  */
   .rpm-premium .hover-title-layer {
-    left: 0 !important;
-    width: 100% !important;
-    transform: translateY(-50%) !important;
+    transform: translateY(calc(-50% + 4px)) !important;
   }
 
   .rpm-premium .hover-title-layer > div {
-    overflow: visible !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
 
-  /* Stop the Motion marquee transform and centre the track locally. */
+  /*
+    The component already renders two identical word sets. Moving the full track
+    by exactly half its total width makes set 2 replace set 1 pixel-for-pixel,
+    so the loop is continuous with no visible restart seam.
+  */
   .rpm-premium .hover-title-layer > div > div {
-    width: 100% !important;
-    max-width: 100% !important;
-    transform: none !important;
-    animation: none !important;
-    justify-content: center !important;
-  }
-
-  /* Only one complete hover word is required in the active column. */
-  .rpm-premium .hover-title-layer > div > div > div {
-    display: none !important;
-  }
-
-  .rpm-premium .hover-title-layer > div > div > div:first-child {
     display: flex !important;
-    width: 100% !important;
-    justify-content: center !important;
+    width: max-content !important;
+    max-width: none !important;
+    justify-content: flex-start !important;
+    animation: rpm-hover-marquee 24s linear infinite !important;
+    will-change: transform;
   }
 
-  .rpm-premium .hover-title-layer > div > div > div:first-child > span {
-    display: none !important;
+  .rpm-premium .hover-title-layer > div > div > div {
+    display: flex !important;
+    flex-shrink: 0 !important;
   }
 
-  .rpm-premium .hover-title-layer > div > div > div:first-child > span:first-child {
+  .rpm-premium .hover-title-layer > div > div span {
     display: block !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
+    font-weight: 500 !important;
     line-height: 1 !important;
   }
 
-  /* BEGIN / BUILD / SCULPT / PRIVATE should read as quiet lowercase rail labels. */
+  /* Quiet lowercase rail labels, as requested. */
   .rpm-premium [data-col-label] span {
     text-transform: lowercase;
     line-height: 1 !important;
   }
 
-  /* The 34px menu pill was visually ~7px lower than the label text centre. */
+  /* Optically align the menu pill with the rail-label text line. */
   .rpm-premium [data-header-btn] {
     transform: translateY(-7px);
   }
 }
 
-@keyframes rpm-marquee {
-  0% {
-    transform: translate3d(0, 0, 0);
+@media (prefers-reduced-motion: reduce) {
+  .rpm-premium .hover-title-layer > div > div {
+    animation: none !important;
   }
-  100% {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-.animate-rpm-marquee {
-  display: flex !important;
-  width: max-content !important;
-  animation: rpm-marquee 8s linear infinite !important;
-  will-change: transform;
-}
-
-.animate-rpm-marquee:hover {
-  animation-play-state: running;
 }
