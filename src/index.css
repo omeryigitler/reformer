@@ -26,6 +26,15 @@ body, html, .rpm-premium {
   user-select: none;
 }
 
+/* Keep the smaller hover words optically centered through the x-height of the
+   large reformer word. The component's inline transform sits too high because
+   the two font sizes have different glyph metrics. */
+@media (min-width: 768px) {
+  .rpm-premium .hover-title-layer {
+    transform: translateY(calc(-50% + clamp(30px, 3.3vw, 48px))) !important;
+  }
+}
+
 @keyframes rpm-marquee {
   0% {
     transform: translate3d(0, 0, 0);
