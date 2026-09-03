@@ -28,7 +28,7 @@ html,
   user-select: none;
 }
 
-/* Hero typography uses a quieter neutral grotesk than the rest of the prototype. */
+/* Quiet neutral grotesk for the hero identity system. */
 .rpm-premium .large-title-layer h1,
 .rpm-premium .hover-title-layer,
 .rpm-premium [data-col-label] span,
@@ -37,9 +37,9 @@ html,
 }
 
 /*
-  Two identical marquee groups are rendered in the hero. The full track is
-  translated by exactly half of its width so group B replaces group A at the
-  loop boundary without a visible restart.
+  The hover marquee contains two identical groups. Moving the full track by
+  exactly -50% swaps group A for group B at the loop boundary, so the reset is
+  visually seamless.
 */
 @keyframes rpm-hover-marquee {
   from {
@@ -52,95 +52,35 @@ html,
 
 @media (min-width: 768px) {
   /*
-    The small hover type and the large reformer word share the same 50% axis.
-    This is only a font-metric correction.
+    The large and small type share the same 50% hero axis. This small optical
+    correction compensates for the different font sizes only.
   */
   .rpm-premium .hover-title-layer {
+    left: 0 !important;
+    width: 100% !important;
     transform: translateY(calc(-50% + clamp(21px, 2vw, 31px))) !important;
   }
 
   /*
-    The outer grid slice already clips each typography layer to its column.
-    This inner overflow was redundant and clipped glyph descenders such as the
-    tail of the lowercase g. Keep vertical overflow visible here.
+    The outer hero grid column already provides the required clipping. Keeping
+    this inner wrapper vertically visible prevents descenders (notably the g in
+    "begin") from being cut off.
   */
   .rpm-premium .hover-title-layer > div {
     overflow: visible !important;
+    width: 100% !important;
   }
 
   /*
-    The React component has one viewport-aligned hover layer per grid slice.
-    When a pill is hovered, CSS supplies ONE active word to two neighbouring
-    slices. Because each slice clips the same globally aligned marquee, the
-    word naturally breaks at the grid boundaries instead of sitting as one
-    centred UI label.
-  */
-  .rpm-premium .grid-cols-6.z-10 {
-    --hero-hover-copy: "";
-  }
-
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(3):hover) {
-    --hero-hover-copy: "begin";
-  }
-
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(4):hover) {
-    --hero-hover-copy: "build";
-  }
-
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(5):hover) {
-    --hero-hover-copy: "sculpt";
-  }
-
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(6):hover) {
-    --hero-hover-copy: "private";
-  }
-
-  /* Reset React's per-column opacity while a hero pill is active. */
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(n + 3):hover) .hover-title-layer {
-    opacity: 0 !important;
-  }
-
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(n + 3):hover) .large-title-layer {
-    opacity: 1 !important;
-  }
-
-  /* BEGIN: reveal columns 3–4. */
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(3):hover) > :nth-child(3) .hover-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(3):hover) > :nth-child(4) .hover-title-layer,
-  /* BUILD: reveal columns 4–5. */
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(4):hover) > :nth-child(4) .hover-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(4):hover) > :nth-child(5) .hover-title-layer,
-  /* SCULPT: reveal columns 5–6. */
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(5):hover) > :nth-child(5) .hover-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(5):hover) > :nth-child(6) .hover-title-layer,
-  /* PRIVATE: use the final two columns so the text does not disappear offscreen. */
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(6):hover) > :nth-child(5) .hover-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(6):hover) > :nth-child(6) .hover-title-layer {
-    opacity: 1 !important;
-  }
-
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(3):hover) > :nth-child(3) .large-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(3):hover) > :nth-child(4) .large-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(4):hover) > :nth-child(4) .large-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(4):hover) > :nth-child(5) .large-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(5):hover) > :nth-child(5) .large-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(5):hover) > :nth-child(6) .large-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(6):hover) > :nth-child(5) .large-title-layer,
-  .rpm-premium .grid-cols-6.z-10:has(> :nth-child(6):hover) > :nth-child(6) .large-title-layer {
-    opacity: 0 !important;
-  }
-
-  /*
-    Each duplicate set remains 50vw and the full track remains 100vw, so the
-    -50% loop is still mathematically seamless. Instead of one word per grid
-    column, one structural span now paints four copies with controlled word
-    spacing. This gives the requested begin begin begin rhythm inside the two
-    active slices without bringing back the dense old eight-span prototype.
+    One active column, one local marquee. The React activeCol state decides
+    which large reformer slice disappears and which small word track appears.
+    No neighbouring columns are modified.
   */
   .rpm-premium .hero-hover-marquee {
     display: flex;
-    width: 100vw;
+    width: 200% !important;
     max-width: none;
+    align-items: center;
     justify-content: flex-start;
     animation: rpm-hover-marquee 24s linear infinite;
     will-change: transform;
@@ -148,43 +88,35 @@ html,
 
   .rpm-premium .hero-hover-marquee-set {
     display: flex;
-    flex: 0 0 50vw;
-    width: 50vw;
-    min-width: 50vw;
+    flex: 0 0 50% !important;
+    width: 50% !important;
+    min-width: 50% !important;
     align-items: center;
   }
 
+  /*
+    Each duplicate group contains exactly three words across one grid column.
+    This creates a readable "begin begin begin" rhythm while the duplicate
+    group guarantees a seamless infinite loop.
+  */
   .rpm-premium .hero-hover-word {
-    display: none !important;
-  }
-
-  .rpm-premium .hero-hover-word:first-child {
-    position: relative;
     display: flex !important;
-    flex: 0 0 50vw !important;
-    width: 50vw !important;
-    min-width: 50vw !important;
+    flex: 0 0 33.333333% !important;
+    width: 33.333333% !important;
+    min-width: 33.333333% !important;
     margin: 0 !important;
-    padding: 0 1vw 0.14em !important;
+    padding: 0 0 0.18em !important;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     overflow: visible !important;
-    font-size: 0 !important;
-    color: transparent !important;
-    line-height: 1.12 !important;
-    filter: none !important;
-  }
-
-  .rpm-premium .hero-hover-word:first-child::before {
-    content: var(--hero-hover-copy) " " var(--hero-hover-copy) " " var(--hero-hover-copy) " " var(--hero-hover-copy);
-    color: #25271f;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: clamp(34px, 3.35vw, 52px);
-    font-weight: 500;
-    line-height: 1.12;
+    font-size: clamp(34px, 3.35vw, 52px) !important;
+    font-weight: 500 !important;
+    line-height: 1.15 !important;
     letter-spacing: -0.035em;
-    word-spacing: clamp(34px, 3vw, 58px);
-    white-space: pre;
+    color: #25271f !important;
+    filter: none !important;
+    white-space: nowrap;
   }
 
   /* Quiet lowercase top rail. */
@@ -194,14 +126,14 @@ html,
     line-height: 1;
   }
 
-  /* Align the menu text optically with the label rail. */
+  /* Keep the menu on the same optical top rail as the column labels. */
   .rpm-premium [data-header-btn] {
     transform: translateY(-10px);
   }
 
   /*
-    Remove the loud hover treatment from the original prototype. Typography is
-    now the interaction; the photography remains calm and almost stationary.
+    Keep photography calm on hover: typography is the interaction, not a card
+    lift/zoom effect.
   */
   .rpm-premium .relative.w-full.h-full:has(> [data-hero-pill]) {
     transform: none !important;
@@ -224,7 +156,7 @@ html,
     -webkit-backdrop-filter: none !important;
   }
 
-  /* The hero should become still after its intro; no perpetual bouncing arrow. */
+  /* The hero is still after its intro; no perpetual bouncing arrow. */
   .rpm-premium [data-hero-elements] .animate-bounce {
     animation: none !important;
   }
