@@ -50,7 +50,60 @@ html,
   }
 }
 
+/*
+  One slice-wide linear wipe. The six equal hero slices run this animation
+  consecutively from right to left. Because each slice starts on the exact frame
+  the previous slice finishes, the eye reads one constant-speed viewport wipe
+  rather than six separate reveals.
+*/
+@keyframes rpm-title-global-wipe {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0%);
+  }
+}
+
 @media (min-width: 768px) {
+  /*
+    Override the simultaneous GSAP slice reveal during the opening only. The
+    animation uses fill-mode: both so every slice stays fully hidden before its
+    turn and fully revealed afterwards. 6 × 130ms = 780ms total sweep.
+  */
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > div [data-title-slice] {
+    animation-name: rpm-title-global-wipe;
+    animation-duration: 130ms;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+  }
+
+  /* Rightmost slice first; leftmost slice last. */
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(6) [data-title-slice] {
+    animation-delay: 1.20s;
+  }
+
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(5) [data-title-slice] {
+    animation-delay: 1.33s;
+  }
+
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(4) [data-title-slice] {
+    animation-delay: 1.46s;
+  }
+
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(3) [data-title-slice] {
+    animation-delay: 1.59s;
+  }
+
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(2) [data-title-slice] {
+    animation-delay: 1.72s;
+  }
+
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(1) [data-title-slice] {
+    animation-delay: 1.85s;
+  }
+
   /*
     Remove the first divider in the empty left side of the hero. The remaining
     grid remains untouched so the editorial structure still reads clearly.
@@ -205,5 +258,10 @@ html,
   .rpm-premium .hero-hover-marquee {
     animation: none;
     transform: translate3d(0, 0, 0);
+  }
+
+  .rpm-premium [data-title-slice] {
+    animation: none !important;
+    clip-path: inset(0 0 0 0) !important;
   }
 }
