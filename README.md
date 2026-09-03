@@ -19,7 +19,7 @@ No Gemini / Google GenAI runtime is required by this prototype.
 ## Main files
 
 - `src/components/PremiumLandingPage.tsx` — homepage composition, hero interaction, intro timeline and page sections
-- `src/index.css` — global visual tokens plus hero typography/marquee corrections
+- `src/index.css` — global visual tokens plus hero typography/marquee behaviour
 - `src/App.tsx` — lightweight prototype shell and mock management/user state
 - `public/premium/` — homepage photography and visual assets
 - `vite.config.ts` — standard React + Tailwind Vite configuration
@@ -32,12 +32,14 @@ The desktop hero uses a six-column grid with:
 - a sliced, viewport-aligned `reformer` word
 - an opening sequence that morphs circular image windows into the final capsules
 - hover-specific lowercase text tracks (`begin`, `build`, `sculpt`, `private`)
-- a continuous duplicated marquee track so the loop has no visible reset seam
+- a duplicated continuous marquee track that loops by exactly half of its total width, preventing a visible restart seam
 - a shared optical type axis for the large word and hover typography
 
-The hover marquee is intentionally slower and slightly heavier than the first prototype so it reads closer to the editorial reference instead of behaving like a fast UI ticker.
+The hover marquee is intentionally slower and slightly heavier than the first prototype. The active word track runs continuously rather than behaving like a fast UI ticker.
 
 ## Development
+
+The old AI Studio / Bun lockfiles were removed because they contained stale template dependencies. Generate a clean npm lockfile from the current manifest on first install:
 
 ```bash
 npm install
@@ -69,10 +71,18 @@ When changing the homepage:
 - preserve the warm near-white editorial direction
 - preserve the hero grid and sliced typography concept
 - avoid generic wellness cards, gradients and excessive shadows
-- keep desktop hover motion restrained and continuous
+- keep desktop hover motion restrained, continuous and seamless
 - keep mobile scrolling native and uncomplicated
 - do not change unrelated page sections when tuning the hero
 
 ## Cleanup status
 
-The AI Studio-specific runtime metadata, Gemini environment template and AI Studio HMR-only Vite configuration have been removed. The project no longer declares unused GenAI / Express runtime dependencies in `package.json`.
+Removed from the prototype:
+
+- AI Studio-specific `metadata.json`
+- Gemini / AI Studio `.env.example`
+- AI Studio-only HMR/file-watching logic in `vite.config.ts`
+- unused GenAI / Express runtime dependencies from `package.json`
+- stale Bun and npm lockfiles that still referenced the removed template dependencies
+
+The remaining `src/App.tsx` mock state is intentional prototype scaffolding, not AI runtime code.
