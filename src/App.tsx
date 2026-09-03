@@ -5,6 +5,7 @@
 
 import { useState } from "react";
 import { PremiumLandingPage } from "./components/PremiumLandingPage";
+import { ThemeMenu } from "./components/ThemeMenu";
 import type { ManagementState, UserType } from "./types";
 
 export default function App() {
@@ -27,14 +28,22 @@ export default function App() {
   };
 
   return (
-    <PremiumLandingPage
-      managementState={managementState}
-      loggedInUser={loggedInUser}
-      authModal={authModal}
-      setAuthModal={setAuthModal}
-      onLogin={setLoggedInUser}
-      onOpenDashboard={() => alert("Dashboard mock!")}
-      onLogout={() => setLoggedInUser(null)}
-    />
+    <>
+      <PremiumLandingPage
+        managementState={managementState}
+        loggedInUser={loggedInUser}
+        authModal={authModal}
+        setAuthModal={setAuthModal}
+        onLogin={setLoggedInUser}
+        onOpenDashboard={() => alert("Dashboard mock!")}
+        onLogout={() => setLoggedInUser(null)}
+      />
+      <ThemeMenu
+        loggedInUser={loggedInUser}
+        onLogin={setLoggedInUser}
+        onLogout={() => setLoggedInUser(null)}
+        onOpenDashboard={() => alert("Dashboard mock!")}
+      />
+    </>
   );
 }
