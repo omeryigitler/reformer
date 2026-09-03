@@ -28,6 +28,23 @@ html,
   user-select: none;
 }
 
+/* Reuse the four homepage hero images in the BEGIN / BUILD / SCULPT / PRIVATE showcase. */
+.rpm-premium img[alt="BEGIN Reformer class"] {
+  content: url("/premium/787cc875-3817-4fdc-a070-9fe5233dbade.png");
+}
+
+.rpm-premium img[alt="BUILD Reformer class"] {
+  content: url("/premium/pill-reformer.jpg");
+}
+
+.rpm-premium img[alt="SCULPT Reformer class"] {
+  content: url("/premium/pill-mat.jpg");
+}
+
+.rpm-premium img[alt="PRIVATE Reformer class"] {
+  content: url("/premium/pill-private.jpg");
+}
+
 /* Quiet neutral grotesk for the hero identity system. */
 .rpm-premium .large-title-layer h1,
 .rpm-premium .hover-title-layer,
