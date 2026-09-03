@@ -21,6 +21,7 @@ No Gemini / Google GenAI runtime is required by this prototype.
 - `src/components/PremiumLandingPage.tsx` — homepage composition, hero interaction, intro timeline and page sections
 - `src/index.css` — global visual tokens plus hero typography/marquee behaviour
 - `src/App.tsx` — lightweight prototype shell and mock management/user state
+- `src/components/SiteFooter.tsx` — intentionally minimal mock footer used by this standalone prototype
 - `public/premium/` — homepage photography and visual assets
 - `vite.config.ts` — standard React + Tailwind Vite configuration
 
@@ -61,7 +62,7 @@ npm run build
 
 ## Important prototype limitation
 
-`src/App.tsx` currently contains mock contact/user state and a mock dashboard action. This repository should not be treated as the production booking/auth implementation.
+`src/App.tsx` currently contains mock contact/user state and a mock dashboard action. `src/components/SiteFooter.tsx` is also a visual placeholder. This repository should not be treated as the production booking/auth implementation.
 
 The visual homepage can later be integrated into the production `reformerpilatesmalta.com` application without copying these mock behaviours.
 
@@ -87,5 +88,6 @@ Removed from the prototype:
 - stale Bun and npm lockfiles that still referenced the removed template dependencies
 - the redundant Motion-based hero marquee and its `motion` dependency
 - dead hero transform utility classes that were being overridden by inline transforms
+- unused `BrandMark` and `UserPanel` prototype components
 
-The remaining `src/App.tsx` mock state is intentional prototype scaffolding, not AI runtime code.
+The remaining mock state/footer are intentional standalone-prototype scaffolding, not AI runtime code.
