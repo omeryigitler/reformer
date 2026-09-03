@@ -52,6 +52,40 @@ html,
 
 @media (min-width: 768px) {
   /*
+    Remove the first divider in the empty left side of the hero. The remaining
+    grid remains untouched so the editorial structure still reads clearly.
+  */
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :first-child {
+    border-right-color: transparent !important;
+  }
+
+  /*
+    On hover, the divider at the START of the active pill column becomes a
+    short darker 2px accent for roughly 2 cm from the top. The original 1px
+    divider continues below it unchanged.
+  */
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(n + 3)::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 0;
+    background: rgba(37, 39, 31, 0.82);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 70;
+    transition:
+      height 280ms cubic-bezier(0.25, 1, 0.5, 1),
+      opacity 180ms ease;
+  }
+
+  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(n + 3):hover::before {
+    height: 76px;
+    opacity: 1;
+  }
+
+  /*
     The large and small type share the same 50% hero axis. The hover layer is
     narrowed to the same 85% desktop width as the media pill and centred inside
     the grid column, so the moving words are visible only within the pill area.
