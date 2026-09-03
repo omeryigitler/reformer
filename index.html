@@ -13,15 +13,12 @@
       (() => {
         try {
           const saved = localStorage.getItem('rpm-theme');
-          const theme = saved === 'light' || saved === 'dark'
-            ? saved
-            : window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? 'dark'
-              : 'light';
+          const theme = saved === 'dark' ? 'dark' : 'light';
           document.documentElement.dataset.rpmTheme = theme;
           document.documentElement.style.colorScheme = theme;
         } catch (_) {
           document.documentElement.dataset.rpmTheme = 'light';
+          document.documentElement.style.colorScheme = 'light';
         }
       })();
     </script>
