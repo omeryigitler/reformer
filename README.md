@@ -32,10 +32,13 @@ The desktop hero uses a six-column grid with:
 - vertically staggered rounded media capsules
 - a sliced, viewport-aligned `reformer` word
 - an opening sequence that morphs circular image windows into the final capsules
-- hover-specific lowercase text tracks (`begin`, `build`, `sculpt`, `private`)
-- two identical 100vw hover-text groups, each split into three equal word slots
-- one 200vw CSS marquee track translated by exactly `-50%`, so the second group replaces the first without a visible restart seam
+- hover-specific lowercase words (`begin`, `build`, `sculpt`, `private`)
+- a globally aligned continuous hover marquee that is clipped independently by neighbouring grid slices
+- two identical marquee groups so the CSS track can translate by exactly `-50%` without a visible restart seam
+- deliberately denser word rhythm so partial fragments naturally cross the grid boundaries instead of sitting as one centred label
 - one shared optical type axis for the large word and hover typography
+
+On hover, the active word is exposed through two neighbouring grid slices while the corresponding `reformer` slices disappear. The photography itself stays almost stationary: the previous large lift, 110% image zoom, blur overlay and heavy active shadow are suppressed so typography remains the primary interaction.
 
 The hover marquee is intentionally slow and readable rather than behaving like a fast UI ticker. The small text uses a measured optical Y correction while remaining tied to the same 50% hero type axis as `reformer`.
 
