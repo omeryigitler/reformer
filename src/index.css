@@ -52,23 +52,25 @@ html,
 
 @media (min-width: 768px) {
   /*
-    The large and small type share the same 50% hero axis. This small optical
-    correction compensates for the different font sizes only.
+    The large and small type share the same 50% hero axis. The hover layer is
+    narrowed to the same 85% desktop width as the media pill and centred inside
+    the grid column, so the moving words are visible only within the pill area.
   */
   .rpm-premium .hover-title-layer {
-    left: 0 !important;
-    width: 100% !important;
+    left: 7.5% !important;
+    width: 85% !important;
     transform: translateY(calc(-50% + clamp(21px, 2vw, 31px))) !important;
   }
 
   /*
-    The outer hero grid column already provides the required clipping. Keep the
-    inner wrapper vertically visible so descenders such as the g in "begin" are
-    never clipped by an unnecessary second overflow boundary.
+    This wrapper provides the horizontal pill-bound clip. Extra vertical
+    breathing room protects lowercase descenders such as the g in "begin".
   */
   .rpm-premium .hover-title-layer > div {
-    overflow: visible !important;
     width: 100% !important;
+    overflow: hidden !important;
+    padding-block: 0.34em !important;
+    margin-block: -0.34em !important;
   }
 
   /*
@@ -83,7 +85,7 @@ html,
     max-width: none !important;
     align-items: center;
     justify-content: flex-start;
-    animation: rpm-hover-marquee 24s linear infinite;
+    animation: rpm-hover-marquee 18s linear infinite;
     will-change: transform;
   }
 
@@ -103,10 +105,7 @@ html,
     padding-right: var(--hover-word-gap);
   }
 
-  /*
-    Words keep their intrinsic width. This prevents the previous overlap where
-    a full word was forced into one-sixth of a grid column.
-  */
+  /* Words keep their intrinsic width and never overlap. */
   .rpm-premium .hero-hover-word {
     display: block !important;
     flex: 0 0 auto !important;
