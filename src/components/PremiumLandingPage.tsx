@@ -1,13 +1,10 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion } from "motion/react";
-import { ArrowRight, ArrowDown, LogOut, User, Lock } from "lucide-react";
-import { BrandMark } from "./BrandMark";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import { SiteFooter } from "./SiteFooter";
-import { UserPanel } from "./UserPanel";
 import type { ManagementState, UserType } from "../types";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -363,8 +360,6 @@ export function PremiumLandingPage({
     };
   }, []);
 
-
-
   const book = () => {
     if (loggedInUser) {
       onOpenDashboard();
@@ -475,8 +470,8 @@ export function PremiumLandingPage({
                   >
                     {/* 1. Large Title Layer */}
                     <div
-                      className={`large-title-layer absolute top-0 w-[100vw] pointer-events-none select-none transition-all duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                        activeCol === i ? "opacity-0 translate-y-3" : "opacity-100 translate-y-0"
+                      className={`large-title-layer absolute top-0 w-[100vw] pointer-events-none select-none transition-opacity duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                        activeCol === i ? "opacity-0" : "opacity-100"
                       }`}
                       style={{
                         left: `calc(-100% * ${i})`,
@@ -491,43 +486,32 @@ export function PremiumLandingPage({
                     {/* 2. Hover Title Layer */}
                     {col.type === 'pill' && (
                       <div
-                        className={`hover-title-layer absolute top-0 w-[100vw] pointer-events-none select-none transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                          activeCol === i ? "opacity-100 scale-100" : "opacity-0 scale-95"
+                        className={`hover-title-layer absolute top-0 w-[100vw] pointer-events-none select-none transition-opacity duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                          activeCol === i ? "opacity-100" : "opacity-0"
                         }`}
                         style={{
                           left: `calc(-100% * ${i})`,
-                          transform: "translateY(calc(-50% - 2px))",
                         }}
                       >
-                        <div className="w-full overflow-hidden flex items-center justify-center py-2">
-                          <motion.div
-                            className="flex w-max items-center select-none will-change-transform"
-                            animate={{ x: ["0%", "-50%"] }}
-                            transition={{ repeat: Infinity, ease: "linear", duration: 7 }}
-                          >
-                            {/* Set 1 */}
-                            <div className="flex items-center shrink-0">
-                              {[0, 1, 2, 3, 4, 5, 6, 7].map((k) => (
-                                <span
-                                  key={`s1-${k}`}
-                                  className="mx-3 sm:mx-4 md:mx-6 font-sans text-[clamp(24px,3.6vw,56px)] md:text-[clamp(34px,3.6vw,56px)] leading-[0.9] font-normal tracking-[-0.035em] text-[#25271F] lowercase select-none whitespace-nowrap drop-shadow-[0_2px_12px_rgba(246,243,236,0.95)]"
-                                >
-                                  {col.hoverWord}
-                                </span>
-                              ))}
-                            </div>
-                            {/* Set 2 */}
-                            <div className="flex items-center shrink-0" aria-hidden="true">
-                              {[0, 1, 2, 3, 4, 5, 6, 7].map((k) => (
-                                <span
-                                  key={`s2-${k}`}
-                                  className="mx-3 sm:mx-4 md:mx-6 font-sans text-[clamp(24px,3.6vw,56px)] md:text-[clamp(34px,3.6vw,56px)] leading-[0.9] font-normal tracking-[-0.035em] text-[#25271F] lowercase select-none whitespace-nowrap drop-shadow-[0_2px_12px_rgba(246,243,236,0.95)]"
-                                >
-                                  {col.hoverWord}
-                                </span>
-                              ))}
-                            </div>
-                          </motion.div>
+                        <div className="w-full overflow-hidden flex items-center justify-center">
+                          <div className="hero-hover-marquee flex items-center select-none will-change-transform">
+                            {[0, 1].map((setIndex) => (
+                              <div
+                                key={`hover-set-${setIndex}`}
+                                className="hero-hover-marquee-set flex items-center shrink-0"
+                                aria-hidden={setIndex === 1 ? "true" : undefined}
+                              >
+                                {[0, 1, 2].map((wordIndex) => (
+                                  <span
+                                    key={`hover-word-${setIndex}-${wordIndex}`}
+                                    className="hero-hover-word font-sans text-[clamp(24px,3.6vw,56px)] md:text-[clamp(34px,3.6vw,56px)] leading-none font-medium tracking-[-0.035em] text-[#25271F] lowercase select-none whitespace-nowrap drop-shadow-[0_2px_12px_rgba(246,243,236,0.95)]"
+                                  >
+                                    {col.hoverWord}
+                                  </span>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     )}
