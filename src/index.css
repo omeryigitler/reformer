@@ -26,12 +26,69 @@ body, html, .rpm-premium {
   user-select: none;
 }
 
-/* Keep the smaller hover words optically centered through the x-height of the
-   large reformer word. The component's inline transform sits too high because
-   the two font sizes have different glyph metrics. */
+/*
+  Desktop hero typography corrections.
+
+  The hover word used to be a viewport-wide moving marquee that was then clipped
+  by the active grid column. That is why descenders / final letters (notably the
+  "g" in "begin") could be cut at a column edge and why the word did not read as
+  genuinely centred. Keep the existing DOM, but make the active hover label a
+  local, stationary word centred inside its own column and on the exact same
+  50% type axis as the large "reformer" word.
+*/
 @media (min-width: 768px) {
   .rpm-premium .hover-title-layer {
-    transform: translateY(calc(-50% + clamp(30px, 3.3vw, 48px))) !important;
+    left: 0 !important;
+    width: 100% !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .rpm-premium .hover-title-layer > div {
+    overflow: visible !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Stop the Motion marquee transform and centre the track locally. */
+  .rpm-premium .hover-title-layer > div > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    transform: none !important;
+    animation: none !important;
+    justify-content: center !important;
+  }
+
+  /* Only one complete hover word is required in the active column. */
+  .rpm-premium .hover-title-layer > div > div > div {
+    display: none !important;
+  }
+
+  .rpm-premium .hover-title-layer > div > div > div:first-child {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .rpm-premium .hover-title-layer > div > div > div:first-child > span {
+    display: none !important;
+  }
+
+  .rpm-premium .hover-title-layer > div > div > div:first-child > span:first-child {
+    display: block !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    line-height: 1 !important;
+  }
+
+  /* BEGIN / BUILD / SCULPT / PRIVATE should read as quiet lowercase rail labels. */
+  .rpm-premium [data-col-label] span {
+    text-transform: lowercase;
+    line-height: 1 !important;
+  }
+
+  /* The 34px menu pill was visually ~7px lower than the label text centre. */
+  .rpm-premium [data-header-btn] {
+    transform: translateY(-7px);
   }
 }
 
@@ -54,4 +111,3 @@ body, html, .rpm-premium {
 .animate-rpm-marquee:hover {
   animation-play-state: running;
 }
-
