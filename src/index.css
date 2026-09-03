@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+:root {
+  --hero-type-axis: 50%;
+  --hero-type-axis-y: 50%;
+}
+
+body, html, .rpm-premium {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.rpm-premium {
+  --rpm-ink: #25271f;
+  --rpm-ivory: #f7f3ea;
+  --rpm-limestone: #f1ece2;
+  --rpm-sand: #d9d0c1;
+  text-rendering: optimizeLegibility;
+}
+
+.rpm-premium ::selection {
+  background: #25271f;
+  color: #f7f3ea;
+}
+
+.rpm-premium img {
+  user-select: none;
+}
+
+@keyframes rpm-marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-rpm-marquee {
+  display: flex !important;
+  width: max-content !important;
+  animation: rpm-marquee 8s linear infinite !important;
+  will-change: transform;
+}
+
+.animate-rpm-marquee:hover {
+  animation-play-state: running;
+}
+

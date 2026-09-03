@@ -1,0 +1,8 @@
+{
+  "name": "Reformer Pilates Malta",
+  "description": "Premium boutique Reformer Pilates studio in St Julian's, Malta.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
