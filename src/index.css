@@ -26,6 +26,16 @@ body, html, .rpm-premium {
   user-select: none;
 }
 
+/*
+  Seamless hover marquee.
+
+  PremiumLandingPage currently renders two identical hover-word groups. Each
+  group contains eight legacy repeats from the original AI Studio prototype.
+  Only three repeats are needed: three equal 1/3-viewport slots make each group
+  exactly 100vw wide. Two identical 100vw groups therefore create a 200vw track.
+  Moving the track by exactly -50% replaces group A with group B pixel-for-pixel,
+  so there is no visible reset seam.
+*/
 @keyframes rpm-hover-marquee {
   from {
     transform: translate3d(0, 0, 0);
@@ -37,12 +47,12 @@ body, html, .rpm-premium {
 
 @media (min-width: 768px) {
   /*
-    Keep the hover words on the exact same hero type axis as "reformer".
-    The +4px is an optical correction for the smaller Plus Jakarta Sans glyphs;
-    it is not a separate layout axis.
+    The small glyphs sit optically higher than the 170–225px reformer glyphs
+    even when both line boxes share the same 50% CSS axis. The correction below
+    compensates for that font-metric difference while keeping one shared axis.
   */
   .rpm-premium .hover-title-layer {
-    transform: translateY(calc(-50% + 4px)) !important;
+    transform: translateY(calc(-50% + clamp(26px, 2.8vw, 36px))) !important;
   }
 
   .rpm-premium .hover-title-layer > div {
@@ -50,38 +60,51 @@ body, html, .rpm-premium {
     padding-bottom: 0 !important;
   }
 
-  /*
-    The component already renders two identical word sets. Moving the full track
-    by exactly half its total width makes set 2 replace set 1 pixel-for-pixel,
-    so the loop is continuous with no visible restart seam.
-  */
+  /* One animation owner: CSS. This animated value takes precedence over the
+     legacy Motion transform while the old wrapper remains in the component. */
   .rpm-premium .hover-title-layer > div > div {
     display: flex !important;
-    width: max-content !important;
+    width: 200vw !important;
     max-width: none !important;
     justify-content: flex-start !important;
     animation: rpm-hover-marquee 24s linear infinite !important;
     will-change: transform;
   }
 
+  /* Each duplicate set is exactly one viewport wide. */
   .rpm-premium .hover-title-layer > div > div > div {
     display: flex !important;
-    flex-shrink: 0 !important;
+    flex: 0 0 100vw !important;
+    width: 100vw !important;
+    align-items: center !important;
   }
 
-  .rpm-premium .hover-title-layer > div > div span {
-    display: block !important;
+  /* Use three deliberate global word slots instead of eight tightly packed
+     repeats. This prevents two complete words appearing inside one grid slice
+     and produces clipped editorial fragments as the track moves. */
+  .rpm-premium .hover-title-layer > div > div > div > span {
+    display: flex !important;
+    flex: 0 0 calc(100vw / 3) !important;
+    width: calc(100vw / 3) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
     font-weight: 500 !important;
     line-height: 1 !important;
   }
 
-  /* Quiet lowercase rail labels, as requested. */
+  .rpm-premium .hover-title-layer > div > div > div > span:nth-child(n + 4) {
+    display: none !important;
+  }
+
+  /* Quiet lowercase rail labels. */
   .rpm-premium [data-col-label] span {
     text-transform: lowercase;
     line-height: 1 !important;
   }
 
-  /* Optically align the menu pill with the rail-label text line. */
+  /* Keep the menu pill on the same optical top rail as the labels. */
   .rpm-premium [data-header-btn] {
     transform: translateY(-7px);
   }
@@ -90,5 +113,6 @@ body, html, .rpm-premium {
 @media (prefers-reduced-motion: reduce) {
   .rpm-premium .hover-title-layer > div > div {
     animation: none !important;
+    transform: translate3d(0, 0, 0) !important;
   }
 }
