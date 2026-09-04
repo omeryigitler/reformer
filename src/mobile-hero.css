@@ -11,6 +11,15 @@
   }
 }
 
+@keyframes rpm-mobile-reformer-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 @media (max-width: 767px) {
   /* Desktop six-column hero never participates in the mobile composition. */
   .rpm-premium > main > section:first-child {
@@ -33,23 +42,7 @@
     color: #f4f0e7;
   }
 
-  /* One quiet structural rail only. */
-  .rpm-mobile-hero-rail {
-    position: absolute;
-    z-index: 0;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 1px;
-    background: rgba(37, 39, 31, .075);
-    pointer-events: none;
-  }
-
-  html[data-rpm-theme="dark"] .rpm-mobile-hero-rail {
-    background: rgba(244, 240, 231, .075);
-  }
-
-  /* All four class labels live on one fixed typographic rail. */
+  /* All four class labels sit on one fixed horizontal typographic rail. */
   .rpm-mobile-hero-tabs {
     position: absolute;
     z-index: 5;
@@ -103,7 +96,48 @@
     transform: scaleX(1);
   }
 
-  /* Native momentum/snap reel. The next pill deliberately peeks into view. */
+  /* Desktop-like continuous word system: the pills mask the line naturally,
+     so the word is only seen in the negative space between/around capsules. */
+  .rpm-mobile-reformer-marquee {
+    position: absolute;
+    z-index: 1;
+    top: 52%;
+    right: 0;
+    left: 0;
+    overflow: hidden;
+    transform: translateY(-50%);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .rpm-mobile-reformer-track {
+    display: flex;
+    width: max-content;
+    align-items: center;
+    will-change: transform;
+    animation: rpm-mobile-reformer-scroll 18s linear infinite;
+  }
+
+  .rpm-mobile-reformer-group {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 34px;
+    padding-right: 34px;
+  }
+
+  .rpm-mobile-reformer-group span {
+    display: block;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: clamp(82px, 25vw, 112px);
+    font-weight: 400;
+    line-height: .8;
+    letter-spacing: -.065em;
+    text-transform: lowercase;
+    color: currentColor;
+  }
+
+  /* Native momentum/snap reel. All pills share one vertical axis. */
   .rpm-mobile-hero-reel {
     position: absolute;
     z-index: 2;
@@ -138,6 +172,7 @@
     height: 100%;
     align-items: center;
     justify-content: center;
+    transform: none !important;
     scroll-snap-align: center;
     scroll-snap-stop: always;
   }
@@ -148,8 +183,13 @@
     height: min(58dvh, 500px);
     overflow: hidden;
     border-radius: 999px;
+    background: #f6f3ec;
     box-shadow: 0 18px 42px rgba(37, 39, 31, .075);
     animation: rpm-mobile-hero-pill-open 760ms cubic-bezier(.25, 1, .5, 1) both;
+  }
+
+  html[data-rpm-theme="dark"] .rpm-mobile-hero-pill {
+    background: #1e201a;
   }
 
   .rpm-mobile-hero-card:nth-child(1) .rpm-mobile-hero-pill { animation-delay: 80ms; }
@@ -206,7 +246,8 @@
   @media (prefers-reduced-motion: reduce) {
     .rpm-mobile-hero-pill,
     .rpm-mobile-hero-tabs button,
-    .rpm-mobile-hero-tabs button::after {
+    .rpm-mobile-hero-tabs button::after,
+    .rpm-mobile-reformer-track {
       animation: none !important;
       transition: none !important;
     }
