@@ -19,6 +19,8 @@ const mobileSlides = [
   },
 ];
 
+const reformerWords = [0, 1, 2, 3];
+
 export function MobileHero() {
   const reelRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -73,8 +75,6 @@ export function MobileHero() {
 
   return (
     <section className="rpm-mobile-hero md:hidden" aria-label="Reformer Pilates Malta classes">
-      <div className="rpm-mobile-hero-rail" aria-hidden="true" />
-
       <nav className="rpm-mobile-hero-tabs" aria-label="Class types">
         {mobileSlides.map((slide, index) => (
           <button
@@ -88,6 +88,18 @@ export function MobileHero() {
           </button>
         ))}
       </nav>
+
+      <div className="rpm-mobile-reformer-marquee" aria-hidden="true">
+        <div className="rpm-mobile-reformer-track">
+          {[0, 1].map((groupIndex) => (
+            <div key={groupIndex} className="rpm-mobile-reformer-group">
+              {reformerWords.map((wordIndex) => (
+                <span key={`${groupIndex}-${wordIndex}`}>reformer</span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div ref={reelRef} className="rpm-mobile-hero-reel">
         {mobileSlides.map((slide) => (
