@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import './auth-menu.css';
+import './mobile-premium.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
