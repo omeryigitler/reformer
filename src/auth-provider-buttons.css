@@ -2,12 +2,35 @@
    editorial choice screen. Both brands share one geometry so desktop and
    mobile stay visually aligned while preserving their brand marks. */
 
+/* Keep the email/password route first, then the primary RPM action, then the
+   alternative provider actions. This makes sign in/create account the clear
+   primary action without changing the underlying prototype auth behavior. */
+.rpm-auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.rpm-auth-form > .rpm-auth-field {
+  order: 0;
+}
+
+.rpm-auth-form > .rpm-auth-submit {
+  order: 1;
+}
+
+.rpm-auth-form > .rpm-provider-wrap {
+  order: 2;
+}
+
 .rpm-provider-wrap {
+  display: flex;
   width: 100%;
-  margin-bottom: 10px;
+  flex-direction: column;
+  margin: 0;
 }
 
 .rpm-provider-stack {
+  order: 1;
   display: grid;
   gap: 8px;
   width: 100%;
@@ -91,10 +114,11 @@ html[data-rpm-theme="dark"] .rpm-provider-apple {
 }
 
 .rpm-provider-divider {
+  order: 0;
   display: flex;
   justify-content: center;
   width: 100%;
-  margin: 14px 0 0;
+  margin: 16px 0 12px;
   color: var(--auth-muted);
   font-size: 9px;
   line-height: 1;
