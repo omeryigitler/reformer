@@ -55,6 +55,18 @@ export function useMobileHeroMotion() {
         : null;
     if (titleGrid) titleResizeObserver?.observe(titleGrid);
 
+    /* Only the first two cards compete for the initial render. Warm the later
+       cards shortly after first paint at low priority so fast scrolling still
+       reaches already-cached media without delaying the page shell. */
+    const warmTimer = window.setTimeout(() => {
+      PRACTICES.slice(2).forEach((practice) => {
+        const image = new Image();
+        image.decoding = "async";
+        image.fetchPriority = "low";
+        image.src = practice.image;
+      });
+    }, 900);
+
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
@@ -184,6 +196,7 @@ export function useMobileHeroMotion() {
     }, section);
 
     return () => {
+      window.clearTimeout(warmTimer);
       titleResizeObserver?.disconnect();
       cardsRef.current = [];
       scrollTriggerRef.current = null;
