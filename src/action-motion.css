@@ -14,8 +14,6 @@
 /* ONE ARROW LANGUAGE                                                        */
 /* ------------------------------------------------------------------------- */
 
-/* Auth buttons already render ↗ as text. Lock its metrics so every action
-   arrow below can match it exactly. */
 .rpm-account-pill > span:last-child {
   flex: 0 0 auto;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -25,16 +23,16 @@
   letter-spacing: 0;
 }
 
-/* START YOUR FIRST SESSION and VIEW AVAILABLE SESSIONS previously used two
-   Lucide ArrowRight icons at different sizes (default 24px vs 17px). Hide
-   those icons and render the exact same ↗ used by SIGN IN. */
-.rpm-premium > main > section:nth-of-type(6) button > svg,
-.rpm-premium > main > section:nth-of-type(7) button > svg {
+/* Use structural button classes instead of section nth-of-type selectors.
+   The previous nth-of-type selectors did not reliably match the desktop CTA
+   sections once the landing page structure changed. */
+.rpm-premium main button.w-full.border-y > svg,
+.rpm-premium main button.mt-9.w-fit.rounded-full > svg {
   display: none !important;
 }
 
-.rpm-premium > main > section:nth-of-type(6) button::after,
-.rpm-premium > main > section:nth-of-type(7) button::after {
+.rpm-premium main button.w-full.border-y::after,
+.rpm-premium main button.mt-9.w-fit.rounded-full::after {
   content: "↗";
   flex: 0 0 auto;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -48,24 +46,23 @@
 /* START YOUR FIRST SESSION — remains an editorial ROW                       */
 /* ------------------------------------------------------------------------- */
 
-.rpm-premium > main > section:nth-of-type(6) button {
-  /* Keep the two rules and full-width row geometry absolutely still. */
+.rpm-premium main button.w-full.border-y {
   padding-left: 0 !important;
   padding-right: 0 !important;
   transform: none !important;
   transition: none !important;
 }
 
-.rpm-premium > main > section:nth-of-type(6) button:hover,
-.rpm-premium > main > section:nth-of-type(6) button:focus-visible {
+.rpm-premium main button.w-full.border-y:hover,
+.rpm-premium main button.w-full.border-y:focus-visible {
   padding-left: 0 !important;
   padding-right: 0 !important;
   transform: none !important;
   outline: none;
 }
 
-.rpm-premium > main > section:nth-of-type(6) button > span:first-child,
-.rpm-premium > main > section:nth-of-type(6) button::after {
+.rpm-premium main button.w-full.border-y > span:first-child,
+.rpm-premium main button.w-full.border-y::after {
   transition: transform var(--rpm-action-duration) var(--rpm-action-ease);
 }
 
@@ -73,7 +70,7 @@
 /* VIEW AVAILABLE SESSIONS — keeps its pill, uses SIGN IN motion             */
 /* ------------------------------------------------------------------------- */
 
-.rpm-premium > main > section:nth-of-type(7) button {
+.rpm-premium main button.mt-9.w-fit.rounded-full {
   transform: translateX(0) !important;
   transition: transform var(--rpm-action-duration) var(--rpm-action-ease) !important;
 }
@@ -99,17 +96,17 @@ a.rpm-footer-social-item:focus-visible {
 /* ------------------------------------------------------------------------- */
 
 @media (hover: hover) and (pointer: fine) {
-  /* Row stays a row: only its contents move like the SIGN IN action. */
-  .rpm-premium > main > section:nth-of-type(6) button:hover > span:first-child,
-  .rpm-premium > main > section:nth-of-type(6) button:hover::after,
-  .rpm-premium > main > section:nth-of-type(6) button:focus-visible > span:first-child,
-  .rpm-premium > main > section:nth-of-type(6) button:focus-visible::after {
+  /* Row stays a row: only its label and arrow move. */
+  .rpm-premium main button.w-full.border-y:hover > span:first-child,
+  .rpm-premium main button.w-full.border-y:hover::after,
+  .rpm-premium main button.w-full.border-y:focus-visible > span:first-child,
+  .rpm-premium main button.w-full.border-y:focus-visible::after {
     transform: translateX(var(--rpm-action-shift));
   }
 
   /* Pills/links move as one unit, exactly like .rpm-account-pill. */
-  .rpm-premium > main > section:nth-of-type(7) button:hover,
-  .rpm-premium > main > section:nth-of-type(7) button:focus-visible,
+  .rpm-premium main button.mt-9.w-fit.rounded-full:hover,
+  .rpm-premium main button.mt-9.w-fit.rounded-full:focus-visible,
   a.rpm-footer-social-item:hover,
   a.rpm-footer-social-item:focus-visible {
     transform: translateX(var(--rpm-action-shift)) !important;
@@ -125,12 +122,12 @@ a.rpm-footer-social-item:focus-visible {
     transform: translateX(var(--rpm-action-shift)) !important;
   }
 
-  .rpm-premium > main > section:nth-of-type(6) button:active > span:first-child,
-  .rpm-premium > main > section:nth-of-type(6) button:active::after {
+  .rpm-premium main button.w-full.border-y:active > span:first-child,
+  .rpm-premium main button.w-full.border-y:active::after {
     transform: translateX(var(--rpm-action-shift));
   }
 
-  .rpm-premium > main > section:nth-of-type(7) button:active,
+  .rpm-premium main button.mt-9.w-fit.rounded-full:active,
   a.rpm-footer-social-item:active {
     transform: translateX(var(--rpm-action-shift)) !important;
   }
@@ -138,9 +135,9 @@ a.rpm-footer-social-item:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .rpm-account-pill,
-  .rpm-premium > main > section:nth-of-type(6) button > span:first-child,
-  .rpm-premium > main > section:nth-of-type(6) button::after,
-  .rpm-premium > main > section:nth-of-type(7) button,
+  .rpm-premium main button.w-full.border-y > span:first-child,
+  .rpm-premium main button.w-full.border-y::after,
+  .rpm-premium main button.mt-9.w-fit.rounded-full,
   a.rpm-footer-social-item {
     transition: none !important;
     transform: none !important;
