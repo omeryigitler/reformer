@@ -33,10 +33,7 @@ export function MobileHero() {
             data-mobile-title-slice
             className="rpm-mobile-title-slice"
           >
-            <div
-              data-mobile-title-global
-              className="rpm-mobile-title-global"
-            >
+            <div data-mobile-title-global className="rpm-mobile-title-global">
               <span>reformer</span>
             </div>
           </div>
@@ -54,9 +51,9 @@ export function MobileHero() {
               <img
                 src={practice.image}
                 alt=""
-                loading="eager"
+                loading={index < 2 ? "eager" : "lazy"}
                 decoding="async"
-                fetchPriority={index < 2 ? "high" : "auto"}
+                fetchPriority={index === 0 ? "high" : index === 1 ? "auto" : "low"}
                 draggable={false}
               />
             </div>
