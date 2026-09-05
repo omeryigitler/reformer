@@ -31,19 +31,15 @@ function GoogleMark() {
 }
 
 export function AuthProviderButtons({ theme }: AuthProviderButtonsProps) {
-  const appleColor = theme === "dark" ? "white" : "white";
-  const appleBorder = theme === "dark" ? "false" : "true";
+  const appleColor = theme === "dark" ? "black" : "white";
+  const appleBorder = "true";
   const appleButtonUrl =
-    `https://appleid.cdn-apple.com/appleid/button?height=46&width=175&color=${appleColor}` +
-    `&border=${appleBorder}&type=sign-in&border_radius=23&scale=2&locale=en_US`;
+    `https://appleid.cdn-apple.com/appleid/button?height=52&width=360&color=${appleColor}` +
+    `&border=${appleBorder}&type=sign-in&border_radius=26&scale=2&locale=en_US`;
 
   return (
     <div className="rpm-provider-wrap" aria-label="Alternative sign in options">
-      <div className="rpm-provider-divider" aria-hidden="true">
-        <span>or</span>
-      </div>
-
-      <div className="rpm-provider-row">
+      <div className="rpm-provider-stack">
         <button
           type="button"
           className="rpm-provider-button rpm-provider-google"
@@ -60,8 +56,12 @@ export function AuthProviderButtons({ theme }: AuthProviderButtonsProps) {
           aria-label="Sign in with Apple"
           data-auth-placeholder="apple"
         >
-          <img src={appleButtonUrl} alt="" width="175" height="46" draggable={false} />
+          <img src={appleButtonUrl} alt="" width="360" height="52" draggable={false} />
         </button>
+      </div>
+
+      <div className="rpm-provider-divider" aria-hidden="true">
+        <span>or use email</span>
       </div>
     </div>
   );
