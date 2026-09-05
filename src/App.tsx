@@ -1,32 +1,32 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { useState } from "react";
 import { PremiumLandingPage } from "./components/PremiumLandingPage";
 import { ThemeMenu } from "./components/ThemeMenu";
-import type { ManagementState, UserType } from "./types";
+import type { AuthRequest, ManagementState, UserType } from "./types";
+
+const managementState: ManagementState = {
+  contactInfo: {
+    phone: "+356 9974 9805",
+    email: "info@reformerpilatesmalta.com",
+    address: "Pendergardens, Triq Gort, St Julian's, Malta",
+  },
+  // Keep unverified social destinations empty instead of shipping placeholder links.
+  socialLinks: {
+    instagram: "",
+    facebook: "",
+  },
+};
 
 export default function App() {
   const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
-  const [authModal, setAuthModal] = useState<string | null>(null);
+  const [authRequest, setAuthRequest] = useState<AuthRequest>(null);
 
-  const managementState: ManagementState = {
-    holidayMode: false,
-    springMode: false,
-    loveRainMode: false,
-    contactInfo: {
-      phone: "+356 9974 9805",
-      email: "info@reformerpilatesmalta.com",
-      address: "Pendergardens, Triq Gort, St Julian's, Malta"
-    },
-    // The current production site does not expose verified Instagram/Facebook
-    // URLs. Keep these empty rather than shipping deceptive placeholder links.
-    socialLinks: {
-      instagram: "",
-      facebook: ""
-    }
+  const openDashboard = () => {
+    // Prototype-only until the production booking/account application is connected.
+    alert("Dashboard mock!");
+  };
+
+  const handleLegacyAuthRequest = (value: string | null) => {
+    setAuthRequest(value === "register" ? "register" : value === "login" ? "login" : null);
   };
 
   return (
@@ -34,17 +34,19 @@ export default function App() {
       <PremiumLandingPage
         managementState={managementState}
         loggedInUser={loggedInUser}
-        authModal={authModal}
-        setAuthModal={setAuthModal}
+        authModal={authRequest}
+        setAuthModal={handleLegacyAuthRequest}
         onLogin={setLoggedInUser}
-        onOpenDashboard={() => alert("Dashboard mock!")}
+        onOpenDashboard={openDashboard}
         onLogout={() => setLoggedInUser(null)}
       />
       <ThemeMenu
+        authRequest={authRequest}
+        setAuthRequest={setAuthRequest}
         loggedInUser={loggedInUser}
         onLogin={setLoggedInUser}
         onLogout={() => setLoggedInUser(null)}
-        onOpenDashboard={() => alert("Dashboard mock!")}
+        onOpenDashboard={openDashboard}
       />
     </>
   );

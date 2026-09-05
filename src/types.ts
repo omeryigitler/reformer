@@ -4,10 +4,9 @@ export type UserType = {
   role: "admin" | "user";
 };
 
+export type AuthRequest = "login" | "register" | null;
+
 export type ManagementState = {
-  holidayMode: boolean;
-  springMode: boolean;
-  loveRainMode: boolean;
   contactInfo: {
     phone: string;
     email: string;

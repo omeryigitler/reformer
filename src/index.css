@@ -1,8 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --hero-type-axis: 50%;
   --hero-type-axis-y: 50%;
+  --rpm-action-shift: 5px;
+  --rpm-action-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --rpm-action-duration: 300ms;
+  /* Desktop MENU used to be pt-8 plus translateY(-10px). Store the final
+     visual coordinate directly so MENU and CLOSE share one real origin. */
+  --rpm-header-control-top: 22px;
+  --rpm-header-control-side: 40px;
+  --rpm-header-control-width: 84px;
+  --rpm-header-control-height: 34px;
+}
+
+html {
+  scrollbar-gutter: stable;
 }
 
 body,
@@ -25,6 +37,19 @@ html,
   text-rendering: optimizeLegibility;
 }
 
+.rpm-premium > header {
+  padding-top: var(--rpm-header-control-top) !important;
+  padding-right: var(--rpm-header-control-side) !important;
+  padding-left: var(--rpm-header-control-side) !important;
+}
+
+.rpm-premium [data-header-btn] {
+  width: var(--rpm-header-control-width) !important;
+  min-width: var(--rpm-header-control-width) !important;
+  height: var(--rpm-header-control-height) !important;
+  transform: none !important;
+}
+
 .rpm-premium ::selection {
   background: var(--rpm-ink);
   color: var(--rpm-bg);
@@ -34,7 +59,8 @@ html,
   user-select: none;
 }
 
-/* Reuse the four homepage hero images in the BEGIN / BUILD / SCULPT / PRIVATE showcase. */
+/* Existing class cards still point at legacy source names in JSX. Keep the
+   visual substitution here until that large component is split and simplified. */
 .rpm-premium img[alt="BEGIN Reformer class"] {
   content: url("/premium/787cc875-3817-4fdc-a070-9fe5233dbade.png");
 }
@@ -51,7 +77,6 @@ html,
   content: url("/premium/pill-private.jpg");
 }
 
-/* Quiet neutral grotesk for the hero identity system. */
 .rpm-premium .large-title-layer h1,
 .rpm-premium .hover-title-layer,
 .rpm-premium [data-col-label] span,
@@ -59,11 +84,6 @@ html,
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-/*
-  The hover marquee contains two identical groups. Moving the full track by
-  exactly -50% swaps group A for group B at the loop boundary, so the reset is
-  visually seamless.
-*/
 @keyframes rpm-hover-marquee {
   from {
     transform: translate3d(0, 0, 0);
@@ -73,12 +93,6 @@ html,
   }
 }
 
-/*
-  One slice-wide linear wipe. The six equal hero slices run this animation
-  consecutively from right to left. Because each slice starts on the exact frame
-  the previous slice finishes, the eye reads one constant-speed viewport wipe
-  rather than six separate reveals.
-*/
 @keyframes rpm-title-global-wipe {
   from {
     clip-path: inset(0 0 0 100%);
@@ -89,11 +103,6 @@ html,
 }
 
 @media (min-width: 768px) {
-  /*
-    Override the simultaneous GSAP slice reveal during the opening only. The
-    animation uses fill-mode: both so every slice stays fully hidden before its
-    turn and fully revealed afterwards. 6 × 130ms = 780ms total sweep.
-  */
   .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > div [data-title-slice] {
     animation-name: rpm-title-global-wipe;
     animation-duration: 130ms;
@@ -102,7 +111,6 @@ html,
     animation-iteration-count: 1;
   }
 
-  /* Rightmost slice first; leftmost slice last. */
   .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(6) [data-title-slice] {
     animation-delay: 1.20s;
   }
@@ -127,19 +135,10 @@ html,
     animation-delay: 1.85s;
   }
 
-  /*
-    Remove the first divider in the empty left side of the hero. The remaining
-    grid remains untouched so the editorial structure still reads clearly.
-  */
   .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :first-child {
     border-right-color: transparent !important;
   }
 
-  /*
-    On hover, the divider at the START of the active pill column becomes a
-    short darker 2px accent for roughly 2 cm from the top. The original 1px
-    divider continues below it unchanged.
-  */
   .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(n + 3)::before {
     content: "";
     position: absolute;
@@ -161,21 +160,12 @@ html,
     opacity: 1;
   }
 
-  /*
-    The large and small type share the same 50% hero axis. The hover layer is
-    narrowed to the same 85% desktop width as the media pill and centred inside
-    the grid column, so the moving words are visible only within the pill area.
-  */
   .rpm-premium .hover-title-layer {
     left: 7.5% !important;
     width: 85% !important;
     transform: translateY(calc(-50% + clamp(21px, 2vw, 31px))) !important;
   }
 
-  /*
-    This wrapper provides the horizontal pill-bound clip. Extra vertical
-    breathing room protects lowercase descenders such as the g in "begin".
-  */
   .rpm-premium .hover-title-layer > div {
     width: 100% !important;
     overflow: hidden !important;
@@ -183,11 +173,6 @@ html,
     margin-block: -0.34em !important;
   }
 
-  /*
-    One active column, one local marquee. React's activeCol remains the only
-    source of truth for which reformer slice disappears and which hover track
-    appears.
-  */
   .rpm-premium .hero-hover-marquee {
     display: flex;
     width: max-content !important;
@@ -199,11 +184,6 @@ html,
     will-change: transform;
   }
 
-  /*
-    Each group sizes itself from its real text width instead of percentage
-    slots. The right padding equals the inter-word gap, so the boundary between
-    group A and group B has exactly the same spacing as the words inside a group.
-  */
   .rpm-premium .hero-hover-marquee-set {
     --hover-word-gap: clamp(30px, 2.4vw, 46px);
     display: flex;
@@ -215,7 +195,6 @@ html,
     padding-right: var(--hover-word-gap);
   }
 
-  /* Words keep their intrinsic width and never overlap. */
   .rpm-premium .hero-hover-word {
     display: block !important;
     flex: 0 0 auto !important;
@@ -234,22 +213,12 @@ html,
     white-space: nowrap;
   }
 
-  /* Quiet lowercase top rail. */
   .rpm-premium [data-col-label] span {
     text-transform: lowercase;
     font-weight: 400 !important;
     line-height: 1;
   }
 
-  /* Keep the menu on the same optical top rail as the column labels. */
-  .rpm-premium [data-header-btn] {
-    transform: translateY(-10px);
-  }
-
-  /*
-    Keep photography calm on hover: typography is the interaction, not a card
-    lift/zoom effect.
-  */
   .rpm-premium .relative.w-full.h-full:has(> [data-hero-pill]) {
     transform: none !important;
   }
@@ -271,16 +240,19 @@ html,
     -webkit-backdrop-filter: none !important;
   }
 
-  /* The hero is still after its intro; no perpetual bouncing arrow. */
   .rpm-premium [data-hero-elements] .animate-bounce {
     animation: none !important;
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* THEME SYSTEM                                                               */
-/* localStorage now; production profile sync can replace persistence later.   */
-/* -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  :root {
+    --rpm-header-control-top: calc(18px + env(safe-area-inset-top));
+    --rpm-header-control-side: 20px;
+    --rpm-header-control-width: 76px;
+    --rpm-header-control-height: 48px;
+  }
+}
 
 html[data-rpm-theme="dark"] .rpm-premium {
   --rpm-bg: #1e201a;
@@ -363,39 +335,6 @@ html[data-rpm-theme="dark"] .rpm-premium [data-header-btn] .menu-bg {
 
 html[data-rpm-theme="dark"] .rpm-premium [data-header-btn] .menu-hover {
   color: #1e201a !important;
-}
-
-/* Menu overlay lives outside .rpm-premium so it can later be reused globally. */
-.rpm-menu-backdrop {
-  background: rgba(20, 22, 17, 0.16);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-
-.rpm-theme-menu {
-  background: #f6f3ec;
-  color: #25271f;
-  border-left: 1px solid rgba(37, 39, 31, 0.12);
-  box-shadow: -28px 0 80px rgba(37, 39, 31, 0.08);
-}
-
-.rpm-theme-menu * {
-  border-color: currentColor;
-}
-
-.rpm-theme-choice span {
-  background: currentColor;
-}
-
-html[data-rpm-theme="dark"] .rpm-menu-backdrop {
-  background: rgba(5, 6, 4, 0.28);
-}
-
-html[data-rpm-theme="dark"] .rpm-theme-menu {
-  background: #1e201a;
-  color: #f4f0e7;
-  border-left-color: rgba(244, 240, 231, 0.12);
-  box-shadow: -28px 0 80px rgba(0, 0, 0, 0.22);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,86 +1,49 @@
 # Reformer Pilates Malta — Homepage Prototype
 
-This repository is the standalone visual prototype for the new Reformer Pilates Malta public homepage.
-
-It is intentionally separate from the production booking application while the homepage art direction, motion system, typography and responsive behaviour are being refined.
+Standalone React/Vite prototype for the new Reformer Pilates Malta public homepage. The booking/authentication layer is still prototype-only; this repository is currently focused on the public experience, motion system and responsive art direction.
 
 ## Stack
 
-- React 19
-- TypeScript
+- React 19 + TypeScript
 - Vite 6
 - Tailwind CSS 4
-- GSAP + ScrollTrigger for desktop storytelling
-- Native CSS scroll snap for mobile reels
-- CSS keyframe animation for hero type / media reveals
-- Lucide React icons
+- GSAP + ScrollTrigger
+- Lucide React
 
-No Gemini / Google GenAI runtime is required by this prototype.
+## Runtime structure
 
-## Main files
+- `src/App.tsx` — prototype shell, shared contact data and menu/auth request state
+- `src/components/PremiumLandingPage.tsx` — desktop hero and page sections
+- `src/components/MobileHero.tsx` — dedicated mobile pinned horizontal hero
+- `src/components/ThemeMenu.tsx` — full-screen menu, theme and prototype account flow
+- `src/components/SiteFooter.tsx` — footer/map/social presentation
+- `src/index.css` — global tokens, desktop hero and theme behaviour
+- `src/mobile-hero.css` — mobile hero only
+- `src/mobile-premium.css` — mobile page sections only
+- `src/auth-menu.css` — menu/auth layout and responsive behaviour
+- `src/footer-map.css` — footer/map presentation
+- `src/action-motion.css` — shared CTA interaction language
 
-- `src/components/PremiumLandingPage.tsx` — homepage composition, desktop hero interaction, intro timeline and page sections
-- `src/index.css` — global visual tokens plus desktop hero typography / marquee behaviour
-- `src/mobile-premium.css` — mobile-only art direction, touch behaviour, safe-area handling and mobile auth overrides
-- `src/auth-menu.css` — full-screen menu, theme and account interface
-- `src/App.tsx` — lightweight prototype shell and mock user state
-- `src/components/SiteFooter.tsx` — responsive editorial footer
-- `public/premium/` — homepage photography and visual assets
-- `vite.config.ts` — standard React + Tailwind Vite configuration
+## Current hero behaviour
 
-## Desktop hero behaviour
+Desktop keeps the six-column editorial hero, sliced `reformer` typography, staggered media capsules and ScrollTrigger story.
 
-The desktop hero uses a six-column grid with:
-
-- vertically staggered rounded media capsules
-- a sliced, viewport-aligned `reformer` word
-- an opening sequence that morphs circular image windows into the final capsules
-- hover-specific lowercase words (`begin`, `build`, `sculpt`, `private`)
-- a continuous hover marquee clipped to the active media pill
-- one shared optical type axis for the large word and hover typography
-- a restrained right-to-left title reveal inspired by the analysed Unanime opening behaviour
-
-Photography stays calm on hover; typography remains the primary interaction.
-
-## Mobile art direction
-
-Mobile is deliberately not a compressed version of the desktop layout.
-
-At `767px` and below:
-
-- the two empty desktop hero columns disappear
-- the four practice capsules become a native horizontal, touch-driven scroll-snap reel
-- the large `reformer` word remains behind the reel as a single mobile wordmark rather than six sliced desktop copies
-- hover-dependent effects are removed; swipe becomes the primary interaction
-- each capsule keeps a staggered vertical position to preserve the architectural rhythm of the desktop composition
-- the hero uses one quiet central rail instead of the desktop six-column grid
-- the desktop scroll cue is replaced by a small `swipe to explore` instruction
-- the classes section becomes a second native horizontal snap reel rather than a long stacked card list
-- instructor photography uses an asymmetric pill crop to maintain the core brand geometry
-- full-screen menu / auth forms use `100dvh`, safe-area padding and touch targets of roughly 48–58px
-- form labels stay above fields and the form remains one column on phones
-- horizontal hover translations are disabled for touch-only devices
-- `prefers-reduced-motion` removes the mobile opening motion while preserving final layout
-
-The mobile experience relies on native scrolling rather than GSAP pinning. This avoids scroll-jacking, keeps touch momentum intact and reduces interaction cost on phones.
+Mobile is intentionally separate. It shows one full capsule plus part of the next capsule, uses a sliced viewport-aligned `reformer` word, pins the hero while the media rail travels right-to-left, and scatters the `reformer` slices vertically only after the last capsule has left the viewport.
 
 ## Menu / account prototype
 
-The menu is a full-screen editorial canvas opened with a right-to-left wipe. Light theme is the default unless the user explicitly saved dark mode in `localStorage`.
+The menu is opened by the same `authRequest` state used by homepage booking actions. There is no DOM click interception between the header and menu. `login` opens the member menu; `register` opens the create-account view.
 
-Authentication is still prototype-only:
+Authentication is still intentionally mock-only:
 
-- account choice and form UI are implemented
-- form state is local React state
-- no password is persisted locally
-- successful prototype submit creates only a mock user object
-- production auth / profile persistence will replace the adapter later
+- form state lives in React
+- no password is persisted
+- submit creates a temporary in-memory user object
+- dashboard action is still a mock alert
 
-The theme value is intentionally isolated so production can sync it to an authenticated profile while keeping `localStorage` as an instant client-side fallback.
+Do not treat this as production authentication. Replace the adapter when the production booking/account service is connected.
 
 ## Development
-
-The old AI Studio / Bun lockfiles were removed because they contained stale template dependencies. Generate a clean npm lockfile from the current manifest on first install:
 
 ```bash
 npm install
@@ -93,45 +56,35 @@ Type check:
 npm run lint
 ```
 
-Production bundle check:
+Bundle check:
 
 ```bash
 npm run build
 ```
 
-## Important prototype limitation
+Run both before merging structural changes:
 
-`src/App.tsx` still contains mock contact/user state and a mock dashboard action. This repository should not be treated as the production booking/auth implementation.
+```bash
+npm run check
+```
 
-The visual homepage can later be integrated into the production `reformerpilatesmalta.com` application without copying these mock behaviours.
+A clean npm lockfile should be committed once dependencies are installed in the development environment so local and Vercel installs are reproducible.
 
 ## Design guardrails
 
-When changing the homepage:
-
-- preserve the warm limestone / ivory editorial direction
-- preserve the hero pill geometry and typography identity
-- avoid generic wellness cards, gradients and excessive shadows
-- keep desktop hover motion restrained, continuous and seamless
+- preserve the warm limestone / ivory direction
+- keep hero typography and capsule geometry editorial, not card-like
+- keep desktop hover motion restrained
 - never make mobile depend on hover
-- prefer native mobile scroll snap over pinned or scroll-jacked interactions
-- keep phone touch targets comfortably finger-sized
-- keep mobile auth forms single-column and context-clear
-- preserve safe-area spacing for modern iPhones
-- do not change unrelated desktop sections when tuning mobile behaviour
+- preserve safe-area spacing and comfortable touch targets
+- do not reintroduce a second legacy mobile hero
+- use semantic component selectors for new code; avoid new `nth-of-type` or Tailwind-class-string selectors
+- keep component-specific responsive CSS in the component's own stylesheet
 
-## Cleanup status
+## Known production blockers
 
-Removed from the prototype:
-
-- AI Studio-specific `metadata.json`
-- Gemini / AI Studio `.env.example`
-- AI Studio-only HMR/file-watching logic in `vite.config.ts`
-- unused GenAI / Express runtime dependencies from `package.json`
-- stale Bun and npm lockfiles that still referenced removed template dependencies
-- redundant Motion-based hero marquee and its `motion` dependency
-- dead hero transform utility classes that were overridden by inline transforms
-- unused `BrandMark` and `UserPanel` prototype components
-- the old mock footer presentation
-
-The remaining mock account / management state is intentional standalone-prototype scaffolding, not AI runtime code.
+- authentication and dashboard are prototype-only
+- social URLs are intentionally empty until verified
+- dependency lockfile is not yet committed
+- `PremiumLandingPage.tsx` is still large and should be split by section before substantial new business logic is added
+- some existing CSS still relies on structural selectors; these should be removed incrementally rather than covered by additional overrides

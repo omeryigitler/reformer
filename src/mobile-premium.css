@@ -1,5 +1,5 @@
-/* Mobile art direction for Reformer Pilates Malta.
-   Hero-specific mobile styling lives only in mobile-hero.css. */
+/* Mobile-only page art direction. Hero rules live in mobile-hero.css and
+   menu/auth rules live in auth-menu.css. */
 
 @media (max-width: 767px) {
   html,
@@ -11,29 +11,11 @@
     overflow-x: clip;
   }
 
-  /* ---------------------------------------------------------------------- */
-  /* GLOBAL MOBILE HEADER                                                    */
-  /* ---------------------------------------------------------------------- */
-
-  .rpm-premium > header {
-    padding-top: calc(18px + env(safe-area-inset-top));
-    padding-right: 20px;
-    padding-left: 20px;
-  }
-
-  .rpm-premium [data-header-logo],
-  .rpm-menu-brand {
+  .rpm-premium [data-header-logo] {
     font-size: 12px !important;
     line-height: 1rem !important;
     font-weight: 600 !important;
-    letter-spacing: .2em !important;
-  }
-
-  .rpm-premium [data-header-btn] {
-    width: 76px !important;
-    height: 48px !important;
-    min-width: 76px;
-    transform: none !important;
+    letter-spacing: 0.2em !important;
   }
 
   .rpm-premium [data-header-btn] .menu-default,
@@ -41,10 +23,6 @@
     font-size: 13px !important;
     line-height: 1 !important;
   }
-
-  /* ---------------------------------------------------------------------- */
-  /* CONTENT RHYTHM                                                          */
-  /* ---------------------------------------------------------------------- */
 
   .rpm-premium > main > section:not(:first-child) {
     scroll-margin-top: 72px;
@@ -63,10 +41,6 @@
     border-radius: 999px;
     aspect-ratio: 3 / 4 !important;
   }
-
-  /* ---------------------------------------------------------------------- */
-  /* CLASSES                                                                 */
-  /* ---------------------------------------------------------------------- */
 
   .rpm-premium > main > section:nth-of-type(4) > div[class~="md:hidden"] {
     overflow: hidden;
@@ -127,213 +101,9 @@
     width: 56px !important;
     height: 56px !important;
   }
-
-  /* ---------------------------------------------------------------------- */
-  /* FULL-SCREEN MENU / AUTH                                                 */
-  /* ---------------------------------------------------------------------- */
-
-  .rpm-theme-menu {
-    height: 100dvh;
-    min-height: 100svh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-
-  .rpm-menu-grid {
-    display: none !important;
-  }
-
-  .rpm-menu-shell {
-    min-height: 100dvh !important;
-    padding:
-      calc(18px + env(safe-area-inset-top))
-      20px
-      calc(18px + env(safe-area-inset-bottom)) !important;
-  }
-
-  .rpm-menu-header {
-    grid-template-columns: 1fr auto !important;
-    align-items: center !important;
-    row-gap: 10px;
-    min-height: auto !important;
-    padding-bottom: 14px !important;
-  }
-
-  .rpm-menu-brand {
-    max-width: 210px;
-  }
-
-  .rpm-menu-close {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
-    min-width: 76px !important;
-    height: 48px !important;
-  }
-
-  .rpm-menu-appearance {
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
-    justify-self: start !important;
-    min-height: 44px;
-    gap: 6px !important;
-    padding-top: 4px !important;
-  }
-
-  .rpm-menu-appearance-label {
-    margin-right: 8px;
-  }
-
-  .rpm-theme-choice {
-    display: inline-flex;
-    min-width: 48px;
-    min-height: 44px;
-    align-items: center;
-    justify-content: center;
-    padding: 0 6px !important;
-  }
-
-  .rpm-menu-main {
-    display: block !important;
-    overflow: visible !important;
-    padding: 0 !important;
-  }
-
-  .rpm-menu-intro {
-    display: flex !important;
-    min-height: min(42svh, 360px) !important;
-    padding: 54px 0 34px !important;
-    justify-content: flex-end !important;
-  }
-
-  .rpm-menu-title {
-    max-width: 100% !important;
-    font-size: clamp(62px, 19vw, 88px) !important;
-    line-height: .8 !important;
-  }
-
-  .rpm-menu-copy {
-    max-width: 280px !important;
-    margin-top: 22px !important;
-    font-size: 13px !important;
-  }
-
-  .rpm-auth-split {
-    display: block !important;
-    border: 0 !important;
-  }
-
-  .rpm-auth-side {
-    min-height: 315px !important;
-    padding: 30px 0 28px !important;
-    border-top: 1px solid var(--auth-line);
-  }
-
-  .rpm-auth-side + .rpm-auth-side {
-    border-left: 0 !important;
-    border-top: 1px solid var(--auth-line) !important;
-  }
-
-  .rpm-auth-heading {
-    font-size: clamp(54px, 16vw, 72px) !important;
-    line-height: .84 !important;
-  }
-
-  .rpm-auth-description {
-    max-width: 300px !important;
-    margin-top: 16px !important;
-  }
-
-  .rpm-account-pill {
-    width: 100% !important;
-    min-height: 56px !important;
-    margin-top: 24px !important;
-    padding: 0 20px !important;
-  }
-
-  .rpm-menu-main--form .rpm-menu-intro {
-    min-height: 250px !important;
-    justify-content: flex-end !important;
-    padding: 38px 0 30px !important;
-  }
-
-  .rpm-menu-back {
-    display: inline-flex;
-    min-height: 48px;
-    align-items: center;
-    margin-bottom: 16px !important;
-  }
-
-  .rpm-auth-form-wrap {
-    display: block !important;
-    border-top: 1px solid var(--auth-line);
-    padding: 24px 0 12px !important;
-  }
-
-  .rpm-auth-form-heading {
-    padding: 0 0 18px !important;
-  }
-
-  .rpm-auth-form-heading p {
-    max-width: none !important;
-  }
-
-  .rpm-auth-form {
-    width: 100% !important;
-    padding: 0 !important;
-  }
-
-  .rpm-auth-field {
-    min-height: 76px;
-    padding: 17px 0 12px !important;
-  }
-
-  .rpm-auth-field > span {
-    margin-bottom: 8px !important;
-  }
-
-  .rpm-auth-field input {
-    min-height: 38px;
-    font-size: 22px !important;
-    line-height: 1.2;
-  }
-
-  .rpm-auth-submit {
-    min-height: 58px !important;
-    margin-top: 26px !important;
-  }
-
-  .rpm-auth-switch {
-    display: inline-flex;
-    min-height: 48px;
-    align-items: center;
-    margin-top: 12px !important;
-  }
-
-  .rpm-member-panel {
-    min-height: 52svh !important;
-    padding: 40px 0 20px !important;
-    border-top: 1px solid var(--auth-line);
-  }
-
-  .rpm-member-title {
-    font-size: clamp(60px, 18vw, 82px) !important;
-  }
-
-  .rpm-menu-footer {
-    grid-template-columns: 1fr auto !important;
-    padding-top: 14px !important;
-    border-top: 0 !important;
-  }
-
-  .rpm-menu-footer span:last-child {
-    grid-column: 2 !important;
-  }
 }
 
 @media (max-width: 767px) and (hover: none) {
-  .rpm-account-pill:hover,
-  .rpm-account-pill:focus-visible,
-  .rpm-menu-close:hover,
   .rpm-premium button:hover,
   .rpm-premium a:hover {
     transform: none !important;

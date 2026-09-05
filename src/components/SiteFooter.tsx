@@ -1,8 +1,7 @@
+import type { ManagementState } from "../types";
+
 const MAP_EMBED_URL =
   "https://maps.google.com/maps?q=35.9221937,14.4885259&z=16&output=embed";
-
-const MAPS_URL =
-  "https://www.google.com/maps/search/?api=1&query=Pendergardens%2C%20Triq%20Gort%2C%20St%20Julian%27s%2C%20Malta";
 
 function WhatsAppIcon() {
   return (
@@ -12,14 +11,18 @@ function WhatsAppIcon() {
   );
 }
 
-const socialItemClass =
-  "rpm-footer-social-item min-h-12 py-3 transition-opacity hover:opacity-55";
+type SiteFooterProps = Pick<ManagementState, "socialLinks" | "contactInfo">;
 
-export function SiteFooter({ socialLinks, contactInfo }: any) {
+const socialItemClass = "rpm-footer-social-item min-h-12 py-3";
+
+export function SiteFooter({ socialLinks, contactInfo }: SiteFooterProps) {
   const year = new Date().getFullYear();
-  const phoneDigits = String(contactInfo?.phone || "").replace(/[^0-9]/g, "");
+  const phoneDigits = contactInfo.phone.replace(/[^0-9]/g, "");
   const whatsappUrl = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(
     "Hello, I would like to get information about Reformer Pilates Malta classes."
+  )}`;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    contactInfo.address
   )}`;
 
   return (
@@ -39,7 +42,7 @@ export function SiteFooter({ socialLinks, contactInfo }: any) {
             <div className="rpm-footer-map-vignette" />
           </div>
           <a
-            href={MAPS_URL}
+            href={mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="rpm-footer-map-link"
@@ -73,7 +76,7 @@ export function SiteFooter({ socialLinks, contactInfo }: any) {
 
             <div className="rpm-footer-social-block flex flex-col justify-end">
               <div className="rpm-footer-social-links grid grid-cols-2 gap-x-6 gap-y-3 pt-5 text-sm lowercase md:grid-cols-1 md:justify-items-end md:text-right">
-                {socialLinks?.instagram ? (
+                {socialLinks.instagram ? (
                   <a
                     href={socialLinks.instagram}
                     target="_blank"
@@ -88,7 +91,7 @@ export function SiteFooter({ socialLinks, contactInfo }: any) {
                   </span>
                 )}
 
-                {socialLinks?.facebook ? (
+                {socialLinks.facebook ? (
                   <a
                     href={socialLinks.facebook}
                     target="_blank"
@@ -103,10 +106,10 @@ export function SiteFooter({ socialLinks, contactInfo }: any) {
                   </span>
                 )}
 
-                {contactInfo?.email && (
+                {contactInfo.email && (
                   <a
                     href={`mailto:${contactInfo.email}`}
-                    className="rpm-footer-social-item col-span-2 min-h-12 py-3 transition-opacity hover:opacity-55 md:col-span-1"
+                    className="rpm-footer-social-item col-span-2 min-h-12 py-3 md:col-span-1"
                   >
                     {contactInfo.email}
                   </a>

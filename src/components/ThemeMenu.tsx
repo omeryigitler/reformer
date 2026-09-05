@@ -1,10 +1,12 @@
-import { FormEvent, useEffect, useState } from "react";
-import type { UserType } from "../types";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import type { AuthRequest, UserType } from "../types";
 
 type Theme = "light" | "dark";
 type AccountView = "choices" | "signin" | "signup";
 
 type ThemeMenuProps = {
+  authRequest: AuthRequest;
+  setAuthRequest: (value: AuthRequest) => void;
   loggedInUser: UserType | null;
   onLogin: (user: UserType) => void;
   onLogout: () => void;
@@ -20,44 +22,64 @@ function readInitialTheme(): Theme {
   }
 
   if (typeof window !== "undefined") {
-    const saved = window.localStorage.getItem(STORAGE_KEY);
-    if (saved === "light" || saved === "dark") return saved;
+    try {
+      const saved = window.localStorage.getItem(STORAGE_KEY);
+      if (saved === "light" || saved === "dark") return saved;
+    } catch {
+      // localStorage can be unavailable in restrictive privacy contexts.
+    }
   }
 
   return "light";
 }
 
-export function ThemeMenu({ loggedInUser, onLogin, onLogout, onOpenDashboard }: ThemeMenuProps) {
+export function ThemeMenu({
+  authRequest,
+  setAuthRequest,
+  loggedInUser,
+  onLogin,
+  onLogout,
+  onOpenDashboard,
+}: ThemeMenuProps) {
   const [theme, setTheme] = useState<Theme>(readInitialTheme);
-  const [open, setOpen] = useState(false);
   const [accountView, setAccountView] = useState<AccountView>("choices");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const open = authRequest !== null;
 
   useEffect(() => {
     document.documentElement.dataset.rpmTheme = theme;
     document.documentElement.style.colorScheme = theme;
-    window.localStorage.setItem(STORAGE_KEY, theme);
-    // Production: sync this same `theme` value to the authenticated user's
-    // profile while keeping localStorage as the instant client-side fallback.
+    try {
+      window.localStorage.setItem(STORAGE_KEY, theme);
+    } catch {
+      // The visual theme still works even if persistence is blocked.
+    }
   }, [theme]);
 
   useEffect(() => {
-    const menuButton = document.querySelector<HTMLElement>("[data-header-btn]");
-    if (!menuButton) return;
+    if (!authRequest) return;
+    setAccountView(authRequest === "register" ? "signup" : "choices");
+  }, [authRequest]);
 
-    const handleMenuClick = (event: MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      setOpen((value) => !value);
-      setAccountView("choices");
+  useEffect(() => {
+    if (!open) return;
+
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const frame = window.requestAnimationFrame(() => {
+      closeButtonRef.current?.focus({ preventScroll: true });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      previousFocusRef.current?.focus({ preventScroll: true });
+      previousFocusRef.current = null;
     };
-
-    menuButton.addEventListener("click", handleMenuClick, true);
-    return () => menuButton.removeEventListener("click", handleMenuClick, true);
-  }, []);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -68,7 +90,7 @@ export function ThemeMenu({ loggedInUser, onLogin, onLogout, onOpenDashboard }: 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       if (accountView !== "choices") setAccountView("choices");
-      else setOpen(false);
+      else setAuthRequest(null);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -76,10 +98,10 @@ export function ThemeMenu({ loggedInUser, onLogin, onLogout, onOpenDashboard }: 
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, accountView]);
+  }, [open, accountView, setAuthRequest]);
 
   const closeMenu = () => {
-    setOpen(false);
+    setAuthRequest(null);
     setAccountView("choices");
   };
 
@@ -87,7 +109,7 @@ export function ThemeMenu({ loggedInUser, onLogin, onLogout, onOpenDashboard }: 
     event.preventDefault();
     if (!email.trim() || password.length < 6) return;
 
-    // Prototype adapter only. Replace this with Firebase/Auth API in production.
+    // Prototype adapter only. Replace with the production authentication API.
     onLogin({ uid: `prototype-${Date.now()}`, email: email.trim(), role: "user" });
     setPassword("");
     setName("");
@@ -127,7 +149,12 @@ export function ThemeMenu({ loggedInUser, onLogin, onLogout, onOpenDashboard }: 
             ))}
           </div>
 
-          <button type="button" onClick={closeMenu} className="rpm-menu-close">
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={closeMenu}
+            className="rpm-menu-close"
+          >
             close
           </button>
         </header>
@@ -232,7 +259,9 @@ export function ThemeMenu({ loggedInUser, onLogin, onLogout, onOpenDashboard }: 
               >
                 ← back
               </button>
-              <p className="rpm-menu-kicker">{accountView === "signup" ? "new here" : "welcome back"}</p>
+              <p className="rpm-menu-kicker">
+                {accountView === "signup" ? "new here" : "welcome back"}
+              </p>
               <h2 className="rpm-menu-title">
                 {accountView === "signup" ? (
                   <>
@@ -306,7 +335,9 @@ export function ThemeMenu({ loggedInUser, onLogin, onLogout, onOpenDashboard }: 
                 onClick={() => setAccountView(accountView === "signup" ? "signin" : "signup")}
                 className="rpm-auth-switch"
               >
-                {accountView === "signup" ? "Already registered? Sign in." : "New here? Create an account."}
+                {accountView === "signup"
+                  ? "Already registered? Sign in."
+                  : "New here? Create an account."}
               </button>
             </section>
           </main>

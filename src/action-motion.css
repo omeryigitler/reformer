@@ -1,81 +1,5 @@
-/* Shared interaction language for primary actions.
-   SIGN IN is the visual/motion reference:
-   - one ↗ glyph
-   - restrained 5px rightward movement
-   - no scale pulse, opacity fade, or shape change. */
-
-:root {
-  --rpm-action-shift: 5px;
-  --rpm-action-ease: cubic-bezier(0.25, 1, 0.5, 1);
-  --rpm-action-duration: 300ms;
-
-  /* One source of truth for the homepage MENU control and menu CLOSE control. */
-  --rpm-header-control-top: 32px;
-  --rpm-header-control-side: 40px;
-  --rpm-header-control-width: 84px;
-  --rpm-header-control-height: 34px;
-}
-
-/* Keep the viewport gutter stable when ThemeMenu locks body scrolling so the
-   CLOSE control cannot jump horizontally relative to the MENU control. */
-html {
-  scrollbar-gutter: stable;
-}
-
-/* ------------------------------------------------------------------------- */
-/* MENU / CLOSE — EXACT SHARED GEOMETRY                                      */
-/* ------------------------------------------------------------------------- */
-
-.rpm-premium > header {
-  padding-top: var(--rpm-header-control-top) !important;
-  padding-right: var(--rpm-header-control-side) !important;
-  padding-left: var(--rpm-header-control-side) !important;
-}
-
-.rpm-premium [data-header-btn] {
-  width: var(--rpm-header-control-width) !important;
-  min-width: var(--rpm-header-control-width) !important;
-  height: var(--rpm-header-control-height) !important;
-}
-
-/* CLOSE is anchored directly to the same viewport offsets as MENU rather than
-   depending on auth header grid/padding. This removes breakpoint/grid drift. */
-.rpm-menu-close {
-  position: absolute !important;
-  top: var(--rpm-header-control-top) !important;
-  right: var(--rpm-header-control-side) !important;
-  z-index: 2;
-  display: flex !important;
-  width: var(--rpm-header-control-width) !important;
-  min-width: var(--rpm-header-control-width) !important;
-  height: var(--rpm-header-control-height) !important;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  padding: 0 !important;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: .025em;
-}
-
-@media (max-width: 767px) {
-  :root {
-    --rpm-header-control-top: calc(18px + env(safe-area-inset-top));
-    --rpm-header-control-side: 20px;
-    --rpm-header-control-width: 76px;
-    --rpm-header-control-height: 48px;
-  }
-
-  .rpm-menu-close {
-    font-size: 13px;
-  }
-}
-
-/* ------------------------------------------------------------------------- */
-/* ONE ARROW LANGUAGE                                                        */
-/* ------------------------------------------------------------------------- */
+/* Shared interaction language for primary actions. SIGN IN is the reference:
+   one ↗ glyph, restrained 5px rightward movement, no scale pulse. */
 
 .rpm-account-pill > span:last-child {
   flex: 0 0 auto;
@@ -86,9 +10,9 @@ html {
   letter-spacing: 0;
 }
 
-/* Use structural button classes instead of section nth-of-type selectors.
-   The previous nth-of-type selectors did not reliably match the desktop CTA
-   sections once the landing page structure changed. */
+/* PremiumLandingPage still lacks semantic CTA classes. These selectors are
+   intentionally isolated here until that component is split; do not add more
+   class-string selectors elsewhere. */
 .rpm-premium main button.w-full.border-y > svg,
 .rpm-premium main button.mt-9.w-fit.rounded-full > svg {
   display: none !important;
@@ -104,10 +28,6 @@ html {
   line-height: 1;
   letter-spacing: 0;
 }
-
-/* ------------------------------------------------------------------------- */
-/* START YOUR FIRST SESSION — remains an editorial ROW                       */
-/* ------------------------------------------------------------------------- */
 
 .rpm-premium main button.w-full.border-y {
   padding-left: 0 !important;
@@ -129,18 +49,10 @@ html {
   transition: transform var(--rpm-action-duration) var(--rpm-action-ease);
 }
 
-/* ------------------------------------------------------------------------- */
-/* VIEW AVAILABLE SESSIONS — keeps its pill, uses SIGN IN motion             */
-/* ------------------------------------------------------------------------- */
-
 .rpm-premium main button.mt-9.w-fit.rounded-full {
   transform: translateX(0) !important;
   transition: transform var(--rpm-action-duration) var(--rpm-action-ease) !important;
 }
-
-/* ------------------------------------------------------------------------- */
-/* FOOTER SOCIAL ACTIONS                                                     */
-/* ------------------------------------------------------------------------- */
 
 a.rpm-footer-social-item {
   opacity: 1 !important;
@@ -154,12 +66,7 @@ a.rpm-footer-social-item:focus-visible {
   outline: none;
 }
 
-/* ------------------------------------------------------------------------- */
-/* POINTER / KEYBOARD                                                        */
-/* ------------------------------------------------------------------------- */
-
 @media (hover: hover) and (pointer: fine) {
-  /* Row stays a row: only its label and arrow move. */
   .rpm-premium main button.w-full.border-y:hover > span:first-child,
   .rpm-premium main button.w-full.border-y:hover::after,
   .rpm-premium main button.w-full.border-y:focus-visible > span:first-child,
@@ -167,7 +74,6 @@ a.rpm-footer-social-item:focus-visible {
     transform: translateX(var(--rpm-action-shift));
   }
 
-  /* Pills/links move as one unit, exactly like .rpm-account-pill. */
   .rpm-premium main button.mt-9.w-fit.rounded-full:hover,
   .rpm-premium main button.mt-9.w-fit.rounded-full:focus-visible,
   a.rpm-footer-social-item:hover,
@@ -175,10 +81,6 @@ a.rpm-footer-social-item:focus-visible {
     transform: translateX(var(--rpm-action-shift)) !important;
   }
 }
-
-/* ------------------------------------------------------------------------- */
-/* TOUCH                                                                     */
-/* ------------------------------------------------------------------------- */
 
 @media (hover: none), (pointer: coarse) {
   .rpm-account-pill:active {
