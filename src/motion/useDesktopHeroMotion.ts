@@ -57,8 +57,12 @@ export function useDesktopHeroMotion(heroRef: RefObject<HTMLElement | null>) {
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+        const titleGrid = hero.querySelector<HTMLElement>(".rpm-desktop-hero-grid");
         const titleSlices = Array.from(
           hero.querySelectorAll<HTMLElement>("[data-title-slice]")
+        );
+        const titleGlobals = Array.from(
+          hero.querySelectorAll<HTMLElement>("[data-desktop-title-global]")
         );
         const heroElements = hero.querySelectorAll<HTMLElement>("[data-hero-elements]");
         const colLabels = hero.querySelectorAll<HTMLElement>("[data-col-label]");
@@ -67,6 +71,30 @@ export function useDesktopHeroMotion(heroRef: RefObject<HTMLElement | null>) {
         const finalText = hero.querySelector<HTMLElement>("[data-final-text]");
         const pageRoot = hero.closest(".rpm-premium") as HTMLElement | null;
         const header = pageRoot?.querySelector<HTMLElement>(".rpm-site-header");
+
+        /* Use the actual rendered grid offsets for every full-word clone.
+           Fractional 1/6 columns can round differently, and multiplying each
+           local column width by its index can otherwise create a visible seam
+           through letters that cross a column boundary. */
+        const syncTitleGeometry = () => {
+          if (!titleGrid || titleGlobals.length !== titleSlices.length) return;
+          const fullWidth = titleGrid.clientWidth;
+
+          titleSlices.forEach((slice, index) => {
+            const globalTitle = titleGlobals[index];
+            const column = slice.parentElement;
+            if (!globalTitle || !(column instanceof HTMLElement)) return;
+            globalTitle.style.left = `${-column.offsetLeft}px`;
+            globalTitle.style.width = `${fullWidth}px`;
+          });
+        };
+
+        syncTitleGeometry();
+        const titleResizeObserver =
+          typeof ResizeObserver !== "undefined" && titleGrid
+            ? new ResizeObserver(syncTitleGeometry)
+            : null;
+        if (titleGrid) titleResizeObserver?.observe(titleGrid);
 
         const pillConfigs = pills.map(getPillConfig);
 
@@ -147,6 +175,8 @@ export function useDesktopHeroMotion(heroRef: RefObject<HTMLElement | null>) {
             scrub: 1,
             pin: true,
             anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onRefresh: syncTitleGeometry,
             onUpdate: (self) => {
               if (self.progress > 0.01 && intro.isActive()) intro.progress(1);
             },
@@ -178,6 +208,8 @@ export function useDesktopHeroMotion(heroRef: RefObject<HTMLElement | null>) {
             1.5
           );
         }
+
+        return () => titleResizeObserver?.disconnect();
       });
 
       return () => mm.revert();
