@@ -8,6 +8,69 @@
   --rpm-action-shift: 5px;
   --rpm-action-ease: cubic-bezier(0.25, 1, 0.5, 1);
   --rpm-action-duration: 300ms;
+
+  /* One source of truth for the homepage MENU control and menu CLOSE control. */
+  --rpm-header-control-top: 32px;
+  --rpm-header-control-side: 40px;
+  --rpm-header-control-width: 84px;
+  --rpm-header-control-height: 34px;
+}
+
+/* Keep the viewport gutter stable when ThemeMenu locks body scrolling so the
+   CLOSE control cannot jump horizontally relative to the MENU control. */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* ------------------------------------------------------------------------- */
+/* MENU / CLOSE — EXACT SHARED GEOMETRY                                      */
+/* ------------------------------------------------------------------------- */
+
+.rpm-premium > header {
+  padding-top: var(--rpm-header-control-top) !important;
+  padding-right: var(--rpm-header-control-side) !important;
+  padding-left: var(--rpm-header-control-side) !important;
+}
+
+.rpm-premium [data-header-btn] {
+  width: var(--rpm-header-control-width) !important;
+  min-width: var(--rpm-header-control-width) !important;
+  height: var(--rpm-header-control-height) !important;
+}
+
+/* CLOSE is anchored directly to the same viewport offsets as MENU rather than
+   depending on auth header grid/padding. This removes breakpoint/grid drift. */
+.rpm-menu-close {
+  position: absolute !important;
+  top: var(--rpm-header-control-top) !important;
+  right: var(--rpm-header-control-side) !important;
+  z-index: 2;
+  display: flex !important;
+  width: var(--rpm-header-control-width) !important;
+  min-width: var(--rpm-header-control-width) !important;
+  height: var(--rpm-header-control-height) !important;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 !important;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .025em;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --rpm-header-control-top: calc(18px + env(safe-area-inset-top));
+    --rpm-header-control-side: 20px;
+    --rpm-header-control-width: 76px;
+    --rpm-header-control-height: 48px;
+  }
+
+  .rpm-menu-close {
+    font-size: 13px;
+  }
 }
 
 /* ------------------------------------------------------------------------- */
