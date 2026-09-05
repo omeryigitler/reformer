@@ -12,6 +12,9 @@ function WhatsAppIcon() {
   );
 }
 
+const socialItemClass =
+  "rpm-footer-social-item min-h-12 py-3 transition-opacity hover:opacity-55";
+
 export function SiteFooter({ socialLinks, contactInfo }: any) {
   const year = new Date().getFullYear();
   const phoneDigits = String(contactInfo?.phone || "").replace(/[^0-9]/g, "");
@@ -70,30 +73,40 @@ export function SiteFooter({ socialLinks, contactInfo }: any) {
 
             <div className="rpm-footer-social-block flex flex-col justify-end">
               <div className="rpm-footer-social-links grid grid-cols-2 gap-x-6 gap-y-3 pt-5 text-sm lowercase md:grid-cols-1 md:justify-items-end md:text-right">
-                {socialLinks?.instagram && socialLinks.instagram !== "#" && (
+                {socialLinks?.instagram ? (
                   <a
                     href={socialLinks.instagram}
                     target="_blank"
-                    rel="noreferrer"
-                    className="min-h-12 py-3 transition-opacity hover:opacity-55"
+                    rel="noopener noreferrer"
+                    className={socialItemClass}
                   >
                     instagram ↗
                   </a>
+                ) : (
+                  <span className={socialItemClass} aria-disabled="true">
+                    instagram ↗
+                  </span>
                 )}
-                {socialLinks?.facebook && socialLinks.facebook !== "#" && (
+
+                {socialLinks?.facebook ? (
                   <a
                     href={socialLinks.facebook}
                     target="_blank"
-                    rel="noreferrer"
-                    className="min-h-12 py-3 transition-opacity hover:opacity-55"
+                    rel="noopener noreferrer"
+                    className={socialItemClass}
                   >
                     facebook ↗
                   </a>
+                ) : (
+                  <span className={socialItemClass} aria-disabled="true">
+                    facebook ↗
+                  </span>
                 )}
+
                 {contactInfo?.email && (
                   <a
                     href={`mailto:${contactInfo.email}`}
-                    className="col-span-2 min-h-12 py-3 transition-opacity hover:opacity-55 md:col-span-1"
+                    className="rpm-footer-social-item col-span-2 min-h-12 py-3 transition-opacity hover:opacity-55 md:col-span-1"
                   >
                     {contactInfo.email}
                   </a>
