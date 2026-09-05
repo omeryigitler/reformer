@@ -1,0 +1,92 @@
+/* Shared interaction language for primary actions.
+   The Sign In account pill is the reference: a restrained 5px rightward motion,
+   with no scaling, opacity fade, or shape change. */
+
+/* Auth/account pills already use this motion on pointer devices; add a touch
+   press equivalent without changing their filled/outline visual variants. */
+@media (hover: none), (pointer: coarse) {
+  .rpm-account-pill:active {
+    transform: translateX(5px) !important;
+  }
+}
+
+/* START YOUR FIRST SESSION stays a full-width editorial row. Only its contents
+   move, so the rules and row geometry never become a pill/button treatment. */
+.rpm-premium > main > section:nth-of-type(6) button {
+  transition: none !important;
+}
+
+.rpm-premium > main > section:nth-of-type(6) button:hover {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.rpm-premium > main > section:nth-of-type(6) button > span,
+.rpm-premium > main > section:nth-of-type(6) button > svg {
+  transition: transform 300ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.rpm-premium > main > section:nth-of-type(6) button > span {
+  display: inline-block;
+}
+
+/* VIEW AVAILABLE SESSIONS keeps its filled pill styling but now follows the
+   same motion logic as Sign In instead of scaling. */
+.rpm-premium > main > section:nth-of-type(7) button {
+  transition: transform 300ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+.rpm-premium > main > section:nth-of-type(7) button > svg {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Footer social/email links use the same rightward action motion. Disabled
+   social placeholders intentionally remain still because they are not links. */
+a.rpm-footer-social-item {
+  opacity: 1 !important;
+  transition: transform 300ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+a.rpm-footer-social-item:hover {
+  opacity: 1 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rpm-premium > main > section:nth-of-type(6) button:hover > span,
+  .rpm-premium > main > section:nth-of-type(6) button:hover > svg,
+  .rpm-premium > main > section:nth-of-type(6) button:focus-visible > span,
+  .rpm-premium > main > section:nth-of-type(6) button:focus-visible > svg {
+    transform: translateX(5px);
+  }
+
+  .rpm-premium > main > section:nth-of-type(7) button:hover,
+  .rpm-premium > main > section:nth-of-type(7) button:focus-visible,
+  a.rpm-footer-social-item:hover,
+  a.rpm-footer-social-item:focus-visible {
+    transform: translateX(5px) !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .rpm-premium > main > section:nth-of-type(6) button:active > span,
+  .rpm-premium > main > section:nth-of-type(6) button:active > svg {
+    transform: translateX(5px);
+  }
+
+  .rpm-premium > main > section:nth-of-type(7) button:active,
+  a.rpm-footer-social-item:active {
+    transform: translateX(5px) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rpm-account-pill,
+  .rpm-premium > main > section:nth-of-type(6) button > span,
+  .rpm-premium > main > section:nth-of-type(6) button > svg,
+  .rpm-premium > main > section:nth-of-type(7) button,
+  a.rpm-footer-social-item {
+    transition: none !important;
+    transform: none !important;
+  }
+}

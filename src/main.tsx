@@ -7,6 +7,7 @@ import './auth-menu.css';
 import './mobile-premium.css';
 import './mobile-hero.css';
 import './footer-map.css';
+import './action-motion.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
