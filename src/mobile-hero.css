@@ -15,9 +15,8 @@
     color: var(--rpm-ink);
   }
 
-  /* Tabs use four true viewport quarters. They intentionally do not align to
-     the six-column title grid behind them; each label owns the visual centre
-     of its own quarter while the background rules remain independent. */
+  /* Four equal tab bays. Labels sit in the centre of the empty space between
+     vertical rules; the rules are structural, not underlines attached to text. */
   .rpm-mobile-hero-tabs {
     position: absolute;
     z-index: 8;
@@ -26,8 +25,9 @@
     left: 0;
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    align-items: center;
+    align-items: stretch;
     column-gap: 0;
+    background: var(--rpm-bg);
   }
 
   .rpm-mobile-hero-tabs button {
@@ -38,6 +38,7 @@
     place-items: center;
     padding: 0;
     border: 0;
+    border-left: 1px solid var(--rpm-line-faint);
     background: transparent;
     color: currentColor;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -52,22 +53,26 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Active progress is independent from the word itself. Instead of an
-     underline expanding left/right, a fine rule grows downward like the
-     desktop column cue. */
+  .rpm-mobile-hero-tabs button:last-child {
+    border-right: 1px solid var(--rpm-line-faint);
+  }
+
+  /* The active cue overlays the LEFT divider of the active bay and grows
+     from top to bottom, matching the desktop column-cue direction. */
   .rpm-mobile-hero-tabs button::after {
     content: "";
     position: absolute;
-    top: calc(50% + 10px);
-    left: 50%;
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+    left: -1px;
     width: 1px;
-    height: 28px;
     background: currentColor;
     opacity: 0;
-    transform: translateX(-50%) scaleY(0);
+    transform: scaleY(0);
     transform-origin: top center;
     transition:
-      transform 300ms cubic-bezier(.25, 1, .5, 1),
+      transform 320ms cubic-bezier(.25, 1, .5, 1),
       opacity 180ms ease;
     pointer-events: none;
   }
@@ -77,8 +82,8 @@
   }
 
   .rpm-mobile-hero-tabs button.is-active::after {
-    opacity: .72;
-    transform: translateX(-50%) scaleY(1);
+    opacity: .78;
+    transform: scaleY(1);
   }
 
   /* Every cell clips the same global word at a different viewport slice. */
