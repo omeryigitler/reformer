@@ -41,7 +41,6 @@ export function PremiumLandingPage({
     }
 
     setAuthRequest("register");
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const phoneDigits = managementState.contactInfo.phone.replace(/[^0-9]/g, "");

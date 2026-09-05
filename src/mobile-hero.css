@@ -1,6 +1,6 @@
 @media (max-width: 767px) {
   /* Desktop hero remains entirely separate from the mobile art direction. */
-  .rpm-premium > main > section:first-child {
+  .rpm-desktop-hero {
     display: none !important;
   }
 
