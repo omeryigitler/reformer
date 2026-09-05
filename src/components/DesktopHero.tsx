@@ -40,7 +40,7 @@ export function DesktopHero() {
   return (
     <section
       ref={heroRef}
-      className="rpm-desktop-hero rpm-surface-base relative h-[100svh] overflow-hidden"
+      className="rpm-desktop-hero rpm-surface-base relative h-[100svh] overflow-hidden [overflow-anchor:none]"
     >
       <div
         data-hero-elements
@@ -155,6 +155,8 @@ export function DesktopHero() {
                       <img
                         src={column.img}
                         alt={column.hoverWord}
+                        loading="eager"
+                        decoding="async"
                         className="rpm-hero-pill-image h-full w-full object-cover"
                       />
                     </div>
@@ -173,6 +175,7 @@ export function DesktopHero() {
         <img
           src="/premium/studio_reveal_1788398858603.jpg"
           alt=""
+          decoding="async"
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-[#25271F]/50" />
