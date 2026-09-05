@@ -48,6 +48,7 @@ a.rpm-footer-social-item:focus-visible {
 }
 
 /* Keyboard focus is explicit and deliberately does not affect pointer styling. */
+.rpm-home-link:focus-visible,
 .rpm-menu-trigger:focus-visible,
 .rpm-menu-close:focus-visible,
 .rpm-menu-brand:focus-visible,

@@ -24,6 +24,7 @@ export function StudioSection() {
           <img
             src="/premium/studio_reveal_1788398858603.jpg"
             alt="Sunlit Pilates studio in Malta"
+            decoding="async"
             className="aspect-[4/3] w-full object-cover"
           />
           <div className="rpm-border-strong mt-6 grid gap-5 border-t pt-5 md:grid-cols-2">
@@ -75,6 +76,8 @@ export function InstructorSection() {
             <img
               src="/premium/instructor_portrait_1788398788875.jpg"
               alt="Reformer Pilates instructor"
+              loading="lazy"
+              decoding="async"
               className="ml-auto aspect-[3/4] w-[86%] rounded-[999px] object-cover md:ml-0 md:aspect-[4/5] md:w-full md:rounded-none"
             />
           </div>

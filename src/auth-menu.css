@@ -1,12 +1,12 @@
 /* Full-screen editorial menu and account flow. */
 
 .rpm-theme-menu {
-  --auth-bg: #f6f3ec;
-  --auth-ink: #25271f;
-  --auth-line: rgba(37, 39, 31, 0.08);
-  --auth-muted: rgba(37, 39, 31, 0.48);
-  --auth-fill: #25271f;
-  --auth-fill-text: #f6f3ec;
+  --auth-bg: var(--rpm-bg);
+  --auth-ink: var(--rpm-ink);
+  --auth-line: var(--rpm-auth-line);
+  --auth-muted: var(--rpm-auth-muted);
+  --auth-fill: var(--rpm-ink);
+  --auth-fill-text: var(--rpm-bg);
   pointer-events: none;
   visibility: hidden;
   overflow: hidden;
@@ -26,15 +26,6 @@
   transition:
     clip-path 780ms linear,
     visibility 0s linear 0s;
-}
-
-html[data-rpm-theme="dark"] .rpm-theme-menu {
-  --auth-bg: #1e201a;
-  --auth-ink: #f4f0e7;
-  --auth-line: rgba(244, 240, 231, 0.08);
-  --auth-muted: rgba(244, 240, 231, 0.48);
-  --auth-fill: #f4f0e7;
-  --auth-fill-text: #1e201a;
 }
 
 .rpm-menu-grid {
@@ -271,7 +262,6 @@ html[data-rpm-theme="dark"] .rpm-theme-menu {
 .rpm-account-pill:hover,
 .rpm-account-pill:focus-visible {
   transform: translateX(var(--rpm-action-shift));
-  outline: none;
 }
 
 .rpm-account-pill--filled {
@@ -694,8 +684,7 @@ html[data-rpm-theme="dark"] .rpm-theme-menu {
 
 @media (max-width: 767px) and (hover: none) {
   .rpm-account-pill:hover,
-  .rpm-account-pill:focus-visible,
-  .rpm-menu-close:hover {
+  .rpm-account-pill:focus-visible {
     transform: none;
   }
 }

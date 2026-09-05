@@ -51,6 +51,8 @@ export function BookingCtaSection({ onBook }: BookActionProps) {
       <img
         src="/premium/booking_cta_1788398803233.jpg"
         alt=""
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover opacity-55"
       />
       <div className="absolute inset-0 bg-[#20221B]/35" />

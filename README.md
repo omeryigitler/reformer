@@ -30,7 +30,7 @@ It is intentionally separate from the production booking application while the h
 - `src/mobile-hero.css` — mobile hero art direction only
 - `src/mobile-premium.css` — mobile landing-page layout only
 - `src/auth-menu.css` — menu/account styling only
-- `src/action-motion.css` — shared CTA interaction language
+- `src/action-motion.css` — shared CTA interaction language and keyboard focus treatment
 - `src/footer-map.css` — footer/map treatment
 
 ## Design architecture
@@ -41,6 +41,8 @@ Desktop uses a six-column sliced typography system and one GSAP-owned opening/sc
 
 Theme colors are semantic CSS variables rather than selectors that inspect Tailwind class strings. Components use surface, text and border roles so changing a palette value does not require finding every individual section.
 
+Motion hooks respect `prefers-reduced-motion`: pinned/scroll choreography is disabled and desktop classes fall back to a readable vertical composition. The full-screen menu makes the page content inert while open, so background controls cannot receive keyboard focus.
+
 ## Development
 
 ```bash
@@ -48,7 +50,7 @@ npm install
 npm run dev
 ```
 
-Production validation runs TypeScript before Vite bundling:
+Production validation runs strict TypeScript checks before Vite bundling:
 
 ```bash
 npm run build
@@ -61,6 +63,7 @@ Account/dashboard behaviour is still lightweight prototype scaffolding. Current 
 ## Design guardrails
 
 - preserve the warm limestone / ivory editorial direction
+- preserve the approved olive-charcoal dark palette (`#1E201A` base)
 - preserve the hero pill geometry and typography identity
 - avoid generic wellness cards, gradients and excessive shadows
 - keep desktop hover motion restrained and continuous

@@ -29,12 +29,9 @@ export function LandingHeader({
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Reformer Pilates Malta home"
-          className="pointer-events-auto transition hover:opacity-70"
+          className="rpm-home-link pointer-events-auto transition hover:opacity-70"
         >
-          <span
-            data-header-logo
-            className="rpm-site-logo text-xs font-semibold uppercase tracking-[0.2em]"
-          >
+          <span className="rpm-site-logo text-xs font-semibold uppercase tracking-[0.2em]">
             Reformer Pilates Malta
           </span>
         </button>
@@ -42,7 +39,6 @@ export function LandingHeader({
         <div className="flex items-center pointer-events-auto">
           <button
             type="button"
-            data-header-btn
             onClick={openMenu}
             className="rpm-menu-trigger group relative overflow-hidden rounded-[999px] transition-colors"
           >
