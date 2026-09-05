@@ -34,8 +34,8 @@ export function MobileHero() {
             className="rpm-mobile-title-slice"
           >
             <div
+              data-mobile-title-global
               className="rpm-mobile-title-global"
-              style={{ left: `calc(-100% * ${sliceIndex})` }}
             >
               <span>reformer</span>
             </div>
