@@ -85,13 +85,11 @@ export function DesktopHero() {
                 style={{ top: "var(--hero-type-axis-y, 50%)" }}
               >
                 <div
+                  data-desktop-title-global
                   className={`rpm-hero-title-layer absolute top-0 w-[100vw] select-none pointer-events-none transition-opacity duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
                     activeCol === index ? "opacity-0" : "opacity-100"
                   }`}
-                  style={{
-                    left: `calc(-100% * ${index})`,
-                    transform: "translateY(-50%)",
-                  }}
+                  style={{ transform: "translateY(-50%)" }}
                 >
                   <h1 className="rpm-hero-title-large w-full select-none text-center font-sans text-[clamp(80px,14.2vw,225px)] font-normal leading-[0.78] tracking-[-0.055em] lowercase md:text-[clamp(170px,14.2vw,225px)]">
                     reformer
