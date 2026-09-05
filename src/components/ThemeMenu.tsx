@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import type { AuthRequest, UserType } from "../types";
+import { AuthProviderButtons } from "./AuthProviderButtons";
 
 type Theme = "light" | "dark";
 type AccountView = "choices" | "signin" | "signup";
@@ -240,6 +241,7 @@ export function ThemeMenu({
                       <span>create account</span>
                       <span aria-hidden="true">↗</span>
                     </button>
+                    {open && <AuthProviderButtons theme={theme} />}
                   </div>
                 </article>
 
@@ -261,6 +263,7 @@ export function ThemeMenu({
                       <span>sign in</span>
                       <span aria-hidden="true">↗</span>
                     </button>
+                    {open && <AuthProviderButtons theme={theme} />}
                   </div>
                 </article>
               </section>
