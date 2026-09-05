@@ -1,5 +1,5 @@
 @media (max-width: 767px) {
-  /* The desktop six-column hero stays completely out of the mobile scene. */
+  /* Desktop hero remains entirely separate from the mobile art direction. */
   .rpm-premium > main > section:first-child {
     display: none !important;
   }
@@ -22,7 +22,7 @@
 
   .rpm-mobile-hero-tabs {
     position: absolute;
-    z-index: 7;
+    z-index: 8;
     top: calc(105px + env(safe-area-inset-top));
     right: 20px;
     left: 20px;
@@ -73,67 +73,107 @@
     transform: scaleX(1);
   }
 
-  /* Main editorial word. It intentionally sits IN FRONT of the moving media. */
-  .rpm-mobile-hero-word {
+  /* -------------------------------------------------------------------- */
+  /* VIEWPORT-ALIGNED SLICED TYPOGRAPHY — same principle as desktop.      */
+  /* Every cell clips the same global word at a different viewport slice. */
+  /* -------------------------------------------------------------------- */
+
+  .rpm-mobile-title-grid {
     position: absolute;
     z-index: 5;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    pointer-events: none;
+  }
+
+  .rpm-mobile-title-slice {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-right: 1px solid rgba(37, 39, 31, .055);
+    will-change: transform, opacity;
+  }
+
+  .rpm-mobile-title-slice:last-child {
+    border-right: 0;
+  }
+
+  html[data-rpm-theme="dark"] .rpm-mobile-title-slice {
+    border-right-color: rgba(244, 240, 231, .055);
+  }
+
+  .rpm-mobile-title-global {
+    position: absolute;
     top: 52%;
-    left: 49%;
-    width: max-content;
-    transform: translate(-50%, -50%);
+    width: 100vw;
+    transform: translateY(-50%);
+  }
+
+  .rpm-mobile-title-global span {
+    display: block;
+    width: 100vw;
     color: currentColor;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: clamp(102px, 30vw, 132px);
+    font-size: clamp(108px, 31vw, 142px);
     font-weight: 400;
     line-height: .78;
     letter-spacing: -.07em;
+    text-align: center;
     text-transform: lowercase;
     white-space: nowrap;
-    pointer-events: none;
     user-select: none;
   }
 
-  .rpm-mobile-hero-cards {
+  /* -------------------------------------------------------------------- */
+  /* MEDIA TRACK — initial frame exposes one full + roughly half next pill.*/
+  /* Vertical offsets echo the desktop composition while the whole rail   */
+  /* moves right-to-left under scroll control.                             */
+  /* -------------------------------------------------------------------- */
+
+  .rpm-mobile-hero-track {
     position: absolute;
     z-index: 2;
     top: calc(148px + env(safe-area-inset-top));
-    right: 0;
     bottom: calc(62px + env(safe-area-inset-bottom));
     left: 0;
-    overflow: hidden;
+    display: flex;
+    width: max-content;
+    align-items: center;
+    gap: 14px;
+    padding-left: 8vw;
+    padding-right: 60vw;
+    will-change: transform;
     pointer-events: none;
   }
 
   .rpm-mobile-hero-card {
-    position: absolute;
-    left: 50%;
-    width: min(64vw, 280px);
-    opacity: 0;
+    position: relative;
+    flex: 0 0 min(64vw, 282px);
+    width: min(64vw, 282px);
     will-change: transform;
   }
 
   .rpm-mobile-hero-card--1 {
-    top: 51%;
-    width: min(65vw, 282px);
-    transform: translateY(-50%);
+    transform: translateY(18px);
   }
 
   .rpm-mobile-hero-card--2 {
-    top: 47.5%;
-    width: min(62vw, 272px);
-    transform: translateY(-50%);
+    flex-basis: min(62vw, 274px);
+    width: min(62vw, 274px);
+    transform: translateY(-24px);
   }
 
   .rpm-mobile-hero-card--3 {
-    top: 53%;
-    width: min(60vw, 264px);
-    transform: translateY(-50%);
+    flex-basis: min(60vw, 266px);
+    width: min(60vw, 266px);
+    transform: translateY(34px);
   }
 
   .rpm-mobile-hero-card--4 {
-    top: 49%;
-    width: min(63vw, 276px);
-    transform: translateY(-50%);
+    flex-basis: min(63vw, 278px);
+    width: min(63vw, 278px);
+    transform: translateY(-10px);
   }
 
   .rpm-mobile-hero-pill {
@@ -142,7 +182,7 @@
     overflow: hidden;
     border-radius: 999px;
     background: #f6f3ec;
-    box-shadow: 0 16px 42px rgba(37, 39, 31, .065);
+    box-shadow: 0 16px 42px rgba(37, 39, 31, .06);
   }
 
   html[data-rpm-theme="dark"] .rpm-mobile-hero-pill {
@@ -150,19 +190,19 @@
   }
 
   .rpm-mobile-hero-card--1 .rpm-mobile-hero-pill {
-    height: min(56dvh, 500px);
+    height: min(57dvh, 500px);
   }
 
   .rpm-mobile-hero-card--2 .rpm-mobile-hero-pill {
-    height: min(62dvh, 530px);
+    height: min(63dvh, 534px);
   }
 
   .rpm-mobile-hero-card--3 .rpm-mobile-hero-pill {
-    height: min(50dvh, 450px);
+    height: min(49dvh, 444px);
   }
 
   .rpm-mobile-hero-card--4 .rpm-mobile-hero-pill {
-    height: min(59dvh, 510px);
+    height: min(59dvh, 512px);
   }
 
   .rpm-mobile-hero-pill img {
@@ -177,7 +217,7 @@
 
   .rpm-mobile-hero-meta {
     position: absolute;
-    z-index: 7;
+    z-index: 8;
     right: 20px;
     bottom: calc(20px + env(safe-area-inset-bottom));
     left: 20px;
@@ -202,17 +242,20 @@
       top: calc(92px + env(safe-area-inset-top));
     }
 
-    .rpm-mobile-hero-cards {
+    .rpm-mobile-hero-track {
       top: calc(132px + env(safe-area-inset-top));
     }
 
-    .rpm-mobile-hero-word {
+    .rpm-mobile-title-global {
       top: 51.5%;
-      font-size: clamp(92px, 28vw, 116px);
+    }
+
+    .rpm-mobile-title-global span {
+      font-size: clamp(96px, 29vw, 122px);
     }
 
     .rpm-mobile-hero-card--1 .rpm-mobile-hero-pill {
-      height: min(52dvh, 390px);
+      height: min(51dvh, 388px);
     }
 
     .rpm-mobile-hero-card--2 .rpm-mobile-hero-pill {
@@ -220,24 +263,19 @@
     }
 
     .rpm-mobile-hero-card--3 .rpm-mobile-hero-pill {
-      height: min(47dvh, 350px);
+      height: min(45dvh, 344px);
     }
 
     .rpm-mobile-hero-card--4 .rpm-mobile-hero-pill {
-      height: min(54dvh, 402px);
+      height: min(53dvh, 398px);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .rpm-mobile-hero-card {
-      display: none;
-      opacity: 1;
-    }
-
-    .rpm-mobile-hero-card:first-child {
-      display: block;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    .rpm-mobile-hero-track,
+    .rpm-mobile-title-slice {
+      transform: none !important;
+      opacity: 1 !important;
     }
 
     .rpm-mobile-hero-tabs button,
