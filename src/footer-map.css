@@ -197,24 +197,24 @@ html[data-rpm-theme="dark"] .rpm-footer-meta {
 }
 
 @media (max-width: 767px) {
-  /* Mobile is art-directed independently: keep the same overall footer scale,
-     but compress the copy so the map can live in the lower whitespace rather
-     than behind the social links. */
+  /* Mobile has its own compact composition. Reserve real space for the map;
+     the previous 56px reserve was smaller than the 104px map and the footer's
+     overflow clipped most of it. */
   .rpm-footer-main {
-    padding-bottom: 56px;
+    padding-bottom: 138px;
   }
 
   .rpm-footer-copy {
     padding-top: 18px !important;
-    padding-bottom: 18px !important;
+    padding-bottom: 8px !important;
   }
 
   .rpm-footer-copy > div {
-    gap: 30px !important;
+    gap: 24px !important;
   }
 
   .rpm-footer-copy > div > div:first-child > p:last-child {
-    margin-top: 24px !important;
+    margin-top: 22px !important;
     font-size: clamp(3rem, 13.5vw, 4rem) !important;
     line-height: .82 !important;
   }
@@ -240,12 +240,12 @@ html[data-rpm-theme="dark"] .rpm-footer-meta {
 
   .rpm-footer-map-stage {
     top: auto;
-    bottom: 8px;
-    left: 44%;
+    bottom: 16px;
+    left: 42%;
     width: min(72vw, 290px);
-    height: 104px;
+    height: 108px;
     transform: translateX(-50%);
-    opacity: .45;
+    opacity: .58;
     pointer-events: none;
   }
 
@@ -254,6 +254,15 @@ html[data-rpm-theme="dark"] .rpm-footer-meta {
     top: -46px;
     width: calc(100% + 36px);
     height: calc(100% + 92px);
+    opacity: .72;
+  }
+
+  .rpm-footer-map-wash {
+    opacity: .72;
+  }
+
+  .rpm-footer-map-vignette {
+    opacity: .76;
   }
 
   .rpm-footer-meta {
@@ -269,16 +278,19 @@ html[data-rpm-theme="dark"] .rpm-footer-meta {
 
 @media (hover: none) {
   .rpm-footer-map-stage:hover {
-    opacity: .45;
+    opacity: .58;
   }
 
   .rpm-footer-map-stage:hover .rpm-footer-map-frame {
-    opacity: .55;
+    opacity: .72;
   }
 
-  .rpm-footer-map-stage:hover .rpm-footer-map-wash,
+  .rpm-footer-map-stage:hover .rpm-footer-map-wash {
+    opacity: .72;
+  }
+
   .rpm-footer-map-stage:hover .rpm-footer-map-vignette {
-    opacity: 1;
+    opacity: .76;
   }
 }
 
