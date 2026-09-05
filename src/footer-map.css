@@ -17,6 +17,24 @@
   z-index: 3;
 }
 
+/* The editorial copy sits visually above the atmospheric map, but the empty
+   parts of that layer must not swallow pointer hover from the map below. */
+.rpm-footer-copy {
+  pointer-events: none;
+}
+
+.rpm-footer-copy a,
+.rpm-footer-copy button,
+.rpm-footer-copy input,
+.rpm-footer-copy select,
+.rpm-footer-copy textarea {
+  pointer-events: auto;
+}
+
+.rpm-footer-meta {
+  pointer-events: none;
+}
+
 /* The map is atmospheric only: it is geometrically centered between the
    footer's top rule and the meta divider, and never adds document height. */
 .rpm-footer-map-stage {
@@ -30,6 +48,7 @@
   overflow: hidden;
   border-radius: 999px;
   opacity: .45;
+  pointer-events: auto;
   transition: opacity 500ms ease;
 }
 
