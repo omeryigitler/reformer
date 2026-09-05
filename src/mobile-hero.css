@@ -7,9 +7,10 @@
   .rpm-mobile-hero {
     position: relative;
     display: block;
-    height: 100dvh;
+    height: 100svh;
     min-height: 680px;
     overflow: hidden;
+    overflow-anchor: none;
     isolation: isolate;
     background: var(--rpm-bg);
     color: var(--rpm-ink);
@@ -30,6 +31,7 @@
     align-items: stretch;
     column-gap: 0;
     pointer-events: auto;
+    will-change: transform, opacity;
   }
 
   .rpm-mobile-hero-tabs button {
@@ -200,19 +202,19 @@
   }
 
   .rpm-mobile-hero-card--1 .rpm-mobile-hero-pill {
-    height: min(57dvh, 500px);
+    height: min(57svh, 500px);
   }
 
   .rpm-mobile-hero-card--2 .rpm-mobile-hero-pill {
-    height: min(63dvh, 534px);
+    height: min(63svh, 534px);
   }
 
   .rpm-mobile-hero-card--3 .rpm-mobile-hero-pill {
-    height: min(49dvh, 444px);
+    height: min(49svh, 444px);
   }
 
   .rpm-mobile-hero-card--4 .rpm-mobile-hero-pill {
-    height: min(59dvh, 512px);
+    height: min(59svh, 512px);
   }
 
   .rpm-mobile-hero-pill img {
@@ -265,19 +267,19 @@
     }
 
     .rpm-mobile-hero-card--1 .rpm-mobile-hero-pill {
-      height: min(51dvh, 388px);
+      height: min(51svh, 388px);
     }
 
     .rpm-mobile-hero-card--2 .rpm-mobile-hero-pill {
-      height: min(56dvh, 418px);
+      height: min(56svh, 418px);
     }
 
     .rpm-mobile-hero-card--3 .rpm-mobile-hero-pill {
-      height: min(45dvh, 344px);
+      height: min(45svh, 344px);
     }
 
     .rpm-mobile-hero-card--4 .rpm-mobile-hero-pill {
-      height: min(53dvh, 398px);
+      height: min(53svh, 398px);
     }
   }
 
