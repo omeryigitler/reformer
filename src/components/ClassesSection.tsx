@@ -1,42 +1,8 @@
-import { useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PRACTICES } from "../content/practice";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useClassesScrollMotion } from "../motion/useClassesScrollMotion";
 
 export function ClassesSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    const section = sectionRef.current;
-    const track = trackRef.current;
-    if (!section || !track) return;
-
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
-      mm.add("(min-width: 768px)", () => {
-        gsap.to(track, {
-          x: () => -(track.scrollWidth - window.innerWidth),
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top top",
-            end: () => `+=${track.scrollWidth - window.innerWidth}`,
-            scrub: 1,
-            pin: true,
-            invalidateOnRefresh: true,
-            anticipatePin: 1,
-          },
-        });
-      });
-
-      return () => mm.revert();
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
+  const { sectionRef, trackRef } = useClassesScrollMotion();
 
   return (
     <section
