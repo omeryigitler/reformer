@@ -21,6 +21,40 @@ export function useMobileHeroMotion() {
     const track = trackRef.current;
     if (!section || !track) return;
 
+    const titleGrid = section.querySelector<HTMLElement>(".rpm-mobile-title-grid");
+    const titleSlices = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-mobile-title-slice]")
+    );
+    const titleGlobals = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-mobile-title-global]")
+    );
+
+    /* Each slice contains a full copy of the word. Percentage offsets were
+       previously calculated from each fractional grid track, so browser
+       rounding could shift neighbouring copies by a sub-pixel/one pixel at a
+       vertical seam (most visible through the first "e"). Measure the actual
+       rendered grid boundaries instead and anchor every copy to one identical
+       full-width coordinate system. */
+    const syncTitleGeometry = () => {
+      if (!titleGrid || titleSlices.length !== titleGlobals.length) return;
+      const fullWidth = titleGrid.clientWidth;
+
+      titleSlices.forEach((slice, index) => {
+        const globalTitle = titleGlobals[index];
+        if (!globalTitle) return;
+        globalTitle.style.left = `${-slice.offsetLeft}px`;
+        globalTitle.style.width = `${fullWidth}px`;
+      });
+    };
+
+    syncTitleGeometry();
+
+    const titleResizeObserver =
+      typeof ResizeObserver !== "undefined" && titleGrid
+        ? new ResizeObserver(syncTitleGeometry)
+        : null;
+    if (titleGrid) titleResizeObserver?.observe(titleGrid);
+
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
@@ -28,9 +62,7 @@ export function useMobileHeroMotion() {
         const cards = Array.from(
           track.querySelectorAll<HTMLElement>("[data-mobile-hero-card]")
         );
-        const slices = Array.from(
-          section.querySelectorAll<HTMLElement>("[data-mobile-title-slice]")
-        );
+        const slices = titleSlices;
         const tabs = section.querySelector<HTMLElement>(".rpm-mobile-hero-tabs");
 
         if (cards.length !== PRACTICES.length || !slices.length || !tabs) return;
@@ -46,6 +78,7 @@ export function useMobileHeroMotion() {
         gsap.set(track, { x: 0 });
         gsap.set(tabs, { y: 0, autoAlpha: 1 });
         gsap.set(slices, { yPercent: 0, opacity: 1, scale: 1 });
+        syncTitleGeometry();
 
         const updateActiveCard = () => {
           const viewportCenter = window.innerWidth / 2;
@@ -76,7 +109,10 @@ export function useMobileHeroMotion() {
             anticipatePin: 1,
             invalidateOnRefresh: true,
             onUpdate: updateActiveCard,
-            onRefresh: updateActiveCard,
+            onRefresh: () => {
+              syncTitleGeometry();
+              updateActiveCard();
+            },
           },
         });
 
@@ -140,6 +176,7 @@ export function useMobileHeroMotion() {
           track.querySelectorAll<HTMLElement>("[data-mobile-hero-card]")
         );
         gsap.set(track, { x: 0 });
+        syncTitleGeometry();
         setActiveIndex(0);
       });
 
@@ -147,6 +184,7 @@ export function useMobileHeroMotion() {
     }, section);
 
     return () => {
+      titleResizeObserver?.disconnect();
       cardsRef.current = [];
       scrollTriggerRef.current = null;
       ctx.revert();
