@@ -52,7 +52,7 @@ export function PremiumLandingPage({
     <>
       <MobileHero />
 
-      <div ref={rootRef} className="rpm-premium bg-[#F6F3EC] text-[#25271F]">
+      <div ref={rootRef} className="rpm-premium">
         <LandingHeader
           loggedInUser={loggedInUser}
           authRequest={authRequest}
@@ -70,7 +70,7 @@ export function PremiumLandingPage({
           <BookingCtaSection onBook={book} />
         </main>
 
-        <div className="bg-[#F6F3EC] px-4 py-8 md:px-8 md:py-12">
+        <div className="rpm-surface-base px-4 py-8 md:px-8 md:py-12">
           <SiteFooter
             socialLinks={managementState.socialLinks}
             contactInfo={managementState.contactInfo}

@@ -11,13 +11,6 @@
     overflow-x: clip;
   }
 
-  .rpm-site-logo {
-    font-size: 12px !important;
-    line-height: 1rem !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.2em !important;
-  }
-
   .rpm-section-studio,
   .rpm-section-proof,
   .rpm-section-classes,
@@ -27,35 +20,7 @@
     scroll-margin-top: 72px;
   }
 
-  .rpm-section-studio,
-  .rpm-section-instructor,
-  .rpm-section-first-session {
-    padding-top: 88px !important;
-    padding-bottom: 88px !important;
-  }
-
-  .rpm-section-instructor img {
-    width: 86% !important;
-    margin-left: auto;
-    border-radius: 999px;
-    aspect-ratio: 3 / 4 !important;
-  }
-
-  .rpm-classes-mobile {
-    overflow: hidden;
-    padding-right: 0 !important;
-    padding-left: 0 !important;
-    padding-bottom: 56px !important;
-  }
-
-  .rpm-classes-mobile > p,
-  .rpm-classes-mobile > h2 {
-    margin-right: 20px;
-    margin-left: 20px;
-  }
-
   .rpm-classes-mobile-track {
-    display: flex !important;
     gap: 14px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -74,14 +39,8 @@
   .rpm-class-card {
     flex: 0 0 82vw;
     max-width: 340px;
-    margin-top: 0 !important;
     scroll-snap-align: start;
     scroll-snap-stop: always;
-  }
-
-  .rpm-class-card img {
-    aspect-ratio: 3 / 4 !important;
-    border-radius: 999px;
   }
 
   .rpm-premium > main button,
@@ -92,19 +51,5 @@
   .rpm-action-first-session,
   .rpm-action-booking {
     min-height: 56px;
-  }
-
-  .rpm-floating-whatsapp {
-    right: 18px !important;
-    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
-    width: 56px !important;
-    height: 56px !important;
-  }
-}
-
-@media (max-width: 767px) and (hover: none) {
-  .rpm-premium button:hover,
-  .rpm-premium a:hover {
-    transform: none !important;
   }
 }

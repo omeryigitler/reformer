@@ -11,13 +11,8 @@
     min-height: 680px;
     overflow: hidden;
     isolation: isolate;
-    background: #f6f3ec;
-    color: #25271f;
-  }
-
-  html[data-rpm-theme="dark"] .rpm-mobile-hero {
-    background: #1e201a;
-    color: #f4f0e7;
+    background: var(--rpm-bg);
+    color: var(--rpm-ink);
   }
 
   .rpm-mobile-hero-tabs {
@@ -73,11 +68,7 @@
     transform: scaleX(1);
   }
 
-  /* -------------------------------------------------------------------- */
-  /* VIEWPORT-ALIGNED SLICED TYPOGRAPHY — same principle as desktop.      */
   /* Every cell clips the same global word at a different viewport slice. */
-  /* -------------------------------------------------------------------- */
-
   .rpm-mobile-title-grid {
     position: absolute;
     z-index: 5;
@@ -91,16 +82,12 @@
     position: relative;
     height: 100%;
     overflow: hidden;
-    border-right: 1px solid rgba(37, 39, 31, .055);
+    border-right: 1px solid var(--rpm-line-faint);
     will-change: transform, opacity;
   }
 
   .rpm-mobile-title-slice:last-child {
     border-right: 0;
-  }
-
-  html[data-rpm-theme="dark"] .rpm-mobile-title-slice {
-    border-right-color: rgba(244, 240, 231, .055);
   }
 
   .rpm-mobile-title-global {
@@ -125,12 +112,7 @@
     user-select: none;
   }
 
-  /* -------------------------------------------------------------------- */
-  /* MEDIA TRACK — initial frame exposes one full + roughly half next pill.*/
-  /* Vertical offsets echo the desktop composition while the whole rail   */
-  /* moves right-to-left under scroll control.                             */
-  /* -------------------------------------------------------------------- */
-
+  /* Initial frame exposes one full + roughly half of the next capsule. */
   .rpm-mobile-hero-track {
     position: absolute;
     z-index: 2;
@@ -181,12 +163,8 @@
     width: 100%;
     overflow: hidden;
     border-radius: 999px;
-    background: #f6f3ec;
+    background: var(--rpm-bg);
     box-shadow: 0 16px 42px rgba(37, 39, 31, .06);
-  }
-
-  html[data-rpm-theme="dark"] .rpm-mobile-hero-pill {
-    background: #1e201a;
   }
 
   .rpm-mobile-hero-card--1 .rpm-mobile-hero-pill {

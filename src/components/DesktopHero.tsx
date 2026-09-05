@@ -41,22 +41,20 @@ export function DesktopHero() {
   return (
     <section
       ref={heroRef}
-      className="rpm-desktop-hero relative h-[100svh] overflow-hidden bg-[#F6F3EC]"
+      className="rpm-desktop-hero rpm-surface-base relative h-[100svh] overflow-hidden"
       style={{ "--hero-type-axis-y": "50%" } as CSSProperties}
     >
-      <div className="rpm-desktop-hero-background-grid absolute inset-0 z-0 grid grid-cols-6 divide-x divide-[#25271F]/10 pointer-events-none" />
-
       <div
         data-hero-elements
         className="absolute bottom-10 left-6 z-50 hidden pointer-events-none md:left-10 md:block"
       >
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] leading-relaxed text-[#25271F]">
+        <p className="rpm-hero-meta-primary text-[10px] font-semibold uppercase tracking-[0.2em] leading-relaxed">
           Controlled Movement
           <br />
           Intentional Practice
           <br />
           <br />
-          <span className="text-[#25271F]/50">St Julian&apos;s · Malta</span>
+          <span className="rpm-hero-meta-muted">St Julian&apos;s · Malta</span>
         </p>
       </div>
 
@@ -64,17 +62,17 @@ export function DesktopHero() {
         data-hero-elements
         className="absolute bottom-10 right-6 z-50 flex flex-col items-center gap-2 pointer-events-none md:right-10"
       >
-        <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#25271F]/50">
+        <span className="rpm-hero-meta-muted text-[9px] font-semibold uppercase tracking-[0.2em]">
           Scroll
         </span>
-        <ArrowDown size={14} className="rpm-desktop-scroll-arrow animate-bounce text-[#25271F]" />
+        <ArrowDown size={14} className="rpm-desktop-scroll-arrow" />
       </div>
 
       <div className="rpm-desktop-hero-grid absolute inset-0 z-10 grid grid-cols-6">
         {gridColumns.map((column, index) => (
           <div
             key={column.id}
-            className={`rpm-hero-column group relative flex h-full w-full items-center justify-center overflow-hidden border-r border-[#25271F]/10 last:border-0 ${
+            className={`rpm-hero-column group relative flex h-full w-full items-center justify-center overflow-hidden ${
               index === 0 ? "rpm-hero-column--first" : ""
             } ${column.type === "pill" ? "rpm-hero-column--pill cursor-pointer" : "rpm-hero-column--empty"}`}
             onMouseEnter={() => column.type === "pill" && setActiveCol(index)}
@@ -98,14 +96,14 @@ export function DesktopHero() {
                     transform: "translateY(-50%)",
                   }}
                 >
-                  <h1 className="rpm-hero-title-large w-full select-none text-center font-sans text-[clamp(80px,14.2vw,225px)] font-normal leading-[0.78] tracking-[-0.055em] text-[#25271F] lowercase md:text-[clamp(170px,14.2vw,225px)]">
+                  <h1 className="rpm-hero-title-large w-full select-none text-center font-sans text-[clamp(80px,14.2vw,225px)] font-normal leading-[0.78] tracking-[-0.055em] lowercase md:text-[clamp(170px,14.2vw,225px)]">
                     reformer
                   </h1>
                 </div>
 
                 {column.type === "pill" && (
                   <div
-                    className={`rpm-hero-hover-layer absolute top-0 w-[100vw] select-none pointer-events-none transition-opacity duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                    className={`rpm-hero-hover-layer absolute top-0 select-none pointer-events-none transition-opacity duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                       activeCol === index ? "opacity-100" : "opacity-0"
                     }`}
                     style={{ left: `calc(-100% * ${index})` }}
@@ -121,7 +119,7 @@ export function DesktopHero() {
                             {[0, 1, 2].map((wordIndex) => (
                               <span
                                 key={`hover-word-${setIndex}-${wordIndex}`}
-                                className="hero-hover-word select-none whitespace-nowrap font-sans text-[clamp(24px,3.6vw,56px)] font-medium leading-none tracking-[-0.035em] text-[#25271F] lowercase drop-shadow-[0_2px_12px_rgba(246,243,236,0.95)] md:text-[clamp(34px,3.6vw,56px)]"
+                                className="hero-hover-word select-none whitespace-nowrap lowercase"
                               >
                                 {column.hoverWord}
                               </span>
@@ -142,8 +140,8 @@ export function DesktopHero() {
                   className="absolute top-8 left-4 z-20 hidden pointer-events-none md:block lg:left-6"
                 >
                   <span
-                    className={`rpm-hero-col-label text-[10px] font-medium tracking-tight transition-colors duration-300 md:text-sm ${
-                      activeCol === index ? "font-bold text-[#25271F]" : "text-[#25271F]/70"
+                    className={`rpm-hero-col-label text-[10px] tracking-tight transition-opacity duration-300 md:text-sm ${
+                      activeCol === index ? "opacity-100" : "opacity-70"
                     }`}
                   >
                     {column.label}
@@ -153,34 +151,15 @@ export function DesktopHero() {
                 <div
                   className={`absolute inset-x-0 mx-auto flex w-[95%] items-center justify-center md:w-[85%] ${column.h} ${column.mt}`}
                 >
-                  <div
-                    className="rpm-hero-pill-motion relative h-full w-full will-change-transform transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-                    style={{
-                      transform:
-                        activeCol === index
-                          ? "translateY(-28px) scale(1.03)"
-                          : "translateY(0px) scale(1)",
-                    }}
-                  >
+                  <div className="relative h-full w-full">
                     <div
                       data-hero-pill={index}
-                      className={`rpm-hero-pill relative h-full w-full overflow-hidden rounded-[999px] transition-shadow duration-500 ${
-                        activeCol === index
-                          ? "shadow-[0_28px_50px_-10px_rgba(37,39,31,0.3)] ring-1 ring-[#25271F]/15"
-                          : "shadow-sm"
-                      }`}
+                      className="rpm-hero-pill relative h-full w-full overflow-hidden rounded-[999px]"
                     >
                       <img
                         src={column.img}
                         alt={column.hoverWord}
-                        className={`rpm-hero-pill-image h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
-                          activeCol === index ? "scale-110" : "scale-100"
-                        }`}
-                      />
-                      <div
-                        className={`rpm-hero-pill-overlay absolute inset-0 z-10 bg-[#F6F3EC]/30 pointer-events-none backdrop-blur-[0.5px] transition-opacity duration-300 ${
-                          activeCol === index ? "opacity-100" : "opacity-0"
-                        }`}
+                        className="rpm-hero-pill-image h-full w-full object-cover"
                       />
                     </div>
                   </div>

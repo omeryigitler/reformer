@@ -8,10 +8,10 @@ const proofItems = [
 
 export function StudioSection() {
   return (
-    <section className="rpm-section-studio bg-[#F6F3EC] px-5 py-24 md:px-10 md:py-36 lg:px-14">
+    <section className="rpm-section-studio rpm-surface-base px-5 py-[88px] md:px-10 md:py-36 lg:px-14">
       <div className="mx-auto grid max-w-[1500px] gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
         <div data-reveal>
-          <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.34em] text-[#6F715F]">
+          <p className="rpm-text-kicker mb-5 text-[10px] font-semibold uppercase tracking-[0.34em]">
             The studio
           </p>
           <h2 className="font-serif text-[clamp(3.8rem,7vw,8rem)] leading-[0.86] tracking-[-0.055em]">
@@ -28,12 +28,12 @@ export function StudioSection() {
             alt="Sunlit Pilates studio in Malta"
             className="aspect-[4/3] w-full object-cover"
           />
-          <div className="mt-6 grid gap-5 border-t border-[#25271F]/18 pt-5 md:grid-cols-2">
-            <p className="max-w-md text-base leading-relaxed text-[#505244]">
+          <div className="rpm-border-strong mt-6 grid gap-5 border-t pt-5 md:grid-cols-2">
+            <p className="rpm-text-copy max-w-md text-base leading-relaxed">
               Natural Mediterranean light, intentional coaching and a focused Reformer practice —
               without the noise of a large gym.
             </p>
-            <p className="text-sm leading-relaxed text-[#707263] md:text-right">
+            <p className="rpm-text-muted text-sm leading-relaxed md:text-right">
               St Julian&apos;s · Malta
             </p>
           </div>
@@ -45,15 +45,15 @@ export function StudioSection() {
 
 export function ProofSection() {
   return (
-    <section className="rpm-section-proof border-y border-[#25271F]/12 bg-[#EEE8DD] px-5 py-16 md:px-10 md:py-20 lg:px-14">
-      <div className="mx-auto grid max-w-[1500px] divide-y divide-[#25271F]/14 md:grid-cols-3 md:divide-x md:divide-y-0">
+    <section className="rpm-section-proof rpm-surface-secondary rpm-border-line border-y px-5 py-16 md:px-10 md:py-20 lg:px-14">
+      <div className="rpm-proof-grid mx-auto grid max-w-[1500px] divide-y md:grid-cols-3 md:divide-x md:divide-y-0">
         {proofItems.map(([top, bottom], index) => (
           <div
             data-reveal
             key={top}
             className={`py-9 md:px-10 md:py-6 ${index === 0 ? "md:pl-0" : ""}`}
           >
-            <p className="mb-8 text-[10px] font-semibold uppercase tracking-[0.32em] text-[#777968]">
+            <p className="rpm-text-proof-muted mb-8 text-[10px] font-semibold uppercase tracking-[0.32em]">
               0{index + 1}
             </p>
             <p className="font-serif text-5xl leading-[0.9] tracking-[-0.045em] md:text-6xl">
@@ -70,18 +70,18 @@ export function ProofSection() {
 
 export function InstructorSection() {
   return (
-    <section className="rpm-section-instructor bg-[#F6F3EC] px-5 py-24 md:px-10 md:py-36 lg:px-14">
+    <section className="rpm-section-instructor rpm-surface-base px-5 py-[88px] md:px-10 md:py-36 lg:px-14">
       <div className="mx-auto max-w-[1500px]">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div data-reveal>
             <img
               src="/premium/instructor_portrait_1788398788875.jpg"
               alt="Reformer Pilates instructor"
-              className="aspect-[4/5] w-full object-cover"
+              className="ml-auto aspect-[3/4] w-[86%] rounded-[999px] object-cover md:ml-0 md:aspect-[4/5] md:w-full md:rounded-none"
             />
           </div>
           <div data-reveal className="lg:pl-12">
-            <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.34em] text-[#6F715F]">
+            <p className="rpm-text-kicker mb-5 text-[10px] font-semibold uppercase tracking-[0.34em]">
               Your practice
             </p>
             <h2 className="font-serif text-[clamp(4rem,7vw,8rem)] leading-[0.86] tracking-[-0.055em]">
@@ -91,7 +91,7 @@ export function InstructorSection() {
               <br />
               INTENTION.
             </h2>
-            <p className="mt-8 max-w-lg text-base leading-relaxed text-[#555748] md:text-lg">
+            <p className="rpm-text-copy-strong mt-8 max-w-lg text-base leading-relaxed md:text-lg">
               Thoughtful instruction, clear progression and attention to detail — so every session
               feels challenging, purposeful and personal.
             </p>
@@ -108,14 +108,14 @@ type BookActionProps = {
 
 export function FirstSessionSection({ onBook }: BookActionProps) {
   return (
-    <section className="rpm-section-first-session bg-[#F6F3EC] px-5 py-24 md:px-10 md:py-36 lg:px-14">
+    <section className="rpm-section-first-session rpm-surface-base px-5 py-[88px] md:px-10 md:py-36 lg:px-14">
       <div className="mx-auto max-w-[1500px]">
         <div
           data-reveal
           className="mb-14 flex flex-col gap-5 md:flex-row md:items-end md:justify-between"
         >
           <div>
-            <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.34em] text-[#6F715F]">
+            <p className="rpm-text-kicker mb-4 text-[10px] font-semibold uppercase tracking-[0.34em]">
               First session
             </p>
             <h2 className="font-serif text-[clamp(4rem,8vw,9rem)] leading-[0.84] tracking-[-0.055em]">
@@ -124,7 +124,7 @@ export function FirstSessionSection({ onBook }: BookActionProps) {
               HERE?
             </h2>
           </div>
-          <p className="max-w-md text-base leading-relaxed text-[#555748]">
+          <p className="rpm-text-copy-strong max-w-md text-base leading-relaxed">
             Start with a considered introduction to Reformer Pilates and discover the right pace
             for your practice.
           </p>
@@ -133,7 +133,7 @@ export function FirstSessionSection({ onBook }: BookActionProps) {
         <button
           type="button"
           onClick={onBook}
-          className="rpm-action-first-session flex w-full items-center justify-between border-y border-[#25271F]/20 py-7 text-left"
+          className="rpm-action-first-session rpm-border-action flex w-full items-center justify-between border-y py-7 text-left"
         >
           <span className="rpm-action-label text-sm font-semibold uppercase tracking-[0.21em]">
             Start your first session
@@ -149,7 +149,7 @@ export function FirstSessionSection({ onBook }: BookActionProps) {
 
 export function BookingCtaSection({ onBook }: BookActionProps) {
   return (
-    <section className="rpm-section-booking relative min-h-[82svh] overflow-hidden bg-[#25271F] text-[#F6F3EC]">
+    <section className="rpm-section-booking rpm-surface-panel relative min-h-[82svh] overflow-hidden">
       <img
         src="/premium/booking_cta_1788398803233.jpg"
         alt=""
@@ -170,7 +170,7 @@ export function BookingCtaSection({ onBook }: BookActionProps) {
         <button
           type="button"
           onClick={onBook}
-          className="rpm-action-booking mt-9 inline-flex w-fit items-center gap-4 rounded-full bg-[#F6F3EC] px-6 py-4 text-xs font-semibold uppercase tracking-[0.19em] text-[#25271F]"
+          className="rpm-action-booking rpm-action-surface mt-9 inline-flex w-fit items-center gap-4 rounded-full px-6 py-4 text-xs font-semibold uppercase tracking-[0.19em]"
         >
           <span>View available sessions</span>
           <span className="rpm-action-arrow" aria-hidden="true">
@@ -188,7 +188,7 @@ export function FloatingWhatsApp({ href }: { href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="rpm-floating-whatsapp fixed bottom-5 right-5 z-[70] grid h-14 w-14 place-items-center rounded-full bg-[#25271F] text-[#F6F3EC] shadow-xl transition hover:scale-105 md:bottom-7 md:right-7"
+      className="rpm-floating-whatsapp fixed bottom-5 right-5 z-[70] grid h-14 w-14 place-items-center rounded-full shadow-xl transition hover:scale-105 md:bottom-7 md:right-7"
       aria-label="Chat on WhatsApp"
     >
       <WhatsAppIcon />

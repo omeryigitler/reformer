@@ -7,20 +7,22 @@ export function ClassesSection() {
   return (
     <section
       ref={sectionRef}
-      className="rpm-section-classes relative overflow-hidden bg-[#25271F] text-[#F6F3EC]"
+      className="rpm-section-classes rpm-surface-panel relative overflow-hidden"
     >
-      <div className="rpm-classes-mobile px-5 pb-12 pt-24 md:hidden">
-        <p className="mb-4 text-[10px] uppercase tracking-[0.32em] text-white/55">
+      <div className="rpm-classes-mobile overflow-hidden px-0 pb-14 pt-24 md:hidden">
+        <p className="mx-5 mb-4 text-[10px] uppercase tracking-[0.32em] text-white/55">
           Find your flow
         </p>
-        <h2 className="mb-12 font-serif text-6xl leading-[.9] tracking-[-0.05em]">CLASSES</h2>
-        <div className="rpm-classes-mobile-track space-y-10">
+        <h2 className="mx-5 mb-12 font-serif text-6xl leading-[.9] tracking-[-0.05em]">
+          CLASSES
+        </h2>
+        <div className="rpm-classes-mobile-track flex">
           {PRACTICES.map((practice) => (
             <article key={practice.key} className="rpm-class-card">
               <img
                 src={practice.image}
                 alt={`${practice.label} Reformer class`}
-                className="aspect-[4/5] w-full object-cover"
+                className="aspect-[3/4] w-full rounded-[999px] object-cover"
               />
               <div className="flex items-end justify-between border-b border-white/20 py-5">
                 <div>

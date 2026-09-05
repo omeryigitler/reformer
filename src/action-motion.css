@@ -12,17 +12,17 @@
 
 /* Editorial row: geometry and rules remain fixed; only its content shifts. */
 .rpm-action-first-session {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  transform: none !important;
-  transition: none !important;
+  padding-left: 0;
+  padding-right: 0;
+  transform: none;
+  transition: none;
 }
 
 .rpm-action-first-session:hover,
 .rpm-action-first-session:focus-visible {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  transform: none !important;
+  padding-left: 0;
+  padding-right: 0;
+  transform: none;
   outline: none;
 }
 
@@ -33,19 +33,19 @@
 
 /* Pill actions move as one unit, matching account pills. */
 .rpm-action-booking {
-  transform: translateX(0) !important;
-  transition: transform var(--rpm-action-duration) var(--rpm-action-ease) !important;
+  transform: translateX(0);
+  transition: transform var(--rpm-action-duration) var(--rpm-action-ease);
 }
 
 a.rpm-footer-social-item {
-  opacity: 1 !important;
+  opacity: 1;
   transform: translateX(0);
-  transition: transform var(--rpm-action-duration) var(--rpm-action-ease) !important;
+  transition: transform var(--rpm-action-duration) var(--rpm-action-ease);
 }
 
 a.rpm-footer-social-item:hover,
 a.rpm-footer-social-item:focus-visible {
-  opacity: 1 !important;
+  opacity: 1;
   outline: none;
 }
 
@@ -61,13 +61,13 @@ a.rpm-footer-social-item:focus-visible {
   .rpm-action-booking:focus-visible,
   a.rpm-footer-social-item:hover,
   a.rpm-footer-social-item:focus-visible {
-    transform: translateX(var(--rpm-action-shift)) !important;
+    transform: translateX(var(--rpm-action-shift));
   }
 }
 
 @media (hover: none), (pointer: coarse) {
   .rpm-account-pill:active {
-    transform: translateX(var(--rpm-action-shift)) !important;
+    transform: translateX(var(--rpm-action-shift));
   }
 
   .rpm-action-first-session:active .rpm-action-label,
@@ -77,7 +77,7 @@ a.rpm-footer-social-item:focus-visible {
 
   .rpm-action-booking:active,
   a.rpm-footer-social-item:active {
-    transform: translateX(var(--rpm-action-shift)) !important;
+    transform: translateX(var(--rpm-action-shift));
   }
 }
 

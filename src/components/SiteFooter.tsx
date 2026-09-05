@@ -19,7 +19,7 @@ export function SiteFooter({ socialLinks, contactInfo }: SiteFooterProps) {
   )}`;
 
   return (
-    <footer className="rpm-site-footer border-t border-[#25271F]/10 text-[#25271F]">
+    <footer className="rpm-site-footer border-t">
       <div className="rpm-footer-main">
         <div className="rpm-footer-map-stage">
           <div className="rpm-footer-map-visual" aria-hidden="true">
@@ -113,7 +113,7 @@ export function SiteFooter({ socialLinks, contactInfo }: SiteFooterProps) {
         </div>
       </div>
 
-      <div className="rpm-footer-meta flex items-end justify-between gap-6 border-t border-[#25271F]/10 pt-5 pb-5 text-[9px] uppercase tracking-[0.18em] text-[#25271F]/45 md:pb-7">
+      <div className="rpm-footer-meta flex items-end justify-between gap-6 border-t pt-5 pb-5 text-[9px] uppercase tracking-[0.18em] md:pb-7">
         <span>St Julian&apos;s · Malta</span>
         <span>© {year}</span>
       </div>
