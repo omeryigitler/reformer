@@ -184,6 +184,11 @@ html[data-rpm-theme="dark"] .rpm-footer-meta {
   color: rgba(244, 240, 231, .45) !important;
 }
 
+/* Keep the floating WhatsApp action clear of the footer meta row. */
+.rpm-premium a[aria-label="Chat on WhatsApp"] {
+  bottom: 4rem !important;
+}
+
 @media (min-width: 768px) {
   .rpm-footer-main {
     padding-bottom: 80px;
@@ -202,6 +207,10 @@ html[data-rpm-theme="dark"] .rpm-footer-meta {
   .rpm-footer-map-frame {
     left: -18px;
     width: calc(100% + 36px);
+  }
+
+  .rpm-premium a[aria-label="Chat on WhatsApp"] {
+    bottom: calc(4.5rem + env(safe-area-inset-bottom)) !important;
   }
 }
 
