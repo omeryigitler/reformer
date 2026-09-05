@@ -34,7 +34,7 @@ export function SiteFooter({ socialLinks, contactInfo }: any) {
             </div>
 
             <div className="flex flex-col justify-end">
-              <div className="grid grid-cols-2 gap-x-6 gap-y-3 border-t border-[#25271F]/10 pt-5 text-sm lowercase md:grid-cols-1 md:justify-items-end md:text-right">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3 pt-5 text-sm lowercase md:grid-cols-1 md:justify-items-end md:text-right">
                 {socialLinks?.instagram && (
                   <a
                     href={socialLinks.instagram}
