@@ -6,6 +6,7 @@
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   font-weight: 400;
+  font-variant-emoji: text;
   line-height: 1;
   letter-spacing: 0;
 }
@@ -56,6 +57,7 @@ a.rpm-footer-social-item:focus-visible {
 .rpm-menu-back:focus-visible,
 .rpm-account-pill:focus-visible,
 .rpm-auth-switch:focus-visible,
+.rpm-provider-button:focus-visible,
 .rpm-action-first-session:focus-visible,
 .rpm-action-booking:focus-visible,
 a.rpm-footer-social-item:focus-visible,
