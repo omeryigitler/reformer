@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { FormEvent } from "react";
 import type { AuthRequest, UserType } from "../types";
 
 type Theme = "light" | "dark";
@@ -85,7 +86,26 @@ export function ThemeMenu({
     if (!open) return;
 
     const previousOverflow = document.body.style.overflow;
+    const pageLayers = Array.from(
+      document.querySelectorAll<HTMLElement>(".rpm-premium, .rpm-mobile-hero")
+    );
+    const previousInert = pageLayers.map((layer) => layer.inert);
+
     document.body.style.overflow = "hidden";
+    pageLayers.forEach((layer) => {
+      layer.inert = true;
+    });
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      pageLayers.forEach((layer, index) => {
+        layer.inert = previousInert[index] ?? false;
+      });
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
@@ -94,10 +114,7 @@ export function ThemeMenu({
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, accountView, setAuthRequest]);
 
   const closeMenu = () => {
@@ -160,7 +177,7 @@ export function ThemeMenu({
         </header>
 
         {accountView === "choices" ? (
-          <main className="rpm-menu-main">
+          <div className="rpm-menu-main">
             <section className="rpm-menu-intro">
               <p className="rpm-menu-kicker">member access</p>
               <h2 className="rpm-menu-title">
@@ -248,9 +265,9 @@ export function ThemeMenu({
                 </article>
               </section>
             )}
-          </main>
+          </div>
         ) : (
-          <main className="rpm-menu-main rpm-menu-main--form">
+          <div className="rpm-menu-main rpm-menu-main--form">
             <section className="rpm-menu-intro rpm-menu-intro--form">
               <button
                 type="button"
@@ -340,7 +357,7 @@ export function ThemeMenu({
                   : "New here? Create an account."}
               </button>
             </section>
-          </main>
+          </div>
         )}
 
         <footer className="rpm-menu-footer">

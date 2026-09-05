@@ -89,12 +89,15 @@ export function SiteFooter({ socialLinks, contactInfo }: SiteFooterProps) {
                     href={socialLinks.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={socialItemClass}
+                    className={`${socialItemClass} rpm-footer-social-secondary`}
                   >
                     facebook ↗
                   </a>
                 ) : (
-                  <span className={socialItemClass} aria-disabled="true">
+                  <span
+                    className={`${socialItemClass} rpm-footer-social-secondary`}
+                    aria-disabled="true"
+                  >
                     facebook ↗
                   </span>
                 )}

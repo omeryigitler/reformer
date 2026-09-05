@@ -11,6 +11,7 @@ const titleScatter = [-82, 64, -112, 88, -70, 106];
 export function useMobileHeroMotion() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLElement[]>([]);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -31,9 +32,11 @@ export function useMobileHeroMotion() {
         );
 
         if (cards.length !== PRACTICES.length || !slices.length) return;
+        cardsRef.current = cards;
 
         const horizontalTravel = () => {
-          const lastCard = cards[cards.length - 1];
+          const lastCard = cards.at(-1);
+          if (!lastCard) return 0;
           const exitBuffer = window.innerWidth * 0.08;
           return Math.max(0, lastCard.offsetLeft + lastCard.offsetWidth + exitBuffer);
         };
@@ -117,6 +120,10 @@ export function useMobileHeroMotion() {
       });
 
       mm.add("(max-width: 767px) and (prefers-reduced-motion: reduce)", () => {
+        cardsRef.current = Array.from(
+          track.querySelectorAll<HTMLElement>("[data-mobile-hero-card]")
+        );
+        gsap.set(track, { x: 0 });
         setActiveIndex(0);
       });
 
@@ -124,6 +131,7 @@ export function useMobileHeroMotion() {
     }, section);
 
     return () => {
+      cardsRef.current = [];
       scrollTriggerRef.current = null;
       ctx.revert();
     };
@@ -131,11 +139,21 @@ export function useMobileHeroMotion() {
 
   const goToSlide = (index: number) => {
     const trigger = scrollTriggerRef.current;
-    if (!trigger) return;
+    if (trigger) {
+      const targetProgress = sceneStops[index] ?? 0;
+      const targetScroll = trigger.start + (trigger.end - trigger.start) * targetProgress;
+      window.scrollTo({ top: targetScroll, behavior: "smooth" });
+      return;
+    }
 
-    const targetProgress = sceneStops[index] ?? 0;
-    const targetScroll = trigger.start + (trigger.end - trigger.start) * targetProgress;
-    window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    const track = trackRef.current;
+    const card = cardsRef.current[index];
+    if (!track || !card) return;
+
+    const desiredTravel = card.offsetLeft + card.offsetWidth / 2 - window.innerWidth / 2;
+    const maxTravel = Math.max(0, track.scrollWidth - window.innerWidth);
+    gsap.set(track, { x: -Math.min(Math.max(0, desiredTravel), maxTravel) });
+    setActiveIndex(index);
   };
 
   return { sectionRef, trackRef, activeIndex, goToSlide };

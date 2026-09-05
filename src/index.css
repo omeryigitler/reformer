@@ -32,10 +32,11 @@
   --rpm-auth-line: rgba(37, 39, 31, 0.08);
   --rpm-auth-muted: rgba(37, 39, 31, 0.48);
   --rpm-hero-cue: rgba(37, 39, 31, 0.82);
+  --rpm-header-final-hover: #25271f;
 }
 
 html[data-rpm-theme="dark"] {
-  /* Keep the approved olive-charcoal palette until the color review is final. */
+  /* Approved olive-charcoal dark palette. */
   --rpm-bg: #1e201a;
   --rpm-bg-rgb: 30 32 26;
   --rpm-bg-secondary: #25271f;
@@ -57,6 +58,7 @@ html[data-rpm-theme="dark"] {
   --rpm-auth-line: rgba(244, 240, 231, 0.08);
   --rpm-auth-muted: rgba(244, 240, 231, 0.48);
   --rpm-hero-cue: rgba(244, 240, 231, 0.78);
+  --rpm-header-final-hover: #1e201a;
 }
 
 html {
@@ -141,6 +143,17 @@ html,
 
 /* MENU and CLOSE share one geometry and one set of type metrics. */
 .rpm-site-header {
+  --rpm-header-story-weight: 0%;
+  --rpm-header-ink: color-mix(
+    in srgb,
+    var(--rpm-ink),
+    var(--rpm-panel-text) var(--rpm-header-story-weight)
+  );
+  --rpm-header-hover: color-mix(
+    in srgb,
+    var(--rpm-bg),
+    var(--rpm-header-final-hover) var(--rpm-header-story-weight)
+  );
   padding-top: var(--rpm-header-control-top);
   padding-right: var(--rpm-header-control-side);
   padding-left: var(--rpm-header-control-side);
@@ -164,21 +177,21 @@ html,
 }
 
 .rpm-menu-trigger {
-  border: 1px solid var(--rpm-ink);
+  border: 1px solid var(--rpm-header-ink);
   transform: none;
 }
 
 .rpm-site-logo,
 .rpm-menu-trigger .menu-default {
-  color: var(--rpm-ink);
+  color: var(--rpm-header-ink);
 }
 
 .rpm-menu-trigger .menu-bg {
-  background: var(--rpm-ink);
+  background: var(--rpm-header-ink);
 }
 
 .rpm-menu-trigger .menu-hover {
-  color: var(--rpm-bg);
+  color: var(--rpm-header-hover);
 }
 
 .rpm-header-control-label {
@@ -255,10 +268,8 @@ html,
     opacity: 1;
   }
 
-  /* left is intentionally stronger than the per-slice inline offset: the
-     hover marquee belongs to the hovered column rather than the global word. */
   .rpm-hero-hover-layer {
-    left: 7.5% !important;
+    left: 7.5%;
     width: 85%;
     transform: translateY(calc(-50% + clamp(21px, 2vw, 31px)));
   }
@@ -339,6 +350,7 @@ html,
 .rpm-premium section,
 .rpm-premium header,
 .rpm-premium footer,
+.rpm-mobile-hero,
 .rpm-theme-menu {
   transition:
     background-color 450ms cubic-bezier(0.25, 1, 0.5, 1),
@@ -346,23 +358,31 @@ html,
     border-color 450ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* The desktop hero timeline writes inline header colors in light mode. These
-   targeted rules keep dark mode adaptive without scanning Tailwind class text. */
-html[data-rpm-theme="dark"] .rpm-site-logo,
-html[data-rpm-theme="dark"] .rpm-menu-trigger .menu-default {
-  color: var(--rpm-ink) !important;
-}
+@media (min-width: 768px) and (prefers-reduced-motion: reduce) {
+  .rpm-section-classes {
+    overflow: visible;
+  }
 
-html[data-rpm-theme="dark"] .rpm-menu-trigger {
-  border-color: var(--rpm-ink) !important;
-}
+  .rpm-classes-desktop-track {
+    width: 100%;
+    height: auto;
+    flex-direction: column;
+    transform: none;
+    will-change: auto;
+  }
 
-html[data-rpm-theme="dark"] .rpm-menu-trigger .menu-bg {
-  background-color: var(--rpm-ink) !important;
-}
+  .rpm-classes-intro-panel {
+    width: 100%;
+    min-height: 72svh;
+  }
 
-html[data-rpm-theme="dark"] .rpm-menu-trigger .menu-hover {
-  color: var(--rpm-bg) !important;
+  .rpm-class-panel {
+    width: 100%;
+    height: min(80svh, 900px);
+    min-height: 620px;
+    border-left: 0;
+    border-top: 1px solid rgb(255 255 255 / 0.1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -371,12 +391,9 @@ html[data-rpm-theme="dark"] .rpm-menu-trigger .menu-hover {
     transform: translate3d(0, 0, 0);
   }
 
-  .rpm-hero-title-slice {
-    clip-path: inset(0 0 0 0) !important;
-  }
-
   .rpm-premium,
   .rpm-premium section,
+  .rpm-mobile-hero,
   .rpm-theme-menu {
     transition: none !important;
   }

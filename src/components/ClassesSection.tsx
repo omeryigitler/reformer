@@ -41,9 +41,9 @@ export function ClassesSection() {
       <div
         ref={trackRef}
         data-class-track
-        className="hidden h-[100svh] w-max items-stretch will-change-transform md:flex"
+        className="rpm-classes-desktop-track hidden h-[100svh] w-max items-stretch will-change-transform md:flex"
       >
-        <div className="flex h-full w-screen shrink-0 flex-col justify-end px-10 pb-14 pt-32 lg:px-14">
+        <div className="rpm-classes-intro-panel flex h-full w-screen shrink-0 flex-col justify-end px-10 pb-14 pt-32 lg:px-14">
           <p className="mb-6 text-[10px] uppercase tracking-[0.34em] text-white/55">Classes</p>
           <h2 className="font-serif text-[clamp(6rem,12vw,12rem)] leading-[.78] tracking-[-0.06em]">
             FIND
@@ -57,7 +57,7 @@ export function ClassesSection() {
         {PRACTICES.map((practice) => (
           <article
             key={practice.key}
-            className="relative h-full w-[82vw] shrink-0 overflow-hidden border-l border-white/10 lg:w-[64vw]"
+            className="rpm-class-panel relative h-full w-[82vw] shrink-0 overflow-hidden border-l border-white/10 lg:w-[64vw]"
           >
             <img
               src={practice.image}

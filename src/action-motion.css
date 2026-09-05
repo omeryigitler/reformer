@@ -23,7 +23,6 @@
   padding-left: 0;
   padding-right: 0;
   transform: none;
-  outline: none;
 }
 
 .rpm-action-first-session .rpm-action-label,
@@ -46,7 +45,23 @@ a.rpm-footer-social-item {
 a.rpm-footer-social-item:hover,
 a.rpm-footer-social-item:focus-visible {
   opacity: 1;
-  outline: none;
+}
+
+/* Keyboard focus is explicit and deliberately does not affect pointer styling. */
+.rpm-menu-trigger:focus-visible,
+.rpm-menu-close:focus-visible,
+.rpm-menu-brand:focus-visible,
+.rpm-theme-choice:focus-visible,
+.rpm-menu-back:focus-visible,
+.rpm-account-pill:focus-visible,
+.rpm-auth-switch:focus-visible,
+.rpm-action-first-session:focus-visible,
+.rpm-action-booking:focus-visible,
+a.rpm-footer-social-item:focus-visible,
+.rpm-footer-whatsapp-mobile:focus-visible,
+.rpm-floating-whatsapp:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
 }
 
 @media (hover: hover) and (pointer: fine) {

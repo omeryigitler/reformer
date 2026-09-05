@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import type { CSSProperties } from "react";
 import { ArrowDown } from "lucide-react";
 import { PRACTICES } from "../content/practice";
 import { useDesktopHeroMotion } from "../motion/useDesktopHeroMotion";
@@ -42,7 +41,6 @@ export function DesktopHero() {
     <section
       ref={heroRef}
       className="rpm-desktop-hero rpm-surface-base relative h-[100svh] overflow-hidden"
-      style={{ "--hero-type-axis-y": "50%" } as CSSProperties}
     >
       <div
         data-hero-elements
@@ -81,7 +79,6 @@ export function DesktopHero() {
             <div
               data-title-slice
               className="rpm-hero-title-slice clip absolute inset-0 z-30 overflow-hidden pointer-events-none"
-              style={{ clipPath: "inset(0% 0% 0% 100%)" }}
             >
               <div
                 className="type-axis absolute left-0 right-0 h-0 pointer-events-none"
@@ -106,7 +103,6 @@ export function DesktopHero() {
                     className={`rpm-hero-hover-layer absolute top-0 select-none pointer-events-none transition-opacity duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                       activeCol === index ? "opacity-100" : "opacity-0"
                     }`}
-                    style={{ left: `calc(-100% * ${index})` }}
                   >
                     <div className="flex w-full items-center justify-center overflow-hidden">
                       <div className="hero-hover-marquee flex items-center select-none will-change-transform">

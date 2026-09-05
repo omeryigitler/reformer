@@ -245,7 +245,7 @@ html[data-rpm-theme="dark"] .rpm-footer-map-stage:hover .rpm-footer-map-frame {
     padding-bottom: 10px;
   }
 
-  .rpm-footer-social-links > :nth-child(2) {
+  .rpm-footer-social-secondary {
     justify-content: flex-end;
   }
 

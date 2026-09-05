@@ -16,7 +16,7 @@ export function useClassesScrollMotion() {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
-      mm.add("(min-width: 768px)", () => {
+      mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
         const travel = () => Math.max(0, track.scrollWidth - window.innerWidth);
 
         gsap.to(track, {

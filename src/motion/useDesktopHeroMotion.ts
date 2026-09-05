@@ -56,7 +56,7 @@ export function useDesktopHeroMotion(heroRef: RefObject<HTMLElement | null>) {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
-      mm.add("(min-width: 768px)", () => {
+      mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
         const titleSlices = Array.from(
           hero.querySelectorAll<HTMLElement>("[data-title-slice]")
         );
@@ -66,8 +66,7 @@ export function useDesktopHeroMotion(heroRef: RefObject<HTMLElement | null>) {
         const finalBg = hero.querySelector<HTMLElement>("[data-final-bg]");
         const finalText = hero.querySelector<HTMLElement>("[data-final-text]");
         const pageRoot = hero.closest(".rpm-premium") as HTMLElement | null;
-        const headerLogo = pageRoot?.querySelector<HTMLElement>("[data-header-logo]");
-        const headerBtn = pageRoot?.querySelector<HTMLElement>("[data-header-btn]");
+        const header = pageRoot?.querySelector<HTMLElement>(".rpm-site-header");
 
         const pillConfigs = pills.map(getPillConfig);
 
@@ -159,27 +158,25 @@ export function useDesktopHeroMotion(heroRef: RefObject<HTMLElement | null>) {
           .to(heroElements, { opacity: 0, duration: 0.5 }, 0);
 
         if (pills.length === PRACTICES.length) {
-          story
-            .to(pills[0], { yPercent: -15, duration: 2 }, 0)
-            .to(pills[1], { yPercent: 20, scale: 1.05, duration: 2 }, 0)
-            .to(pills[2], { yPercent: -20, duration: 2 }, 0)
-            .to(pills[3], { yPercent: 15, duration: 2 }, 0);
+          const [beginPill, buildPill, sculptPill, privatePill] = pills;
+          if (beginPill && buildPill && sculptPill && privatePill) {
+            story
+              .to(beginPill, { yPercent: -15, duration: 2 }, 0)
+              .to(buildPill, { yPercent: 20, scale: 1.05, duration: 2 }, 0)
+              .to(sculptPill, { yPercent: -20, duration: 2 }, 0)
+              .to(privatePill, { yPercent: 15, duration: 2 }, 0);
+          }
         }
 
         if (finalBg) story.to(finalBg, { opacity: 1, duration: 1 }, 1.5);
         if (finalText) story.to(finalText, { opacity: 1, y: 0, duration: 0.8 }, 2);
 
-        if (headerLogo && headerBtn) {
-          const defaultText = headerBtn.querySelector(".menu-default");
-          const hoverBg = headerBtn.querySelector(".menu-bg");
-          const hoverText = headerBtn.querySelector(".menu-hover");
-
-          story
-            .to(headerLogo, { color: "#F6F3EC", duration: 0.5 }, 1.5)
-            .to(headerBtn, { borderColor: "#F6F3EC", duration: 0.5 }, 1.5);
-          if (defaultText) story.to(defaultText, { color: "#F6F3EC", duration: 0.5 }, 1.5);
-          if (hoverBg) story.to(hoverBg, { backgroundColor: "#F6F3EC", duration: 0.5 }, 1.5);
-          if (hoverText) story.to(hoverText, { color: "#25271F", duration: 0.5 }, 1.5);
+        if (header) {
+          story.to(
+            header,
+            { "--rpm-header-story-weight": "100%", duration: 0.5 },
+            1.5
+          );
         }
       });
 
