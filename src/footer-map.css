@@ -166,7 +166,8 @@ html[data-rpm-theme="dark"] .rpm-site-footer {
   border-color: rgba(244, 240, 231, .1) !important;
 }
 
-html[data-rpm-theme="dark"] .rpm-site-footer .border-\[\#25271F\]\/10 {
+html[data-rpm-theme="dark"] .rpm-footer-meta {
+  color: rgba(244, 240, 231, .45) !important;
   border-color: rgba(244, 240, 231, .1) !important;
 }
 
@@ -199,13 +200,9 @@ html[data-rpm-theme="dark"] .rpm-footer-map-vignette {
   );
 }
 
-html[data-rpm-theme="dark"] .rpm-footer-meta {
-  color: rgba(244, 240, 231, .45) !important;
-}
-
 /* Keep the floating WhatsApp action immediately above the footer meta divider
-   when the page is at the bottom, without covering St Julian's or the year. */
-.rpm-premium a[aria-label="Chat on WhatsApp"] {
+   when the page is at the bottom, without coupling layout to an aria label. */
+.rpm-floating-whatsapp {
   bottom: 5.75rem !important;
 }
 
@@ -322,9 +319,9 @@ html[data-rpm-theme="dark"] .rpm-footer-meta {
     padding-bottom: 14px !important;
   }
 
-  /* The page-level floating WhatsApp remains on desktop. On mobile the footer
-     has its own action aligned with “move with intention.” */
-  .rpm-premium > a[aria-label="Chat on WhatsApp"] {
+  /* The page-level floating action is desktop-only; the footer carries its
+     own WhatsApp action on mobile. */
+  .rpm-floating-whatsapp {
     display: none !important;
   }
 }

@@ -33,7 +33,7 @@ export function LandingHeader({
         >
           <span
             data-header-logo
-            className="text-xs font-semibold uppercase tracking-[0.2em] text-[#25271F]"
+            className="rpm-site-logo text-xs font-semibold uppercase tracking-[0.2em] text-[#25271F]"
           >
             Reformer Pilates Malta
           </span>
@@ -44,14 +44,14 @@ export function LandingHeader({
             type="button"
             data-header-btn
             onClick={openMenu}
-            className="group relative flex h-[34px] w-[84px] items-center justify-center overflow-hidden rounded-[999px] border border-[#25271F] transition-colors"
+            className="rpm-menu-trigger group relative overflow-hidden rounded-[999px] border border-[#25271F] transition-colors"
           >
             <div className="menu-bg absolute inset-0 z-0 translate-y-full bg-[#25271F] transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-y-0" />
             <div className="relative z-10 flex h-full w-full flex-col items-center justify-center overflow-hidden">
-              <span className="menu-default absolute inset-0 flex items-center justify-center text-sm font-medium tracking-wide text-[#25271F] transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:-translate-y-full">
+              <span className="rpm-header-control-label menu-default absolute inset-0 flex items-center justify-center text-[#25271F] transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:-translate-y-full">
                 menu
               </span>
-              <span className="menu-hover absolute inset-0 flex translate-y-full items-center justify-center text-sm font-medium tracking-wide text-[#F6F3EC] transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-y-0">
+              <span className="rpm-header-control-label menu-hover absolute inset-0 flex translate-y-full items-center justify-center text-[#F6F3EC] transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-y-0">
                 menu
               </span>
             </div>

@@ -74,15 +74,15 @@ export function DesktopHero() {
         {gridColumns.map((column, index) => (
           <div
             key={column.id}
-            className={`group relative flex h-full w-full items-center justify-center overflow-hidden border-r border-[#25271F]/10 last:border-0 ${
-              column.type === "pill" ? "cursor-pointer" : ""
-            }`}
+            className={`rpm-hero-column group relative flex h-full w-full items-center justify-center overflow-hidden border-r border-[#25271F]/10 last:border-0 ${
+              index === 0 ? "rpm-hero-column--first" : ""
+            } ${column.type === "pill" ? "rpm-hero-column--pill cursor-pointer" : "rpm-hero-column--empty"}`}
             onMouseEnter={() => column.type === "pill" && setActiveCol(index)}
             onMouseLeave={() => setActiveCol(null)}
           >
             <div
               data-title-slice
-              className="clip absolute inset-0 z-30 overflow-hidden pointer-events-none"
+              className="rpm-hero-title-slice clip absolute inset-0 z-30 overflow-hidden pointer-events-none"
               style={{ clipPath: "inset(0% 0% 0% 100%)" }}
             >
               <div
@@ -90,7 +90,7 @@ export function DesktopHero() {
                 style={{ top: "var(--hero-type-axis-y, 50%)" }}
               >
                 <div
-                  className={`large-title-layer absolute top-0 w-[100vw] select-none pointer-events-none transition-opacity duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  className={`rpm-hero-title-layer absolute top-0 w-[100vw] select-none pointer-events-none transition-opacity duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
                     activeCol === index ? "opacity-0" : "opacity-100"
                   }`}
                   style={{
@@ -98,14 +98,14 @@ export function DesktopHero() {
                     transform: "translateY(-50%)",
                   }}
                 >
-                  <h1 className="w-full select-none text-center font-sans text-[clamp(80px,14.2vw,225px)] font-normal leading-[0.78] tracking-[-0.055em] text-[#25271F] lowercase md:text-[clamp(170px,14.2vw,225px)]">
+                  <h1 className="rpm-hero-title-large w-full select-none text-center font-sans text-[clamp(80px,14.2vw,225px)] font-normal leading-[0.78] tracking-[-0.055em] text-[#25271F] lowercase md:text-[clamp(170px,14.2vw,225px)]">
                     reformer
                   </h1>
                 </div>
 
                 {column.type === "pill" && (
                   <div
-                    className={`hover-title-layer absolute top-0 w-[100vw] select-none pointer-events-none transition-opacity duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                    className={`rpm-hero-hover-layer absolute top-0 w-[100vw] select-none pointer-events-none transition-opacity duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                       activeCol === index ? "opacity-100" : "opacity-0"
                     }`}
                     style={{ left: `calc(-100% * ${index})` }}
@@ -142,7 +142,7 @@ export function DesktopHero() {
                   className="absolute top-8 left-4 z-20 hidden pointer-events-none md:block lg:left-6"
                 >
                   <span
-                    className={`text-[10px] font-medium tracking-tight transition-colors duration-300 md:text-sm ${
+                    className={`rpm-hero-col-label text-[10px] font-medium tracking-tight transition-colors duration-300 md:text-sm ${
                       activeCol === index ? "font-bold text-[#25271F]" : "text-[#25271F]/70"
                     }`}
                   >
@@ -164,7 +164,7 @@ export function DesktopHero() {
                   >
                     <div
                       data-hero-pill={index}
-                      className={`relative h-full w-full overflow-hidden rounded-[999px] transition-shadow duration-500 ${
+                      className={`rpm-hero-pill relative h-full w-full overflow-hidden rounded-[999px] transition-shadow duration-500 ${
                         activeCol === index
                           ? "shadow-[0_28px_50px_-10px_rgba(37,39,31,0.3)] ring-1 ring-[#25271F]/15"
                           : "shadow-sm"
@@ -173,7 +173,7 @@ export function DesktopHero() {
                       <img
                         src={column.img}
                         alt={column.hoverWord}
-                        className={`h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
+                        className={`rpm-hero-pill-image h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
                           activeCol === index ? "scale-110" : "scale-100"
                         }`}
                       />

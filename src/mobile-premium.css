@@ -11,17 +11,11 @@
     overflow-x: clip;
   }
 
-  .rpm-premium [data-header-logo] {
+  .rpm-site-logo {
     font-size: 12px !important;
     line-height: 1rem !important;
     font-weight: 600 !important;
     letter-spacing: 0.2em !important;
-  }
-
-  .rpm-premium [data-header-btn] .menu-default,
-  .rpm-premium [data-header-btn] .menu-hover {
-    font-size: 13px !important;
-    line-height: 1 !important;
   }
 
   .rpm-section-studio,

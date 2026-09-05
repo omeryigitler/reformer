@@ -150,20 +150,8 @@ html[data-rpm-theme="dark"] .rpm-theme-menu {
 
 .rpm-menu-close {
   justify-self: end;
-  display: flex;
-  width: var(--rpm-header-control-width);
-  min-width: var(--rpm-header-control-width);
-  height: var(--rpm-header-control-height);
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  padding: 0;
   border: 1px solid currentColor;
   border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.025em;
   text-transform: lowercase;
   transition:
     background-color 260ms ease,
@@ -550,10 +538,6 @@ html[data-rpm-theme="dark"] .rpm-theme-menu {
     font-size: 12px;
     line-height: 1rem;
     letter-spacing: 0.2em;
-  }
-
-  .rpm-menu-close {
-    font-size: 13px;
   }
 
   .rpm-menu-appearance {
