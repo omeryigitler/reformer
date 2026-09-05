@@ -1,89 +1,145 @@
 /* Shared interaction language for primary actions.
-   The Sign In account pill is the reference: a restrained 5px rightward motion,
-   with no scaling, opacity fade, or shape change. */
+   SIGN IN is the visual/motion reference:
+   - one ↗ glyph
+   - restrained 5px rightward movement
+   - no scale pulse, opacity fade, or shape change. */
 
-/* Auth/account pills already use this motion on pointer devices; add a touch
-   press equivalent without changing their filled/outline visual variants. */
-@media (hover: none), (pointer: coarse) {
-  .rpm-account-pill:active {
-    transform: translateX(5px) !important;
-  }
+:root {
+  --rpm-action-shift: 5px;
+  --rpm-action-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --rpm-action-duration: 300ms;
 }
 
-/* START YOUR FIRST SESSION stays a full-width editorial row. Only its contents
-   move, so the rules and row geometry never become a pill/button treatment. */
+/* ------------------------------------------------------------------------- */
+/* ONE ARROW LANGUAGE                                                        */
+/* ------------------------------------------------------------------------- */
+
+/* Auth buttons already render ↗ as text. Lock its metrics so every action
+   arrow below can match it exactly. */
+.rpm-account-pill > span:last-child {
+  flex: 0 0 auto;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* START YOUR FIRST SESSION and VIEW AVAILABLE SESSIONS previously used two
+   Lucide ArrowRight icons at different sizes (default 24px vs 17px). Hide
+   those icons and render the exact same ↗ used by SIGN IN. */
+.rpm-premium > main > section:nth-of-type(6) button > svg,
+.rpm-premium > main > section:nth-of-type(7) button > svg {
+  display: none !important;
+}
+
+.rpm-premium > main > section:nth-of-type(6) button::after,
+.rpm-premium > main > section:nth-of-type(7) button::after {
+  content: "↗";
+  flex: 0 0 auto;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* ------------------------------------------------------------------------- */
+/* START YOUR FIRST SESSION — remains an editorial ROW                       */
+/* ------------------------------------------------------------------------- */
+
 .rpm-premium > main > section:nth-of-type(6) button {
-  transition: none !important;
-}
-
-.rpm-premium > main > section:nth-of-type(6) button:hover {
+  /* Keep the two rules and full-width row geometry absolutely still. */
   padding-left: 0 !important;
   padding-right: 0 !important;
-}
-
-.rpm-premium > main > section:nth-of-type(6) button > span,
-.rpm-premium > main > section:nth-of-type(6) button > svg {
-  transition: transform 300ms cubic-bezier(0.25, 1, 0.5, 1) !important;
-}
-
-.rpm-premium > main > section:nth-of-type(6) button > span {
-  display: inline-block;
-}
-
-/* VIEW AVAILABLE SESSIONS keeps its filled pill styling but now follows the
-   same motion logic as Sign In instead of scaling. */
-.rpm-premium > main > section:nth-of-type(7) button {
-  transition: transform 300ms cubic-bezier(0.25, 1, 0.5, 1) !important;
-}
-
-.rpm-premium > main > section:nth-of-type(7) button > svg {
   transform: none !important;
   transition: none !important;
 }
 
-/* Footer social/email links use the same rightward action motion. Disabled
-   social placeholders intentionally remain still because they are not links. */
+.rpm-premium > main > section:nth-of-type(6) button:hover,
+.rpm-premium > main > section:nth-of-type(6) button:focus-visible {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  transform: none !important;
+  outline: none;
+}
+
+.rpm-premium > main > section:nth-of-type(6) button > span:first-child,
+.rpm-premium > main > section:nth-of-type(6) button::after {
+  transition: transform var(--rpm-action-duration) var(--rpm-action-ease);
+}
+
+/* ------------------------------------------------------------------------- */
+/* VIEW AVAILABLE SESSIONS — keeps its pill, uses SIGN IN motion             */
+/* ------------------------------------------------------------------------- */
+
+.rpm-premium > main > section:nth-of-type(7) button {
+  transform: translateX(0) !important;
+  transition: transform var(--rpm-action-duration) var(--rpm-action-ease) !important;
+}
+
+/* ------------------------------------------------------------------------- */
+/* FOOTER SOCIAL ACTIONS                                                     */
+/* ------------------------------------------------------------------------- */
+
 a.rpm-footer-social-item {
   opacity: 1 !important;
-  transition: transform 300ms cubic-bezier(0.25, 1, 0.5, 1) !important;
+  transform: translateX(0);
+  transition: transform var(--rpm-action-duration) var(--rpm-action-ease) !important;
 }
 
-a.rpm-footer-social-item:hover {
+a.rpm-footer-social-item:hover,
+a.rpm-footer-social-item:focus-visible {
   opacity: 1 !important;
+  outline: none;
 }
+
+/* ------------------------------------------------------------------------- */
+/* POINTER / KEYBOARD                                                        */
+/* ------------------------------------------------------------------------- */
 
 @media (hover: hover) and (pointer: fine) {
-  .rpm-premium > main > section:nth-of-type(6) button:hover > span,
-  .rpm-premium > main > section:nth-of-type(6) button:hover > svg,
-  .rpm-premium > main > section:nth-of-type(6) button:focus-visible > span,
-  .rpm-premium > main > section:nth-of-type(6) button:focus-visible > svg {
-    transform: translateX(5px);
+  /* Row stays a row: only its contents move like the SIGN IN action. */
+  .rpm-premium > main > section:nth-of-type(6) button:hover > span:first-child,
+  .rpm-premium > main > section:nth-of-type(6) button:hover::after,
+  .rpm-premium > main > section:nth-of-type(6) button:focus-visible > span:first-child,
+  .rpm-premium > main > section:nth-of-type(6) button:focus-visible::after {
+    transform: translateX(var(--rpm-action-shift));
   }
 
+  /* Pills/links move as one unit, exactly like .rpm-account-pill. */
   .rpm-premium > main > section:nth-of-type(7) button:hover,
   .rpm-premium > main > section:nth-of-type(7) button:focus-visible,
   a.rpm-footer-social-item:hover,
   a.rpm-footer-social-item:focus-visible {
-    transform: translateX(5px) !important;
+    transform: translateX(var(--rpm-action-shift)) !important;
   }
 }
 
+/* ------------------------------------------------------------------------- */
+/* TOUCH                                                                     */
+/* ------------------------------------------------------------------------- */
+
 @media (hover: none), (pointer: coarse) {
-  .rpm-premium > main > section:nth-of-type(6) button:active > span,
-  .rpm-premium > main > section:nth-of-type(6) button:active > svg {
-    transform: translateX(5px);
+  .rpm-account-pill:active {
+    transform: translateX(var(--rpm-action-shift)) !important;
+  }
+
+  .rpm-premium > main > section:nth-of-type(6) button:active > span:first-child,
+  .rpm-premium > main > section:nth-of-type(6) button:active::after {
+    transform: translateX(var(--rpm-action-shift));
   }
 
   .rpm-premium > main > section:nth-of-type(7) button:active,
   a.rpm-footer-social-item:active {
-    transform: translateX(5px) !important;
+    transform: translateX(var(--rpm-action-shift)) !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .rpm-account-pill,
-  .rpm-premium > main > section:nth-of-type(6) button > span,
-  .rpm-premium > main > section:nth-of-type(6) button > svg,
+  .rpm-premium > main > section:nth-of-type(6) button > span:first-child,
+  .rpm-premium > main > section:nth-of-type(6) button::after,
   .rpm-premium > main > section:nth-of-type(7) button,
   a.rpm-footer-social-item {
     transition: none !important;
