@@ -1,25 +1,5 @@
 /* Mobile art direction for Reformer Pilates Malta.
-   This is intentionally not a compressed desktop layout: touch replaces hover,
-   horizontal snap replaces desktop pinned horizontal scrolling, and all critical
-   controls respect mobile target sizes and safe areas. */
-
-@keyframes rpm-mobile-title-wipe {
-  from { clip-path: inset(0 0 0 100%); }
-  to { clip-path: inset(0 0 0 0); }
-}
-
-@keyframes rpm-mobile-pill-open {
-  0% {
-    opacity: 0;
-    clip-path: inset(43% 0 43% 0 round 999px);
-    transform: scale(.96);
-  }
-  100% {
-    opacity: 1;
-    clip-path: inset(0 0 0 0 round 999px);
-    transform: scale(1);
-  }
-}
+   Hero-specific mobile styling lives only in mobile-hero.css. */
 
 @media (max-width: 767px) {
   html,
@@ -63,202 +43,6 @@
   }
 
   /* ---------------------------------------------------------------------- */
-  /* HERO — native swipe reel, no hover dependency                           */
-  /* ---------------------------------------------------------------------- */
-
-  .rpm-premium > main > section:first-child {
-    height: 100svh !important;
-    min-height: 680px;
-    overflow: hidden;
-    isolation: isolate;
-  }
-
-  /* Desktop background grid is too busy on a phone. One quiet central rail. */
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-0 {
-    display: block !important;
-    left: 50% !important;
-    right: auto !important;
-    width: 1px !important;
-    background: rgba(37, 39, 31, .08);
-  }
-
-  html[data-rpm-theme="dark"] .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-0 {
-    background: rgba(244, 240, 231, .08);
-  }
-
-  /* The existing six-column desktop DOM becomes a four-card touch reel. */
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 {
-    top: calc(86px + env(safe-area-inset-top)) !important;
-    right: 0 !important;
-    bottom: 64px !important;
-    left: 0 !important;
-    display: flex !important;
-    height: auto !important;
-    align-items: center;
-    gap: 16px;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    padding: 30px 24px 30px;
-    scroll-padding-left: 24px;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-x pan-y;
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Large mobile wordmark behind the media reel. */
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10::before {
-    content: "reformer";
-    position: absolute;
-    z-index: 0;
-    top: 50%;
-    left: -7vw;
-    width: max-content;
-    transform: translateY(-50%);
-    color: #25271f;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: clamp(92px, 29vw, 132px);
-    font-weight: 400;
-    line-height: .78;
-    letter-spacing: -.065em;
-    text-transform: lowercase;
-    pointer-events: none;
-    animation: rpm-mobile-title-wipe 720ms linear 220ms both;
-  }
-
-  html[data-rpm-theme="dark"] .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10::before {
-    color: #f4f0e7;
-  }
-
-  /* Remove the two desktop empty columns. */
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(-n + 2) {
-    display: none !important;
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(n + 3) {
-    position: relative !important;
-    z-index: 2;
-    display: flex !important;
-    flex: 0 0 min(68vw, 292px) !important;
-    width: min(68vw, 292px) !important;
-    height: 100% !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: visible !important;
-    border: 0 !important;
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
-  }
-
-  /* Desktop sliced typography and hover marquee have no touch equivalent. */
-  .rpm-premium > main > section:first-child [data-title-slice] {
-    display: none !important;
-  }
-
-  /* Quiet label above each mobile capsule. */
-  .rpm-premium > main > section:first-child [data-col-label] {
-    display: block !important;
-    top: 10px !important;
-    left: 4px !important;
-    z-index: 5 !important;
-  }
-
-  .rpm-premium > main > section:first-child [data-col-label] span {
-    font-size: 11px !important;
-    font-weight: 400 !important;
-    letter-spacing: -.02em !important;
-    text-transform: lowercase !important;
-    opacity: .62;
-  }
-
-  /* Reset absolute desktop pill geometry and give mobile a single art-directed size. */
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(n + 3) > div:has([data-hero-pill]) {
-    position: relative !important;
-    inset: auto !important;
-    display: flex !important;
-    width: 100% !important;
-    height: min(58svh, 500px) !important;
-    margin: 0 !important;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .rpm-premium > main > section:first-child [data-hero-pill] {
-    border-radius: 999px !important;
-    box-shadow: 0 20px 45px rgba(37, 39, 31, .08) !important;
-    animation: rpm-mobile-pill-open 800ms cubic-bezier(.25,1,.5,1) both;
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(3) [data-hero-pill] {
-    animation-delay: 80ms;
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(4) [data-hero-pill] {
-    animation-delay: 180ms;
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(5) [data-hero-pill] {
-    animation-delay: 280ms;
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(6) [data-hero-pill] {
-    animation-delay: 380ms;
-  }
-
-  .rpm-premium > main > section:first-child [data-hero-pill] img {
-    transform: none !important;
-    object-position: center;
-  }
-
-  .rpm-premium > main > section:first-child [data-hero-pill] > div:last-child {
-    display: none !important;
-  }
-
-  /* Alternating offsets preserve the architectural rhythm without desktop parallax. */
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(3) > div:has([data-hero-pill]) {
-    transform: translateY(34px);
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(4) > div:has([data-hero-pill]) {
-    transform: translateY(-18px);
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(5) > div:has([data-hero-pill]) {
-    transform: translateY(54px);
-  }
-
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10 > :nth-child(6) > div:has([data-hero-pill]) {
-    transform: translateY(8px);
-  }
-
-  /* Desktop scroll hint is replaced by a touch-specific cue. */
-  .rpm-premium > main > section:first-child [data-hero-elements].right-6 {
-    display: none !important;
-  }
-
-  .rpm-premium > main > section:first-child::after {
-    content: "swipe to explore  →";
-    position: absolute;
-    z-index: 55;
-    right: 20px;
-    bottom: calc(22px + env(safe-area-inset-bottom));
-    color: rgba(37, 39, 31, .5);
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 10px;
-    letter-spacing: .12em;
-    text-transform: lowercase;
-    pointer-events: none;
-  }
-
-  html[data-rpm-theme="dark"] .rpm-premium > main > section:first-child::after {
-    color: rgba(244, 240, 231, .5);
-  }
-
-  /* ---------------------------------------------------------------------- */
   /* CONTENT RHYTHM                                                          */
   /* ---------------------------------------------------------------------- */
 
@@ -273,7 +57,6 @@
     padding-bottom: 88px !important;
   }
 
-  /* Instructor image becomes a single strong asymmetric pill on mobile. */
   .rpm-premium > main > section:nth-of-type(5) img {
     width: 86% !important;
     margin-left: auto;
@@ -282,7 +65,7 @@
   }
 
   /* ---------------------------------------------------------------------- */
-  /* CLASSES — native horizontal snap instead of a long vertical stack       */
+  /* CLASSES                                                                 */
   /* ---------------------------------------------------------------------- */
 
   .rpm-premium > main > section:nth-of-type(4) > div[class~="md:hidden"] {
@@ -328,7 +111,6 @@
     border-radius: 999px;
   }
 
-  /* Primary CTA targets remain comfortably finger-sized. */
   .rpm-premium > main button,
   .rpm-premium > main a {
     -webkit-tap-highlight-color: transparent;
@@ -339,7 +121,6 @@
     min-height: 56px;
   }
 
-  /* WhatsApp respects the home indicator. */
   .rpm-premium > a[aria-label="Chat on WhatsApp"] {
     right: 18px !important;
     bottom: calc(18px + env(safe-area-inset-bottom)) !important;
@@ -348,7 +129,7 @@
   }
 
   /* ---------------------------------------------------------------------- */
-  /* FULL-SCREEN MENU / AUTH                                                  */
+  /* FULL-SCREEN MENU / AUTH                                                 */
   /* ---------------------------------------------------------------------- */
 
   .rpm-theme-menu {
@@ -556,14 +337,5 @@
   .rpm-premium button:hover,
   .rpm-premium a:hover {
     transform: none !important;
-  }
-}
-
-@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
-  .rpm-premium > main > section:first-child > .grid.grid-cols-6.z-10::before,
-  .rpm-premium > main > section:first-child [data-hero-pill] {
-    animation: none !important;
-    clip-path: none !important;
-    opacity: 1 !important;
   }
 }
