@@ -1,15 +1,9 @@
 import { useRef } from "react";
+import { BookingCtaSection, FirstSessionSection, FloatingWhatsApp } from "./BookingSections";
 import { ClassesSection } from "./ClassesSection";
 import { DesktopHero } from "./DesktopHero";
+import { InstructorSection, ProofSection, StudioSection } from "./EditorialSections";
 import { LandingHeader } from "./LandingHeader";
-import {
-  BookingCtaSection,
-  FirstSessionSection,
-  FloatingWhatsApp,
-  InstructorSection,
-  ProofSection,
-  StudioSection,
-} from "./LandingSections";
 import { MobileHero } from "./MobileHero";
 import { SiteFooter } from "./SiteFooter";
 import { useLandingRevealMotion } from "../motion/useLandingRevealMotion";

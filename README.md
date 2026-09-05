@@ -15,29 +15,31 @@ It is intentionally separate from the production booking application while the h
 
 ## Current structure
 
-- `src/components/PremiumLandingPage.tsx` — page composition and shared reveal/book orchestration
+- `src/components/PremiumLandingPage.tsx` — page composition and booking orchestration
 - `src/components/LandingHeader.tsx` — fixed brand/header controls
-- `src/components/DesktopHero.tsx` — desktop hero composition and GSAP intro/scroll story
-- `src/components/MobileHero.tsx` — mobile horizontal capsule story and segmented typography scatter
+- `src/components/DesktopHero.tsx` — desktop hero presentation
+- `src/components/MobileHero.tsx` — mobile hero presentation
 - `src/components/ClassesSection.tsx` — desktop/mobile classes presentation
-- `src/components/LandingSections.tsx` — studio, proof, instructor and booking sections
+- `src/components/EditorialSections.tsx` — studio, proof and instructor sections
+- `src/components/BookingSections.tsx` — first-session, booking CTA and floating WhatsApp actions
 - `src/components/ThemeMenu.tsx` — full-screen menu/theme/account prototype
 - `src/components/SiteFooter.tsx` — responsive editorial footer
 - `src/content/practice.ts` — canonical BEGIN / BUILD / SCULPT / PRIVATE content and hero imagery
-- `src/index.css` — global visual tokens and desktop hero styling
+- `src/motion/` — GSAP ownership isolated from presentation components
+- `src/index.css` — semantic palette tokens, shared geometry and desktop hero styling
 - `src/mobile-hero.css` — mobile hero art direction only
-- `src/mobile-premium.css` — mobile landing-page overrides only
+- `src/mobile-premium.css` — mobile landing-page layout only
 - `src/auth-menu.css` — menu/account styling only
 - `src/action-motion.css` — shared CTA interaction language
 - `src/footer-map.css` — footer/map treatment
 
 ## Design architecture
 
-The desktop and mobile heroes intentionally use different compositions while sharing the same four practice definitions and image sources from `src/content/practice.ts`.
+Desktop and mobile heroes intentionally use different compositions while sharing the same four practice definitions and image sources from `src/content/practice.ts`.
 
-Desktop uses a six-column sliced typography system, individually staged capsules and one GSAP-owned opening timeline. Mobile uses a pinned horizontal capsule rail with segmented `reformer` typography that scatters vertically only after the final capsule has cleared the viewport.
+Desktop uses a six-column sliced typography system and one GSAP-owned opening/scroll story. Mobile uses a pinned horizontal capsule rail with segmented `reformer` typography that scatters vertically only after the final capsule has cleared the viewport.
 
-Semantic section/action classes are preferred over DOM-order selectors. Motion ownership should stay local to the component that renders the scene so later design changes do not create cross-file overrides.
+Theme colors are semantic CSS variables rather than selectors that inspect Tailwind class strings. Components use surface, text and border roles so changing a palette value does not require finding every individual section.
 
 ## Development
 
@@ -67,4 +69,5 @@ Account/dashboard behaviour is still lightweight prototype scaffolding. Current 
 - use semantic classes/refs instead of section order or utility-class selector chains
 - keep one animation owner per property; avoid CSS and GSAP competing for the same transform/clip-path
 - keep shared practice labels/images in `src/content/practice.ts`
+- keep palette changes inside semantic theme variables rather than component-specific dark-mode overrides
 - do not change unrelated sections when tuning one interaction
