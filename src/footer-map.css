@@ -197,21 +197,73 @@ html[data-rpm-theme="dark"] .rpm-footer-meta {
 }
 
 @media (max-width: 767px) {
+  /* Mobile is art-directed independently: keep the same overall footer scale,
+     but compress the copy so the map can live in the lower whitespace rather
+     than behind the social links. */
+  .rpm-footer-main {
+    padding-bottom: 56px;
+  }
+
+  .rpm-footer-copy {
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+  }
+
+  .rpm-footer-copy > div {
+    gap: 30px !important;
+  }
+
+  .rpm-footer-copy > div > div:first-child > p:last-child {
+    margin-top: 24px !important;
+    font-size: clamp(3rem, 13.5vw, 4rem) !important;
+    line-height: .82 !important;
+  }
+
+  .rpm-footer-copy > div > div:last-child > div {
+    padding-top: 0 !important;
+    row-gap: 0 !important;
+    column-gap: 22px !important;
+    align-items: center;
+  }
+
+  .rpm-footer-copy > div > div:last-child a {
+    min-height: 44px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    display: flex;
+    align-items: center;
+  }
+
+  .rpm-footer-copy > div > div:last-child a:nth-child(2) {
+    justify-content: flex-end;
+  }
+
   .rpm-footer-map-stage {
-    top: 67%;
-    width: calc(100% - 32px);
-    height: 160px;
+    top: auto;
+    bottom: 8px;
+    left: 44%;
+    width: min(72vw, 290px);
+    height: 104px;
+    transform: translateX(-50%);
     opacity: .45;
     pointer-events: none;
   }
 
   .rpm-footer-map-frame {
     left: -18px;
+    top: -46px;
     width: calc(100% + 36px);
+    height: calc(100% + 92px);
+  }
+
+  .rpm-footer-meta {
+    padding-top: 16px !important;
+    padding-bottom: 14px !important;
   }
 
   .rpm-premium a[aria-label="Chat on WhatsApp"] {
     bottom: calc(5.25rem + env(safe-area-inset-bottom)) !important;
+    right: 20px !important;
   }
 }
 
