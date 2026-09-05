@@ -6,23 +6,29 @@
   color: #25271f;
 }
 
+.rpm-footer-main {
+  position: relative;
+  padding-bottom: 56px;
+}
+
 .rpm-footer-copy,
 .rpm-footer-meta {
   position: relative;
   z-index: 3;
 }
 
-/* The map is atmospheric only: it lives inside the footer's existing whitespace
-   and never contributes to the footer's document height. */
+/* The map is atmospheric only: it is geometrically centered between the
+   footer's top rule and the meta divider, and never adds document height. */
 .rpm-footer-map-stage {
   position: absolute;
   z-index: 1;
   left: 50%;
-  top: 59%;
+  top: 50%;
   width: min(58vw, 980px);
   height: clamp(180px, 18vw, 238px);
   transform: translate(-50%, -50%);
-  overflow: visible;
+  overflow: hidden;
+  border-radius: 999px;
   opacity: .45;
   transition: opacity 500ms ease;
 }
@@ -35,6 +41,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  border-radius: inherit;
   -webkit-mask-image: radial-gradient(
     ellipse 96% 92% at 50% 50%,
     #000 0%,
@@ -55,7 +62,7 @@
   );
 }
 
-/* These are the original site's map visibility/hover values. */
+/* Original site's map visibility and hover treatment. */
 .rpm-footer-map-frame {
   position: absolute;
   left: -24px;
@@ -81,6 +88,7 @@
 .rpm-footer-map-vignette {
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   pointer-events: none;
   transition: opacity 500ms ease;
 }
@@ -155,6 +163,12 @@ html[data-rpm-theme="dark"] .rpm-footer-map-vignette {
 
 html[data-rpm-theme="dark"] .rpm-footer-meta {
   color: rgba(244, 240, 231, .45) !important;
+}
+
+@media (min-width: 768px) {
+  .rpm-footer-main {
+    padding-bottom: 80px;
+  }
 }
 
 @media (max-width: 767px) {
