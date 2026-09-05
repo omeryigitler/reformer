@@ -51,7 +51,14 @@ export function MobileHero() {
             className={`rpm-mobile-hero-card rpm-mobile-hero-card--${index + 1}`}
           >
             <div className="rpm-mobile-hero-pill">
-              <img src={practice.image} alt="" />
+              <img
+                src={practice.image}
+                alt=""
+                loading="eager"
+                decoding="async"
+                fetchPriority={index < 2 ? "high" : "auto"}
+                draggable={false}
+              />
             </div>
           </article>
         ))}
