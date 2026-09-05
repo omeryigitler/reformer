@@ -4,6 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PRACTICES } from "../content/practice";
 
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const sceneStops = [0.02, 0.18, 0.36, 0.55];
 const titleScatter = [-82, 64, -112, 88, -70, 106];
@@ -30,8 +31,9 @@ export function useMobileHeroMotion() {
         const slices = Array.from(
           section.querySelectorAll<HTMLElement>("[data-mobile-title-slice]")
         );
+        const tabs = section.querySelector<HTMLElement>(".rpm-mobile-hero-tabs");
 
-        if (cards.length !== PRACTICES.length || !slices.length) return;
+        if (cards.length !== PRACTICES.length || !slices.length || !tabs) return;
         cardsRef.current = cards;
 
         const horizontalTravel = () => {
@@ -42,6 +44,7 @@ export function useMobileHeroMotion() {
         };
 
         gsap.set(track, { x: 0 });
+        gsap.set(tabs, { y: 0, autoAlpha: 1 });
         gsap.set(slices, { yPercent: 0, opacity: 1, scale: 1 });
 
         const updateActiveCard = () => {
@@ -89,6 +92,19 @@ export function useMobileHeroMotion() {
           0
         );
 
+        /* The four labels leave only after the last capsule is fully offscreen.
+           The title scatter starts after this rail has finished leaving. */
+        timeline.to(
+          tabs,
+          {
+            y: -12,
+            autoAlpha: 0,
+            duration: 0.24,
+            ease: "power1.out",
+          },
+          3.76
+        );
+
         timeline.to(
           slices,
           {
@@ -98,7 +114,7 @@ export function useMobileHeroMotion() {
             stagger: 0.025,
             ease: "power2.inOut",
           },
-          3.82
+          4.08
         );
 
         timeline.to(
@@ -109,7 +125,7 @@ export function useMobileHeroMotion() {
             stagger: 0.018,
             ease: "power1.out",
           },
-          4.68
+          4.94
         );
 
         updateActiveCard();
