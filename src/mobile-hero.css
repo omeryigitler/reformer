@@ -1,27 +1,5 @@
-@keyframes rpm-mobile-hero-pill-open {
-  from {
-    opacity: 0;
-    clip-path: inset(45% 0 45% 0 round 999px);
-    transform: scale(.97);
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0 0 0 0 round 999px);
-    transform: scale(1);
-  }
-}
-
-@keyframes rpm-mobile-reformer-scroll {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
 @media (max-width: 767px) {
-  /* Desktop six-column hero never participates in the mobile composition. */
+  /* The desktop six-column hero stays completely out of the mobile scene. */
   .rpm-premium > main > section:first-child {
     display: none !important;
   }
@@ -42,10 +20,9 @@
     color: #f4f0e7;
   }
 
-  /* All four class labels sit on one fixed horizontal typographic rail. */
   .rpm-mobile-hero-tabs {
     position: absolute;
-    z-index: 5;
+    z-index: 7;
     top: calc(105px + env(safe-area-inset-top));
     right: 20px;
     left: 20px;
@@ -70,7 +47,7 @@
     letter-spacing: -.02em;
     text-align: center;
     text-transform: lowercase;
-    opacity: .35;
+    opacity: .33;
     transition: opacity 220ms ease;
     -webkit-tap-highlight-color: transparent;
   }
@@ -89,113 +66,104 @@
   }
 
   .rpm-mobile-hero-tabs button.is-active {
-    opacity: .95;
+    opacity: .96;
   }
 
   .rpm-mobile-hero-tabs button.is-active::after {
     transform: scaleX(1);
   }
 
-  /* Desktop-like continuous word system: the pills mask the line naturally,
-     so the word is only seen in the negative space between/around capsules. */
-  .rpm-mobile-reformer-marquee {
+  /* Main editorial word. It intentionally sits IN FRONT of the moving media. */
+  .rpm-mobile-hero-word {
     position: absolute;
-    z-index: 1;
+    z-index: 5;
     top: 52%;
-    right: 0;
-    left: 0;
-    overflow: hidden;
-    transform: translateY(-50%);
-    pointer-events: none;
-    white-space: nowrap;
-  }
-
-  .rpm-mobile-reformer-track {
-    display: flex;
+    left: 49%;
     width: max-content;
-    align-items: center;
-    will-change: transform;
-    animation: rpm-mobile-reformer-scroll 18s linear infinite;
-  }
-
-  .rpm-mobile-reformer-group {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: 34px;
-    padding-right: 34px;
-  }
-
-  .rpm-mobile-reformer-group span {
-    display: block;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: clamp(82px, 25vw, 112px);
-    font-weight: 400;
-    line-height: .8;
-    letter-spacing: -.065em;
-    text-transform: lowercase;
+    transform: translate(-50%, -50%);
     color: currentColor;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: clamp(102px, 30vw, 132px);
+    font-weight: 400;
+    line-height: .78;
+    letter-spacing: -.07em;
+    text-transform: lowercase;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
   }
 
-  /* Native momentum/snap reel. All pills share one vertical axis. */
-  .rpm-mobile-hero-reel {
+  .rpm-mobile-hero-cards {
     position: absolute;
     z-index: 2;
     top: calc(148px + env(safe-area-inset-top));
     right: 0;
-    bottom: calc(68px + env(safe-area-inset-bottom));
+    bottom: calc(62px + env(safe-area-inset-bottom));
     left: 0;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 20px 16vw 24px;
-    scroll-padding-inline: 16vw;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    touch-action: pan-x pan-y;
-  }
-
-  .rpm-mobile-hero-reel::-webkit-scrollbar {
-    display: none;
+    overflow: hidden;
+    pointer-events: none;
   }
 
   .rpm-mobile-hero-card {
-    position: relative;
-    display: flex;
-    flex: 0 0 min(68vw, 286px);
-    width: min(68vw, 286px);
-    min-width: 0;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    transform: none !important;
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
+    position: absolute;
+    left: 50%;
+    width: min(64vw, 280px);
+    opacity: 0;
+    will-change: transform;
+  }
+
+  .rpm-mobile-hero-card--1 {
+    top: 51%;
+    width: min(65vw, 282px);
+    transform: translateY(-50%);
+  }
+
+  .rpm-mobile-hero-card--2 {
+    top: 47.5%;
+    width: min(62vw, 272px);
+    transform: translateY(-50%);
+  }
+
+  .rpm-mobile-hero-card--3 {
+    top: 53%;
+    width: min(60vw, 264px);
+    transform: translateY(-50%);
+  }
+
+  .rpm-mobile-hero-card--4 {
+    top: 49%;
+    width: min(63vw, 276px);
+    transform: translateY(-50%);
   }
 
   .rpm-mobile-hero-pill {
     position: relative;
     width: 100%;
-    height: min(58dvh, 500px);
     overflow: hidden;
     border-radius: 999px;
     background: #f6f3ec;
-    box-shadow: 0 18px 42px rgba(37, 39, 31, .075);
-    animation: rpm-mobile-hero-pill-open 760ms cubic-bezier(.25, 1, .5, 1) both;
+    box-shadow: 0 16px 42px rgba(37, 39, 31, .065);
   }
 
   html[data-rpm-theme="dark"] .rpm-mobile-hero-pill {
     background: #1e201a;
   }
 
-  .rpm-mobile-hero-card:nth-child(1) .rpm-mobile-hero-pill { animation-delay: 80ms; }
-  .rpm-mobile-hero-card:nth-child(2) .rpm-mobile-hero-pill { animation-delay: 150ms; }
-  .rpm-mobile-hero-card:nth-child(3) .rpm-mobile-hero-pill { animation-delay: 220ms; }
-  .rpm-mobile-hero-card:nth-child(4) .rpm-mobile-hero-pill { animation-delay: 290ms; }
+  .rpm-mobile-hero-card--1 .rpm-mobile-hero-pill {
+    height: min(56dvh, 500px);
+  }
+
+  .rpm-mobile-hero-card--2 .rpm-mobile-hero-pill {
+    height: min(62dvh, 530px);
+  }
+
+  .rpm-mobile-hero-card--3 .rpm-mobile-hero-pill {
+    height: min(50dvh, 450px);
+  }
+
+  .rpm-mobile-hero-card--4 .rpm-mobile-hero-pill {
+    height: min(59dvh, 510px);
+  }
 
   .rpm-mobile-hero-pill img {
     display: block;
@@ -209,7 +177,7 @@
 
   .rpm-mobile-hero-meta {
     position: absolute;
-    z-index: 4;
+    z-index: 7;
     right: 20px;
     bottom: calc(20px + env(safe-area-inset-bottom));
     left: 20px;
@@ -234,21 +202,46 @@
       top: calc(92px + env(safe-area-inset-top));
     }
 
-    .rpm-mobile-hero-reel {
+    .rpm-mobile-hero-cards {
       top: calc(132px + env(safe-area-inset-top));
     }
 
-    .rpm-mobile-hero-pill {
-      height: min(53dvh, 390px);
+    .rpm-mobile-hero-word {
+      top: 51.5%;
+      font-size: clamp(92px, 28vw, 116px);
+    }
+
+    .rpm-mobile-hero-card--1 .rpm-mobile-hero-pill {
+      height: min(52dvh, 390px);
+    }
+
+    .rpm-mobile-hero-card--2 .rpm-mobile-hero-pill {
+      height: min(56dvh, 418px);
+    }
+
+    .rpm-mobile-hero-card--3 .rpm-mobile-hero-pill {
+      height: min(47dvh, 350px);
+    }
+
+    .rpm-mobile-hero-card--4 .rpm-mobile-hero-pill {
+      height: min(54dvh, 402px);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .rpm-mobile-hero-pill,
+    .rpm-mobile-hero-card {
+      display: none;
+      opacity: 1;
+    }
+
+    .rpm-mobile-hero-card:first-child {
+      display: block;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
     .rpm-mobile-hero-tabs button,
-    .rpm-mobile-hero-tabs button::after,
-    .rpm-mobile-reformer-track {
-      animation: none !important;
+    .rpm-mobile-hero-tabs button::after {
       transition: none !important;
     }
   }
