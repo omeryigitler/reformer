@@ -33,8 +33,8 @@ export function FirstSessionSection({ onBook }: BookActionProps) {
           onClick={onBook}
           className="rpm-action-first-session rpm-border-action flex w-full items-center justify-between border-y py-7 text-left"
         >
-          <span className="rpm-action-label text-sm font-semibold uppercase tracking-[0.21em]">
-            Start your first session
+          <span className="rpm-action-label text-sm font-semibold lowercase tracking-[0.21em]">
+            start your first session
           </span>
           <span className="rpm-action-arrow" aria-hidden="true">
             ↗
@@ -70,9 +70,9 @@ export function BookingCtaSection({ onBook }: BookActionProps) {
         <button
           type="button"
           onClick={onBook}
-          className="rpm-action-booking rpm-action-surface mt-9 inline-flex w-fit items-center gap-4 rounded-full px-6 py-4 text-xs font-semibold uppercase tracking-[0.19em]"
+          className="rpm-action-booking rpm-action-surface mt-9 inline-flex w-fit items-center gap-4 rounded-full px-6 py-4 text-xs font-semibold lowercase tracking-[0.19em]"
         >
-          <span>View available sessions</span>
+          <span>view available sessions</span>
           <span className="rpm-action-arrow" aria-hidden="true">
             ↗
           </span>
