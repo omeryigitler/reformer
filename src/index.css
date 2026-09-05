@@ -5,8 +5,6 @@
   --rpm-action-shift: 5px;
   --rpm-action-ease: cubic-bezier(0.25, 1, 0.5, 1);
   --rpm-action-duration: 300ms;
-  /* Desktop MENU used to be pt-8 plus translateY(-10px). Store the final
-     visual coordinate directly so MENU and CLOSE share one real origin. */
   --rpm-header-control-top: 22px;
   --rpm-header-control-side: 40px;
   --rpm-header-control-width: 84px;
@@ -37,7 +35,7 @@ html,
   text-rendering: optimizeLegibility;
 }
 
-.rpm-premium > header {
+.rpm-site-header {
   padding-top: var(--rpm-header-control-top) !important;
   padding-right: var(--rpm-header-control-side) !important;
   padding-left: var(--rpm-header-control-side) !important;
@@ -59,24 +57,6 @@ html,
   user-select: none;
 }
 
-/* Existing class cards still point at legacy source names in JSX. Keep the
-   visual substitution here until that large component is split and simplified. */
-.rpm-premium img[alt="BEGIN Reformer class"] {
-  content: url("/premium/787cc875-3817-4fdc-a070-9fe5233dbade.png");
-}
-
-.rpm-premium img[alt="BUILD Reformer class"] {
-  content: url("/premium/pill-reformer.jpg");
-}
-
-.rpm-premium img[alt="SCULPT Reformer class"] {
-  content: url("/premium/pill-mat.jpg");
-}
-
-.rpm-premium img[alt="PRIVATE Reformer class"] {
-  content: url("/premium/pill-private.jpg");
-}
-
 .rpm-premium .large-title-layer h1,
 .rpm-premium .hover-title-layer,
 .rpm-premium [data-col-label] span,
@@ -93,53 +73,12 @@ html,
   }
 }
 
-@keyframes rpm-title-global-wipe {
-  from {
-    clip-path: inset(0 0 0 100%);
-  }
-  to {
-    clip-path: inset(0 0 0 0%);
-  }
-}
-
 @media (min-width: 768px) {
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > div [data-title-slice] {
-    animation-name: rpm-title-global-wipe;
-    animation-duration: 130ms;
-    animation-timing-function: linear;
-    animation-fill-mode: both;
-    animation-iteration-count: 1;
-  }
-
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(6) [data-title-slice] {
-    animation-delay: 1.20s;
-  }
-
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(5) [data-title-slice] {
-    animation-delay: 1.33s;
-  }
-
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(4) [data-title-slice] {
-    animation-delay: 1.46s;
-  }
-
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(3) [data-title-slice] {
-    animation-delay: 1.59s;
-  }
-
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(2) [data-title-slice] {
-    animation-delay: 1.72s;
-  }
-
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(1) [data-title-slice] {
-    animation-delay: 1.85s;
-  }
-
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :first-child {
+  .rpm-desktop-hero-grid > :first-child {
     border-right-color: transparent !important;
   }
 
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(n + 3)::before {
+  .rpm-desktop-hero-grid > :nth-child(n + 3)::before {
     content: "";
     position: absolute;
     top: 0;
@@ -155,7 +94,7 @@ html,
       opacity 180ms ease;
   }
 
-  .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(n + 3):hover::before {
+  .rpm-desktop-hero-grid > :nth-child(n + 3):hover::before {
     height: 76px;
     opacity: 1;
   }
@@ -219,7 +158,7 @@ html,
     line-height: 1;
   }
 
-  .rpm-premium .relative.w-full.h-full:has(> [data-hero-pill]) {
+  .rpm-hero-pill-motion {
     transform: none !important;
   }
 
@@ -306,7 +245,7 @@ html[data-rpm-theme="dark"] .rpm-premium [class*="text-[#777968]"] {
 }
 
 html[data-rpm-theme="dark"] .rpm-premium [class*="border-[#25271F]"],
-html[data-rpm-theme="dark"] .rpm-premium .grid.grid-cols-6 > * {
+html[data-rpm-theme="dark"] .rpm-desktop-hero-grid > * {
   border-color: rgba(244, 240, 231, 0.12) !important;
 }
 
@@ -316,7 +255,7 @@ html[data-rpm-theme="dark"] .rpm-premium [data-col-label] span {
   color: #f4f0e7 !important;
 }
 
-html[data-rpm-theme="dark"] .rpm-premium .absolute.inset-0.grid.grid-cols-6.z-10 > :nth-child(n + 3)::before {
+html[data-rpm-theme="dark"] .rpm-desktop-hero-grid > :nth-child(n + 3)::before {
   background: rgba(244, 240, 231, 0.78);
 }
 
@@ -344,7 +283,6 @@ html[data-rpm-theme="dark"] .rpm-premium [data-header-btn] .menu-hover {
   }
 
   .rpm-premium [data-title-slice] {
-    animation: none !important;
     clip-path: inset(0 0 0 0) !important;
   }
 

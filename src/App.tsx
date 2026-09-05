@@ -9,7 +9,6 @@ const managementState: ManagementState = {
     email: "info@reformerpilatesmalta.com",
     address: "Pendergardens, Triq Gort, St Julian's, Malta",
   },
-  // Keep unverified social destinations empty instead of shipping placeholder links.
   socialLinks: {
     instagram: "",
     facebook: "",
@@ -21,12 +20,7 @@ export default function App() {
   const [authRequest, setAuthRequest] = useState<AuthRequest>(null);
 
   const openDashboard = () => {
-    // Prototype-only until the production booking/account application is connected.
     alert("Dashboard mock!");
-  };
-
-  const handleLegacyAuthRequest = (value: string | null) => {
-    setAuthRequest(value === "register" ? "register" : value === "login" ? "login" : null);
   };
 
   return (
@@ -34,11 +28,9 @@ export default function App() {
       <PremiumLandingPage
         managementState={managementState}
         loggedInUser={loggedInUser}
-        authModal={authRequest}
-        setAuthModal={handleLegacyAuthRequest}
-        onLogin={setLoggedInUser}
+        authRequest={authRequest}
+        setAuthRequest={setAuthRequest}
         onOpenDashboard={openDashboard}
-        onLogout={() => setLoggedInUser(null)}
       />
       <ThemeMenu
         authRequest={authRequest}

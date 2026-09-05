@@ -24,38 +24,43 @@
     line-height: 1 !important;
   }
 
-  .rpm-premium > main > section:not(:first-child) {
+  .rpm-section-studio,
+  .rpm-section-proof,
+  .rpm-section-classes,
+  .rpm-section-instructor,
+  .rpm-section-first-session,
+  .rpm-section-booking {
     scroll-margin-top: 72px;
   }
 
-  .rpm-premium > main > section:nth-of-type(2),
-  .rpm-premium > main > section:nth-of-type(5),
-  .rpm-premium > main > section:nth-of-type(6) {
+  .rpm-section-studio,
+  .rpm-section-instructor,
+  .rpm-section-first-session {
     padding-top: 88px !important;
     padding-bottom: 88px !important;
   }
 
-  .rpm-premium > main > section:nth-of-type(5) img {
+  .rpm-section-instructor img {
     width: 86% !important;
     margin-left: auto;
     border-radius: 999px;
     aspect-ratio: 3 / 4 !important;
   }
 
-  .rpm-premium > main > section:nth-of-type(4) > div[class~="md:hidden"] {
+  .rpm-classes-mobile {
     overflow: hidden;
     padding-right: 0 !important;
     padding-left: 0 !important;
     padding-bottom: 56px !important;
   }
 
-  .rpm-premium > main > section:nth-of-type(4) > div[class~="md:hidden"] > p,
-  .rpm-premium > main > section:nth-of-type(4) > div[class~="md:hidden"] > h2 {
+  .rpm-classes-mobile > p,
+  .rpm-classes-mobile > h2 {
     margin-right: 20px;
     margin-left: 20px;
   }
 
-  .rpm-premium > main > section:nth-of-type(4) .space-y-10 {
+  .rpm-classes-mobile-track {
     display: flex !important;
     gap: 14px;
     overflow-x: auto;
@@ -68,11 +73,11 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .rpm-premium > main > section:nth-of-type(4) .space-y-10::-webkit-scrollbar {
+  .rpm-classes-mobile-track::-webkit-scrollbar {
     display: none;
   }
 
-  .rpm-premium > main > section:nth-of-type(4) .space-y-10 > * {
+  .rpm-class-card {
     flex: 0 0 82vw;
     max-width: 340px;
     margin-top: 0 !important;
@@ -80,7 +85,7 @@
     scroll-snap-stop: always;
   }
 
-  .rpm-premium > main > section:nth-of-type(4) .space-y-10 img {
+  .rpm-class-card img {
     aspect-ratio: 3 / 4 !important;
     border-radius: 999px;
   }
@@ -90,12 +95,12 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  .rpm-premium > main > section:nth-of-type(6) button,
-  .rpm-premium > main > section:nth-of-type(7) button {
+  .rpm-action-first-session,
+  .rpm-action-booking {
     min-height: 56px;
   }
 
-  .rpm-premium > a[aria-label="Chat on WhatsApp"] {
+  .rpm-floating-whatsapp {
     right: 18px !important;
     bottom: calc(18px + env(safe-area-inset-bottom)) !important;
     width: 56px !important;

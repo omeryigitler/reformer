@@ -1,6 +1,6 @@
-/* Shared interaction language for primary actions. SIGN IN is the reference:
-   one ↗ glyph, restrained 5px rightward movement, no scale pulse. */
+/* Shared primary-action motion. SIGN IN is the reference interaction. */
 
+.rpm-action-arrow,
 .rpm-account-pill > span:last-child {
   flex: 0 0 auto;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -10,46 +10,29 @@
   letter-spacing: 0;
 }
 
-/* PremiumLandingPage still lacks semantic CTA classes. These selectors are
-   intentionally isolated here until that component is split; do not add more
-   class-string selectors elsewhere. */
-.rpm-premium main button.w-full.border-y > svg,
-.rpm-premium main button.mt-9.w-fit.rounded-full > svg {
-  display: none !important;
-}
-
-.rpm-premium main button.w-full.border-y::after,
-.rpm-premium main button.mt-9.w-fit.rounded-full::after {
-  content: "↗";
-  flex: 0 0 auto;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0;
-}
-
-.rpm-premium main button.w-full.border-y {
+/* Editorial row: geometry and rules remain fixed; only its content shifts. */
+.rpm-action-first-session {
   padding-left: 0 !important;
   padding-right: 0 !important;
   transform: none !important;
   transition: none !important;
 }
 
-.rpm-premium main button.w-full.border-y:hover,
-.rpm-premium main button.w-full.border-y:focus-visible {
+.rpm-action-first-session:hover,
+.rpm-action-first-session:focus-visible {
   padding-left: 0 !important;
   padding-right: 0 !important;
   transform: none !important;
   outline: none;
 }
 
-.rpm-premium main button.w-full.border-y > span:first-child,
-.rpm-premium main button.w-full.border-y::after {
+.rpm-action-first-session .rpm-action-label,
+.rpm-action-first-session .rpm-action-arrow {
   transition: transform var(--rpm-action-duration) var(--rpm-action-ease);
 }
 
-.rpm-premium main button.mt-9.w-fit.rounded-full {
+/* Pill actions move as one unit, matching account pills. */
+.rpm-action-booking {
   transform: translateX(0) !important;
   transition: transform var(--rpm-action-duration) var(--rpm-action-ease) !important;
 }
@@ -67,15 +50,15 @@ a.rpm-footer-social-item:focus-visible {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .rpm-premium main button.w-full.border-y:hover > span:first-child,
-  .rpm-premium main button.w-full.border-y:hover::after,
-  .rpm-premium main button.w-full.border-y:focus-visible > span:first-child,
-  .rpm-premium main button.w-full.border-y:focus-visible::after {
+  .rpm-action-first-session:hover .rpm-action-label,
+  .rpm-action-first-session:hover .rpm-action-arrow,
+  .rpm-action-first-session:focus-visible .rpm-action-label,
+  .rpm-action-first-session:focus-visible .rpm-action-arrow {
     transform: translateX(var(--rpm-action-shift));
   }
 
-  .rpm-premium main button.mt-9.w-fit.rounded-full:hover,
-  .rpm-premium main button.mt-9.w-fit.rounded-full:focus-visible,
+  .rpm-action-booking:hover,
+  .rpm-action-booking:focus-visible,
   a.rpm-footer-social-item:hover,
   a.rpm-footer-social-item:focus-visible {
     transform: translateX(var(--rpm-action-shift)) !important;
@@ -87,12 +70,12 @@ a.rpm-footer-social-item:focus-visible {
     transform: translateX(var(--rpm-action-shift)) !important;
   }
 
-  .rpm-premium main button.w-full.border-y:active > span:first-child,
-  .rpm-premium main button.w-full.border-y:active::after {
+  .rpm-action-first-session:active .rpm-action-label,
+  .rpm-action-first-session:active .rpm-action-arrow {
     transform: translateX(var(--rpm-action-shift));
   }
 
-  .rpm-premium main button.mt-9.w-fit.rounded-full:active,
+  .rpm-action-booking:active,
   a.rpm-footer-social-item:active {
     transform: translateX(var(--rpm-action-shift)) !important;
   }
@@ -100,9 +83,9 @@ a.rpm-footer-social-item:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .rpm-account-pill,
-  .rpm-premium main button.w-full.border-y > span:first-child,
-  .rpm-premium main button.w-full.border-y::after,
-  .rpm-premium main button.mt-9.w-fit.rounded-full,
+  .rpm-action-first-session .rpm-action-label,
+  .rpm-action-first-session .rpm-action-arrow,
+  .rpm-action-booking,
   a.rpm-footer-social-item {
     transition: none !important;
     transform: none !important;
