@@ -2,10 +2,11 @@
    editorial choice screen. Both brands share one geometry so desktop and
    mobile stay visually aligned while preserving their brand marks. */
 
-/* One auth-control geometry for every device: RPM primary actions and the
-   Google/Apple alternatives all use the exact same 44px pill height. */
+/* One auth-control geometry for every device. Preserve the original RPM pill
+   presence rather than shrinking it to provider defaults: all three actions
+   use the same exact 54px outer height. */
 .rpm-theme-menu {
-  --rpm-auth-action-height: 44px;
+  --rpm-auth-action-height: 54px;
 }
 
 .rpm-theme-menu .rpm-account-pill,
