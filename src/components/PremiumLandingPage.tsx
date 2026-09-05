@@ -1,6 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
 import { ClassesSection } from "./ClassesSection";
 import { DesktopHero } from "./DesktopHero";
 import { LandingHeader } from "./LandingHeader";
@@ -14,9 +12,8 @@ import {
 } from "./LandingSections";
 import { MobileHero } from "./MobileHero";
 import { SiteFooter } from "./SiteFooter";
+import { useLandingRevealMotion } from "../motion/useLandingRevealMotion";
 import type { AuthRequest, ManagementState, UserType } from "../types";
-
-gsap.registerPlugin(ScrollTrigger);
 
 type PremiumLandingPageProps = {
   managementState: ManagementState;
@@ -35,31 +32,7 @@ export function PremiumLandingPage({
 }: PremiumLandingPageProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((element) => {
-        gsap.fromTo(
-          element,
-          { opacity: 0, y: 36 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: element,
-              start: "top 86%",
-            },
-          }
-        );
-      });
-    }, root);
-
-    return () => ctx.revert();
-  }, []);
+  useLandingRevealMotion(rootRef);
 
   const book = () => {
     if (loggedInUser) {
