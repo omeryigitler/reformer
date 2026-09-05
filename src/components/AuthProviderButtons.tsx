@@ -32,10 +32,9 @@ function GoogleMark() {
 
 export function AuthProviderButtons({ theme }: AuthProviderButtonsProps) {
   const appleColor = theme === "dark" ? "black" : "white";
-  const appleBorder = "true";
   const appleButtonUrl =
-    `https://appleid.cdn-apple.com/appleid/button?height=52&width=360&color=${appleColor}` +
-    `&border=${appleBorder}&type=sign-in&border_radius=26&scale=2&locale=en_US`;
+    `https://appleid.cdn-apple.com/appleid/button?height=44&width=360&color=${appleColor}` +
+    "&border=true&type=sign-in&border_radius=22&scale=2&locale=en_US";
 
   return (
     <div className="rpm-provider-wrap" aria-label="Alternative sign in options">
@@ -56,7 +55,7 @@ export function AuthProviderButtons({ theme }: AuthProviderButtonsProps) {
           aria-label="Sign in with Apple"
           data-auth-placeholder="apple"
         >
-          <img src={appleButtonUrl} alt="" width="360" height="52" draggable={false} />
+          <img src={appleButtonUrl} alt="" width="360" height="44" draggable={false} />
         </button>
       </div>
 
