@@ -51,8 +51,18 @@ export function MobileHero() {
 
         if (cards.length !== mobileSlides.length || !slices.length) return;
 
-        const horizontalTravel = () =>
-          Math.max(0, track.scrollWidth - window.innerWidth);
+        // Move far enough that the LAST capsule has completely cleared the
+        // left edge of the viewport. The old scrollWidth - viewportWidth
+        // calculation intentionally left part of the final capsule visible
+        // because the track carries generous right-side composition padding.
+        const horizontalTravel = () => {
+          const lastCard = cards[cards.length - 1];
+          const exitBuffer = window.innerWidth * 0.08;
+          return Math.max(
+            0,
+            lastCard.offsetLeft + lastCard.offsetWidth + exitBuffer
+          );
+        };
 
         gsap.set(track, { x: 0 });
         gsap.set(slices, { yPercent: 0, opacity: 1, scale: 1 });
@@ -80,7 +90,7 @@ export function MobileHero() {
           scrollTrigger: {
             trigger: section,
             start: "top top",
-            end: () => `+=${Math.max(window.innerHeight * 4.5, 3200)}`,
+            end: () => `+=${Math.max(window.innerHeight * 4.8, 3400)}`,
             scrub: 0.8,
             pin: true,
             anticipatePin: 1,
@@ -93,19 +103,20 @@ export function MobileHero() {
         scrollTriggerRef.current = timeline.scrollTrigger ?? null;
 
         // Phase 1 — one full + one partial capsule is visible at rest.
-        // The complete media rail then travels right-to-left across the pinned scene.
+        // The complete media rail travels right-to-left until every capsule,
+        // including PRIVATE, is fully outside the viewport.
         timeline.to(
           track,
           {
             x: () => -horizontalTravel(),
-            duration: 3.4,
+            duration: 3.7,
             ease: "none",
           },
           0
         );
 
-        // Phase 2 — echo the desktop capsule parallax, but invert the idea:
-        // the segmented REFORMER typography separates vertically while media finishes leaving.
+        // Phase 2 — only AFTER the media rail is completely gone do the
+        // segmented REFORMER slices begin their vertical desktop-like scatter.
         timeline.to(
           slices,
           {
@@ -115,7 +126,7 @@ export function MobileHero() {
             stagger: 0.025,
             ease: "power2.inOut",
           },
-          3.18
+          3.82
         );
 
         timeline.to(
@@ -126,7 +137,7 @@ export function MobileHero() {
             stagger: 0.018,
             ease: "power1.out",
           },
-          4.02
+          4.68
         );
 
         updateActiveCard();
