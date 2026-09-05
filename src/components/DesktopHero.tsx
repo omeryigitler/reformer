@@ -155,6 +155,7 @@ export function DesktopHero() {
                         alt={column.hoverWord}
                         loading="eager"
                         decoding="async"
+                        fetchPriority={index === 2 ? "high" : "low"}
                         className="rpm-hero-pill-image h-full w-full object-cover"
                       />
                     </div>
@@ -173,7 +174,9 @@ export function DesktopHero() {
         <img
           src="/premium/studio_reveal_1788398858603.jpg"
           alt=""
+          loading="lazy"
           decoding="async"
+          fetchPriority="low"
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-[#25271F]/50" />
