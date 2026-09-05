@@ -4,6 +4,8 @@ type BookActionProps = {
   onBook: () => void;
 };
 
+const TEXT_ARROW = "\u2197\uFE0E";
+
 export function FirstSessionSection({ onBook }: BookActionProps) {
   return (
     <section className="rpm-section-first-session rpm-surface-base px-5 py-[88px] md:px-10 md:py-36 lg:px-14">
@@ -37,7 +39,7 @@ export function FirstSessionSection({ onBook }: BookActionProps) {
             start your first session
           </span>
           <span className="rpm-action-arrow" aria-hidden="true">
-            ↗
+            {TEXT_ARROW}
           </span>
         </button>
       </div>
@@ -74,7 +76,7 @@ export function BookingCtaSection({ onBook }: BookActionProps) {
         >
           <span>view available sessions</span>
           <span className="rpm-action-arrow" aria-hidden="true">
-            ↗
+            {TEXT_ARROW}
           </span>
         </button>
       </div>
