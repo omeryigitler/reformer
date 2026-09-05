@@ -16,6 +16,7 @@ type ThemeMenuProps = {
 };
 
 const STORAGE_KEY = "rpm-theme";
+const TEXT_ARROW = "\u2197\uFE0E";
 
 function readInitialTheme(): Theme {
   if (typeof document !== "undefined") {
@@ -206,7 +207,7 @@ export function ThemeMenu({
                     className="rpm-account-pill rpm-account-pill--filled"
                   >
                     <span>open dashboard</span>
-                    <span aria-hidden="true">↗</span>
+                    <span aria-hidden="true">{TEXT_ARROW}</span>
                   </button>
                   <button
                     type="button"
@@ -217,7 +218,7 @@ export function ThemeMenu({
                     className="rpm-account-pill"
                   >
                     <span>sign out</span>
-                    <span aria-hidden="true">↗</span>
+                    <span aria-hidden="true">{TEXT_ARROW}</span>
                   </button>
                 </div>
               </section>
@@ -239,9 +240,8 @@ export function ThemeMenu({
                       className="rpm-account-pill rpm-account-pill--filled"
                     >
                       <span>create account</span>
-                      <span aria-hidden="true">↗</span>
+                      <span aria-hidden="true">{TEXT_ARROW}</span>
                     </button>
-                    {open && <AuthProviderButtons theme={theme} />}
                   </div>
                 </article>
 
@@ -261,9 +261,8 @@ export function ThemeMenu({
                       className="rpm-account-pill"
                     >
                       <span>sign in</span>
-                      <span aria-hidden="true">↗</span>
+                      <span aria-hidden="true">{TEXT_ARROW}</span>
                     </button>
-                    {open && <AuthProviderButtons theme={theme} />}
                   </div>
                 </article>
               </section>
@@ -306,6 +305,8 @@ export function ThemeMenu({
               </div>
 
               <form onSubmit={submitAuth} className="rpm-auth-form">
+                <AuthProviderButtons theme={theme} />
+
                 {accountView === "signup" && (
                   <label className="rpm-auth-field">
                     <span>name</span>
@@ -346,7 +347,7 @@ export function ThemeMenu({
 
                 <button type="submit" className="rpm-account-pill rpm-account-pill--filled rpm-auth-submit">
                   <span>{accountLabel}</span>
-                  <span aria-hidden="true">↗</span>
+                  <span aria-hidden="true">{TEXT_ARROW}</span>
                 </button>
               </form>
 
