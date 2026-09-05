@@ -76,7 +76,7 @@ export function AuthProviderButtons({ theme }: AuthProviderButtonsProps) {
       </div>
 
       <div className="rpm-provider-divider" aria-hidden="true">
-        <span>or use email</span>
+        <span>or</span>
       </div>
     </div>
   );
