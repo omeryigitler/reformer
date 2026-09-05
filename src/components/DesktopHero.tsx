@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowDown } from "lucide-react";
+import { PRACTICES } from "../content/practice";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,42 +22,17 @@ type HeroColumn =
 const gridColumns: HeroColumn[] = [
   { id: 0, type: "empty" },
   { id: 1, type: "empty" },
-  {
-    id: 2,
-    type: "pill",
-    hoverWord: "begin",
-    label: "BEGIN",
-    img: "/premium/787cc875-3817-4fdc-a070-9fe5233dbade.png",
-    h: "h-[55svh]",
-    mt: "mt-10 md:mt-32",
-  },
-  {
-    id: 3,
-    type: "pill",
-    hoverWord: "build",
-    label: "BUILD",
-    img: "/premium/pill-reformer.jpg",
-    h: "h-[70svh]",
-    mt: "-mt-10 md:-mt-16",
-  },
-  {
-    id: 4,
-    type: "pill",
-    hoverWord: "sculpt",
-    label: "SCULPT",
-    img: "/premium/pill-mat.jpg",
-    h: "h-[45svh]",
-    mt: "mt-5 md:mt-16",
-  },
-  {
-    id: 5,
-    type: "pill",
-    hoverWord: "private",
-    label: "PRIVATE",
-    img: "/premium/pill-private.jpg",
-    h: "h-[65svh]",
-    mt: "-mt-10 md:-mt-24",
-  },
+  ...PRACTICES.map(
+    (practice): HeroColumn => ({
+      id: practice.heroColumnId,
+      type: "pill",
+      hoverWord: practice.key,
+      label: practice.label,
+      img: practice.image,
+      h: practice.desktopHeightClass,
+      mt: practice.desktopOffsetClass,
+    })
+  ),
 ];
 
 type PillConfig = {
@@ -175,8 +151,6 @@ export function DesktopHero() {
           );
         });
 
-        // One owner for the desktop title reveal: GSAP only. This reproduces the
-        // previous six 130ms CSS slices, right-to-left, without a competing keyframe.
         intro.to(
           [...titleSlices].reverse(),
           {
@@ -215,7 +189,7 @@ export function DesktopHero() {
           .to(titleSlices, { scale: 1.1, opacity: 0, duration: 1 }, 0)
           .to(heroElements, { opacity: 0, duration: 0.5 }, 0);
 
-        if (pills.length === 4) {
+        if (pills.length === PRACTICES.length) {
           story
             .to(pills[0], { yPercent: -15, duration: 2 }, 0)
             .to(pills[1], { yPercent: 20, scale: 1.05, duration: 2 }, 0)
@@ -275,7 +249,7 @@ export function DesktopHero() {
         <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#25271F]/50">
           Scroll
         </span>
-        <ArrowDown size={14} className="animate-bounce text-[#25271F]" />
+        <ArrowDown size={14} className="rpm-desktop-scroll-arrow animate-bounce text-[#25271F]" />
       </div>
 
       <div className="rpm-desktop-hero-grid absolute inset-0 z-10 grid grid-cols-6">
@@ -386,7 +360,7 @@ export function DesktopHero() {
                         }`}
                       />
                       <div
-                        className={`absolute inset-0 z-10 bg-[#F6F3EC]/30 pointer-events-none backdrop-blur-[0.5px] transition-opacity duration-300 ${
+                        className={`rpm-hero-pill-overlay absolute inset-0 z-10 bg-[#F6F3EC]/30 pointer-events-none backdrop-blur-[0.5px] transition-opacity duration-300 ${
                           activeCol === index ? "opacity-100" : "opacity-0"
                         }`}
                       />

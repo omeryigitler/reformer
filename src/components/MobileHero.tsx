@@ -1,27 +1,9 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { PRACTICES } from "../content/practice";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const mobileSlides = [
-  {
-    label: "begin",
-    image: "/premium/787cc875-3817-4fdc-a070-9fe5233dbade.png",
-  },
-  {
-    label: "build",
-    image: "/premium/pill-reformer.jpg",
-  },
-  {
-    label: "sculpt",
-    image: "/premium/pill-mat.jpg",
-  },
-  {
-    label: "private",
-    image: "/premium/pill-private.jpg",
-  },
-];
 
 const titleSlices = [0, 1, 2, 3, 4, 5];
 const sceneStops = [0.02, 0.18, 0.36, 0.55];
@@ -49,19 +31,12 @@ export function MobileHero() {
           section.querySelectorAll<HTMLElement>("[data-mobile-title-slice]")
         );
 
-        if (cards.length !== mobileSlides.length || !slices.length) return;
+        if (cards.length !== PRACTICES.length || !slices.length) return;
 
-        // Move far enough that the LAST capsule has completely cleared the
-        // left edge of the viewport. The old scrollWidth - viewportWidth
-        // calculation intentionally left part of the final capsule visible
-        // because the track carries generous right-side composition padding.
         const horizontalTravel = () => {
           const lastCard = cards[cards.length - 1];
           const exitBuffer = window.innerWidth * 0.08;
-          return Math.max(
-            0,
-            lastCard.offsetLeft + lastCard.offsetWidth + exitBuffer
-          );
+          return Math.max(0, lastCard.offsetLeft + lastCard.offsetWidth + exitBuffer);
         };
 
         gsap.set(track, { x: 0 });
@@ -102,9 +77,6 @@ export function MobileHero() {
 
         scrollTriggerRef.current = timeline.scrollTrigger ?? null;
 
-        // Phase 1 — one full + one partial capsule is visible at rest.
-        // The complete media rail travels right-to-left until every capsule,
-        // including PRIVATE, is fully outside the viewport.
         timeline.to(
           track,
           {
@@ -115,8 +87,6 @@ export function MobileHero() {
           0
         );
 
-        // Phase 2 — only AFTER the media rail is completely gone do the
-        // segmented REFORMER slices begin their vertical desktop-like scatter.
         timeline.to(
           slices,
           {
@@ -176,15 +146,15 @@ export function MobileHero() {
       aria-label="Reformer Pilates Malta classes"
     >
       <nav className="rpm-mobile-hero-tabs" aria-label="Class types">
-        {mobileSlides.map((slide, index) => (
+        {PRACTICES.map((practice, index) => (
           <button
-            key={slide.label}
+            key={practice.key}
             type="button"
             onClick={() => goToSlide(index)}
             className={activeIndex === index ? "is-active" : ""}
             aria-current={activeIndex === index ? "true" : undefined}
           >
-            {slide.label}
+            {practice.key}
           </button>
         ))}
       </nav>
@@ -207,21 +177,23 @@ export function MobileHero() {
       </div>
 
       <div ref={trackRef} className="rpm-mobile-hero-track" aria-hidden="true">
-        {mobileSlides.map((slide, index) => (
+        {PRACTICES.map((practice, index) => (
           <article
-            key={slide.label}
+            key={practice.key}
             data-mobile-hero-card
             className={`rpm-mobile-hero-card rpm-mobile-hero-card--${index + 1}`}
           >
             <div className="rpm-mobile-hero-pill">
-              <img src={slide.image} alt="" />
+              <img src={practice.image} alt="" />
             </div>
           </article>
         ))}
       </div>
 
       <div className="rpm-mobile-hero-meta" aria-hidden="true">
-        <span>{String(activeIndex + 1).padStart(2, "0")} / 04</span>
+        <span>
+          {String(activeIndex + 1).padStart(2, "0")} / {String(PRACTICES.length).padStart(2, "0")}
+        </span>
         <span>scroll ↓</span>
       </div>
     </section>

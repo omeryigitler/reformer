@@ -12,6 +12,7 @@ import {
   ProofSection,
   StudioSection,
 } from "./LandingSections";
+import { MobileHero } from "./MobileHero";
 import { SiteFooter } from "./SiteFooter";
 import type { AuthRequest, ManagementState, UserType } from "../types";
 
@@ -76,32 +77,36 @@ export function PremiumLandingPage({
   )}`;
 
   return (
-    <div ref={rootRef} className="rpm-premium bg-[#F6F3EC] text-[#25271F]">
-      <LandingHeader
-        loggedInUser={loggedInUser}
-        authRequest={authRequest}
-        setAuthRequest={setAuthRequest}
-        onOpenDashboard={onOpenDashboard}
-      />
+    <>
+      <MobileHero />
 
-      <main>
-        <DesktopHero />
-        <StudioSection />
-        <ProofSection />
-        <ClassesSection />
-        <InstructorSection />
-        <FirstSessionSection onBook={book} />
-        <BookingCtaSection onBook={book} />
-      </main>
-
-      <div className="bg-[#F6F3EC] px-4 py-8 md:px-8 md:py-12">
-        <SiteFooter
-          socialLinks={managementState.socialLinks}
-          contactInfo={managementState.contactInfo}
+      <div ref={rootRef} className="rpm-premium bg-[#F6F3EC] text-[#25271F]">
+        <LandingHeader
+          loggedInUser={loggedInUser}
+          authRequest={authRequest}
+          setAuthRequest={setAuthRequest}
+          onOpenDashboard={onOpenDashboard}
         />
-      </div>
 
-      <FloatingWhatsApp href={whatsapp} />
-    </div>
+        <main>
+          <DesktopHero />
+          <StudioSection />
+          <ProofSection />
+          <ClassesSection />
+          <InstructorSection />
+          <FirstSessionSection onBook={book} />
+          <BookingCtaSection onBook={book} />
+        </main>
+
+        <div className="bg-[#F6F3EC] px-4 py-8 md:px-8 md:py-12">
+          <SiteFooter
+            socialLinks={managementState.socialLinks}
+            contactInfo={managementState.contactInfo}
+          />
+        </div>
+
+        <FloatingWhatsApp href={whatsapp} />
+      </div>
+    </>
   );
 }

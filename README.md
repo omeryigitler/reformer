@@ -1,47 +1,43 @@
 # Reformer Pilates Malta — Homepage Prototype
 
-Standalone React/Vite prototype for the new Reformer Pilates Malta public homepage. The booking/authentication layer is still prototype-only; this repository is currently focused on the public experience, motion system and responsive art direction.
+This repository is the standalone visual prototype for the new Reformer Pilates Malta public homepage.
+
+It is intentionally separate from the production booking application while the homepage art direction, motion system, typography and responsive behaviour are being refined.
 
 ## Stack
 
-- React 19 + TypeScript
+- React 19
+- TypeScript
 - Vite 6
 - Tailwind CSS 4
-- GSAP + ScrollTrigger
-- Lucide React
+- GSAP + ScrollTrigger for editorial scroll choreography
+- Lucide React icons
 
-## Runtime structure
+## Current structure
 
-- `src/App.tsx` — prototype shell, shared contact data and menu/auth request state
-- `src/components/PremiumLandingPage.tsx` — desktop hero and page sections
-- `src/components/MobileHero.tsx` — dedicated mobile pinned horizontal hero
-- `src/components/ThemeMenu.tsx` — full-screen menu, theme and prototype account flow
-- `src/components/SiteFooter.tsx` — footer/map/social presentation
-- `src/index.css` — global tokens, desktop hero and theme behaviour
-- `src/mobile-hero.css` — mobile hero only
-- `src/mobile-premium.css` — mobile page sections only
-- `src/auth-menu.css` — menu/auth layout and responsive behaviour
-- `src/footer-map.css` — footer/map presentation
+- `src/components/PremiumLandingPage.tsx` — page composition and shared reveal/book orchestration
+- `src/components/LandingHeader.tsx` — fixed brand/header controls
+- `src/components/DesktopHero.tsx` — desktop hero composition and GSAP intro/scroll story
+- `src/components/MobileHero.tsx` — mobile horizontal capsule story and segmented typography scatter
+- `src/components/ClassesSection.tsx` — desktop/mobile classes presentation
+- `src/components/LandingSections.tsx` — studio, proof, instructor and booking sections
+- `src/components/ThemeMenu.tsx` — full-screen menu/theme/account prototype
+- `src/components/SiteFooter.tsx` — responsive editorial footer
+- `src/content/practice.ts` — canonical BEGIN / BUILD / SCULPT / PRIVATE content and hero imagery
+- `src/index.css` — global visual tokens and desktop hero styling
+- `src/mobile-hero.css` — mobile hero art direction only
+- `src/mobile-premium.css` — mobile landing-page overrides only
+- `src/auth-menu.css` — menu/account styling only
 - `src/action-motion.css` — shared CTA interaction language
+- `src/footer-map.css` — footer/map treatment
 
-## Current hero behaviour
+## Design architecture
 
-Desktop keeps the six-column editorial hero, sliced `reformer` typography, staggered media capsules and ScrollTrigger story.
+The desktop and mobile heroes intentionally use different compositions while sharing the same four practice definitions and image sources from `src/content/practice.ts`.
 
-Mobile is intentionally separate. It shows one full capsule plus part of the next capsule, uses a sliced viewport-aligned `reformer` word, pins the hero while the media rail travels right-to-left, and scatters the `reformer` slices vertically only after the last capsule has left the viewport.
+Desktop uses a six-column sliced typography system, individually staged capsules and one GSAP-owned opening timeline. Mobile uses a pinned horizontal capsule rail with segmented `reformer` typography that scatters vertically only after the final capsule has cleared the viewport.
 
-## Menu / account prototype
-
-The menu is opened by the same `authRequest` state used by homepage booking actions. There is no DOM click interception between the header and menu. `login` opens the member menu; `register` opens the create-account view.
-
-Authentication is still intentionally mock-only:
-
-- form state lives in React
-- no password is persisted
-- submit creates a temporary in-memory user object
-- dashboard action is still a mock alert
-
-Do not treat this as production authentication. Replace the adapter when the production booking/account service is connected.
+Semantic section/action classes are preferred over DOM-order selectors. Motion ownership should stay local to the component that renders the scene so later design changes do not create cross-file overrides.
 
 ## Development
 
@@ -50,41 +46,25 @@ npm install
 npm run dev
 ```
 
-Type check:
-
-```bash
-npm run lint
-```
-
-Bundle check:
+Production validation runs TypeScript before Vite bundling:
 
 ```bash
 npm run build
 ```
 
-Run both before merging structural changes:
+## Prototype boundaries
 
-```bash
-npm run check
-```
-
-A clean npm lockfile should be committed once dependencies are installed in the development environment so local and Vercel installs are reproducible.
+Account/dashboard behaviour is still lightweight prototype scaffolding. Current work is focused on public-site art direction and interaction quality rather than production authentication or booking integration.
 
 ## Design guardrails
 
-- preserve the warm limestone / ivory direction
-- keep hero typography and capsule geometry editorial, not card-like
-- keep desktop hover motion restrained
+- preserve the warm limestone / ivory editorial direction
+- preserve the hero pill geometry and typography identity
+- avoid generic wellness cards, gradients and excessive shadows
+- keep desktop hover motion restrained and continuous
 - never make mobile depend on hover
-- preserve safe-area spacing and comfortable touch targets
-- do not reintroduce a second legacy mobile hero
-- use semantic component selectors for new code; avoid new `nth-of-type` or Tailwind-class-string selectors
-- keep component-specific responsive CSS in the component's own stylesheet
-
-## Known production blockers
-
-- authentication and dashboard are prototype-only
-- social URLs are intentionally empty until verified
-- dependency lockfile is not yet committed
-- `PremiumLandingPage.tsx` is still large and should be split by section before substantial new business logic is added
-- some existing CSS still relies on structural selectors; these should be removed incrementally rather than covered by additional overrides
+- preserve safe-area spacing for modern phones
+- use semantic classes/refs instead of section order or utility-class selector chains
+- keep one animation owner per property; avoid CSS and GSAP competing for the same transform/clip-path
+- keep shared practice labels/images in `src/content/practice.ts`
+- do not change unrelated sections when tuning one interaction
