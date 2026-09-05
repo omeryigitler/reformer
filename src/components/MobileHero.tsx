@@ -23,98 +23,113 @@ const mobileSlides = [
   },
 ];
 
-const sceneStops = [0, 0.3, 0.55, 0.8];
+const titleSlices = [0, 1, 2, 3, 4, 5];
+const sceneStops = [0.02, 0.18, 0.36, 0.55];
+const titleScatter = [-82, 64, -112, 88, -70, 106];
 
 export function MobileHero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
-    const cardsWrap = cardsRef.current;
-    if (!section || !cardsWrap) return;
+    const track = trackRef.current;
+    if (!section || !track) return;
 
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
       mm.add("(max-width: 767px) and (prefers-reduced-motion: no-preference)", () => {
         const cards = Array.from(
-          cardsWrap.querySelectorAll<HTMLElement>("[data-mobile-hero-card]")
+          track.querySelectorAll<HTMLElement>("[data-mobile-hero-card]")
         );
-        if (cards.length !== mobileSlides.length) return;
+        const slices = Array.from(
+          section.querySelectorAll<HTMLElement>("[data-mobile-title-slice]")
+        );
 
-        const viewportWidth = () => window.innerWidth;
-        const cardWidth = (card: HTMLElement) => card.offsetWidth || Math.min(window.innerWidth * 0.64, 280);
-        const centerX = (card: HTMLElement) => -cardWidth(card) / 2;
-        const leftOffscreenX = (card: HTMLElement) =>
-          -(viewportWidth() * 0.62 + cardWidth(card));
-        const rightOffscreenX = () => viewportWidth() * 0.58;
+        if (cards.length !== mobileSlides.length || !slices.length) return;
 
-        cards.forEach((card, index) => {
-          gsap.set(card, {
-            x: index === 0 ? () => centerX(card) : () => leftOffscreenX(card),
-            opacity: 1,
+        const horizontalTravel = () =>
+          Math.max(0, track.scrollWidth - window.innerWidth);
+
+        gsap.set(track, { x: 0 });
+        gsap.set(slices, { yPercent: 0, opacity: 1, scale: 1 });
+
+        const updateActiveCard = () => {
+          const viewportCenter = window.innerWidth / 2;
+          let nearest = 0;
+          let nearestDistance = Number.POSITIVE_INFINITY;
+
+          cards.forEach((card, index) => {
+            const rect = card.getBoundingClientRect();
+            const cardCenter = rect.left + rect.width / 2;
+            const distance = Math.abs(cardCenter - viewportCenter);
+            if (distance < nearestDistance) {
+              nearestDistance = distance;
+              nearest = index;
+            }
           });
-        });
+
+          setActiveIndex(nearest);
+        };
 
         const timeline = gsap.timeline({
           defaults: { ease: "none" },
           scrollTrigger: {
             trigger: section,
             start: "top top",
-            end: () => `+=${Math.max(window.innerHeight * 3.25, 2300)}`,
-            scrub: 0.7,
+            end: () => `+=${Math.max(window.innerHeight * 4.5, 3200)}`,
+            scrub: 0.8,
             pin: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              let nearest = 0;
-              let nearestDistance = Number.POSITIVE_INFINITY;
-
-              sceneStops.forEach((stop, index) => {
-                const distance = Math.abs(self.progress - stop);
-                if (distance < nearestDistance) {
-                  nearestDistance = distance;
-                  nearest = index;
-                }
-              });
-
-              setActiveIndex(nearest);
-            },
+            onUpdate: updateActiveCard,
+            onRefresh: updateActiveCard,
           },
         });
 
         scrollTriggerRef.current = timeline.scrollTrigger ?? null;
 
-        timeline.fromTo(
-          cards[0],
-          { x: () => centerX(cards[0]) },
-          { x: rightOffscreenX, duration: 0.82 },
+        // Phase 1 — one full + one partial capsule is visible at rest.
+        // The complete media rail then travels right-to-left across the pinned scene.
+        timeline.to(
+          track,
+          {
+            x: () => -horizontalTravel(),
+            duration: 3.4,
+            ease: "none",
+          },
           0
         );
 
-        timeline.fromTo(
-          cards[1],
-          { x: () => leftOffscreenX(cards[1]) },
-          { x: rightOffscreenX, duration: 1.48 },
-          0.34
+        // Phase 2 — echo the desktop capsule parallax, but invert the idea:
+        // the segmented REFORMER typography separates vertically while media finishes leaving.
+        timeline.to(
+          slices,
+          {
+            yPercent: (index) => titleScatter[index] ?? 0,
+            scale: (index) => (index % 2 === 0 ? 1.025 : 0.985),
+            duration: 1.15,
+            stagger: 0.025,
+            ease: "power2.inOut",
+          },
+          3.18
         );
 
-        timeline.fromTo(
-          cards[2],
-          { x: () => leftOffscreenX(cards[2]) },
-          { x: rightOffscreenX, duration: 1.48 },
-          1.25
+        timeline.to(
+          slices,
+          {
+            opacity: 0,
+            duration: 0.35,
+            stagger: 0.018,
+            ease: "power1.out",
+          },
+          4.02
         );
 
-        timeline.fromTo(
-          cards[3],
-          { x: () => leftOffscreenX(cards[3]) },
-          { x: rightOffscreenX, duration: 1.48 },
-          2.16
-        );
+        updateActiveCard();
 
         return () => {
           scrollTriggerRef.current = null;
@@ -163,11 +178,24 @@ export function MobileHero() {
         ))}
       </nav>
 
-      <div className="rpm-mobile-hero-word" aria-hidden="true">
-        reformer
+      <div className="rpm-mobile-title-grid" aria-hidden="true">
+        {titleSlices.map((sliceIndex) => (
+          <div
+            key={sliceIndex}
+            data-mobile-title-slice
+            className="rpm-mobile-title-slice"
+          >
+            <div
+              className="rpm-mobile-title-global"
+              style={{ left: `calc(-100% * ${sliceIndex})` }}
+            >
+              <span>reformer</span>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div ref={cardsRef} className="rpm-mobile-hero-cards" aria-hidden="true">
+      <div ref={trackRef} className="rpm-mobile-hero-track" aria-hidden="true">
         {mobileSlides.map((slide, index) => (
           <article
             key={slide.label}
