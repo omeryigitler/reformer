@@ -6,6 +6,21 @@ export function SiteFooter({ socialLinks, contactInfo }: any) {
 
   return (
     <footer className="rpm-site-footer border-t border-[#25271F]/10 text-[#25271F]">
+      <div className="rpm-footer-map-stage" aria-hidden="true">
+        <div className="rpm-footer-map-visual">
+          <iframe
+            title="Background map of St Julian's, Malta"
+            src={MAP_EMBED_URL}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            tabIndex={-1}
+            className="rpm-footer-map-frame"
+          />
+          <div className="rpm-footer-map-wash" />
+          <div className="rpm-footer-map-vignette" />
+        </div>
+      </div>
+
       <div className="rpm-footer-copy py-5 md:py-7">
         <div className="grid gap-14 md:grid-cols-[1.2fr_.8fr] md:gap-10">
           <div>
@@ -52,22 +67,7 @@ export function SiteFooter({ socialLinks, contactInfo }: any) {
         </div>
       </div>
 
-      <div className="rpm-footer-map-stage" aria-hidden="true">
-        <div className="rpm-footer-map-visual">
-          <iframe
-            title="Background map of St Julian's, Malta"
-            src={MAP_EMBED_URL}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            tabIndex={-1}
-            className="rpm-footer-map-frame"
-          />
-          <div className="rpm-footer-map-wash" />
-          <div className="rpm-footer-map-vignette" />
-        </div>
-      </div>
-
-      <div className="rpm-footer-meta flex items-end justify-between gap-6 pb-5 text-[9px] uppercase tracking-[0.18em] text-[#25271F]/45 md:pb-7">
+      <div className="rpm-footer-meta mt-14 flex items-end justify-between gap-6 border-t border-[#25271F]/10 pt-5 pb-5 text-[9px] uppercase tracking-[0.18em] text-[#25271F]/45 md:mt-20 md:pb-7">
         <span>St Julian&apos;s · Malta</span>
         <span>© {year}</span>
       </div>
