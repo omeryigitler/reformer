@@ -32,7 +32,11 @@ type BookingDocument = {
   status: "confirmed" | "cancelled" | "attended" | "no_show";
   source: "member" | "admin";
   bookedAt: string;
+  cancelledAt?: string;
+  cancelledBy?: string;
+  cancellationReason?: string;
   emailStatus: "queued" | "sent" | "failed";
+  cancellationEmailStatus?: "queued" | "sent" | "failed";
   memberNameSnapshot?: string;
   memberEmailSnapshot?: string;
   classNameSnapshot: string;
@@ -77,6 +81,25 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
+function formatBookingStart(startAt: string) {
+  const start = new Date(startAt);
+  return {
+    dateLabel: new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/Malta",
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }).format(start),
+    timeLabel: new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/Malta",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(start),
+  };
+}
+
 async function getCallerProfile(uid: string, email?: string) {
   const uidProfile = await db.collection("users").doc(uid).get();
   if (uidProfile.exists) return uidProfile.data() as UserDocument;
@@ -88,6 +111,12 @@ async function getCallerProfile(uid: string, email?: string) {
 async function requestIsAdmin(uid: string, email?: string) {
   const profile = await getCallerProfile(uid, email);
   return profile?.role === "admin";
+}
+
+async function requireAdmin(uid: string, email?: string) {
+  if (!(await requestIsAdmin(uid, email))) {
+    throw new HttpsError("permission-denied", "Administrator access is required.");
+  }
 }
 
 async function getMemberIdentity(uid: string) {
@@ -171,6 +200,58 @@ export const bookSession = onCall({ region: REGION }, async (request) => {
   return { bookingId, status: "confirmed" as const };
 });
 
+export const cancelSession = onCall({ region: REGION }, async (request) => {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Sign in as an administrator.");
+  const callerEmail = typeof request.auth.token.email === "string" ? request.auth.token.email : undefined;
+  await requireAdmin(request.auth.uid, callerEmail);
+
+  const sessionId = requireString(request.data?.sessionId, "sessionId");
+  const reason = typeof request.data?.reason === "string" && request.data.reason.trim()
+    ? request.data.reason.trim().slice(0, 300)
+    : "Class cancelled by the studio";
+  const sessionRef = db.collection("sessions").doc(sessionId);
+  const bookingsQuery = db.collection("bookings").where("sessionId", "==", sessionId);
+  const cancelledAt = new Date().toISOString();
+  let cancelledBookings = 0;
+
+  await db.runTransaction(async (transaction) => {
+    const sessionSnapshot = await transaction.get(sessionRef);
+    if (!sessionSnapshot.exists) throw new HttpsError("not-found", "Session not found.");
+    const session = sessionSnapshot.data() as SessionDocument;
+    if (session.status === "cancelled") return;
+    if (session.status === "completed") {
+      throw new HttpsError("failed-precondition", "Completed sessions cannot be cancelled.");
+    }
+
+    const bookingSnapshots = await transaction.get(bookingsQuery);
+    const activeBookings = bookingSnapshots.docs.filter((item) => {
+      const booking = item.data() as BookingDocument;
+      return booking.status === "confirmed";
+    });
+    cancelledBookings = activeBookings.length;
+
+    transaction.update(sessionRef, {
+      status: "cancelled",
+      bookedCount: 0,
+      cancelledAt,
+      cancelledBy: request.auth.uid,
+      cancellationReason: reason,
+    });
+
+    activeBookings.forEach((item) => {
+      transaction.update(item.ref, {
+        status: "cancelled",
+        cancelledAt,
+        cancelledBy: request.auth!.uid,
+        cancellationReason: reason,
+        cancellationEmailStatus: "queued",
+      });
+    });
+  });
+
+  return { sessionId, cancelledBookings };
+});
+
 export const markBookingAttendance = onCall({ region: REGION }, async (request) => {
   if (!request.auth) throw new HttpsError("unauthenticated", "Sign in before updating attendance.");
 
@@ -217,9 +298,7 @@ export const provisionInstructorAccess = onCall(
   async (request) => {
     if (!request.auth) throw new HttpsError("unauthenticated", "Sign in as an administrator.");
     const adminEmail = typeof request.auth.token.email === "string" ? request.auth.token.email : undefined;
-    if (!(await requestIsAdmin(request.auth.uid, adminEmail))) {
-      throw new HttpsError("permission-denied", "Administrator access is required.");
-    }
+    await requireAdmin(request.auth.uid, adminEmail);
 
     const instructorId = requireString(request.data?.instructorId, "instructorId");
     const instructorRef = db.collection("instructors").doc(instructorId);
@@ -281,7 +360,7 @@ export const provisionInstructorAccess = onCall(
   }
 );
 
-export const sendBookingConfirmation = onDocumentWritten(
+export const sendBookingMessages = onDocumentWritten(
   {
     document: "bookings/{bookingId}",
     region: REGION,
@@ -293,58 +372,90 @@ export const sendBookingConfirmation = onDocumentWritten(
 
     const booking = after.data() as BookingDocument;
     const before = event.data?.before.exists ? (event.data.before.data() as BookingDocument) : null;
-    const newlyQueued = booking.status === "confirmed" && booking.emailStatus === "queued" && before?.emailStatus !== "queued";
-    if (!newlyQueued) return;
-
     const bookingRef = after.ref;
+    const newlyQueuedConfirmation =
+      booking.status === "confirmed" &&
+      booking.emailStatus === "queued" &&
+      before?.emailStatus !== "queued";
+    const newlyQueuedCancellation =
+      booking.status === "cancelled" &&
+      booking.cancellationEmailStatus === "queued" &&
+      before?.cancellationEmailStatus !== "queued";
+
+    if (!newlyQueuedConfirmation && !newlyQueuedCancellation) return;
+
     try {
       const authUser = await getAuth().getUser(booking.memberId);
       const email = String(booking.memberEmailSnapshot || authUser.email || "").trim();
       if (!email) throw new Error("Member email is missing.");
       const displayName = String(booking.memberNameSnapshot || authUser.displayName || "Member").trim();
-
-      const start = new Date(booking.startAt);
-      const dateLabel = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/Malta",
-        weekday: "long",
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }).format(start);
-      const timeLabel = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/Malta",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).format(start);
-
+      const { dateLabel, timeLabel } = formatBookingStart(booking.startAt);
       const resend = new Resend(RESEND_API_KEY.value());
-      await resend.emails.send({
-        from: RESEND_FROM.value(),
-        to: email,
-        replyTo: "info@reformerpilatesmalta.com",
-        subject: `Booking confirmed — ${booking.classNameSnapshot}`,
-        html: `
-          <div style="font-family:Arial,sans-serif;color:#25271F;line-height:1.6;max-width:620px;margin:auto;padding:32px;">
-            <p style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;">Reformer Pilates Malta</p>
-            <h1 style="font-family:Georgia,serif;font-size:44px;font-weight:400;line-height:1;margin:32px 0;">Your session is confirmed.</h1>
-            <p>Hello ${escapeHtml(displayName)},</p>
-            <p>Your booking has been confirmed automatically.</p>
-            <div style="border-top:1px solid #D8D3C9;border-bottom:1px solid #D8D3C9;padding:24px 0;margin:28px 0;">
-              <strong>${escapeHtml(booking.classNameSnapshot)}</strong><br/>
-              ${escapeHtml(dateLabel)} · ${escapeHtml(timeLabel)}<br/>
-              ${escapeHtml(booking.studioNameSnapshot)}<br/>
-              with ${escapeHtml(booking.instructorNameSnapshot)}
-            </div>
-            <p>St Julian's · Malta</p>
-          </div>
-        `,
-      });
 
-      await bookingRef.update({ emailStatus: "sent", emailSentAt: new Date().toISOString() });
+      if (newlyQueuedConfirmation) {
+        await resend.emails.send({
+          from: RESEND_FROM.value(),
+          to: email,
+          replyTo: "info@reformerpilatesmalta.com",
+          subject: `Booking confirmed — ${booking.classNameSnapshot}`,
+          html: `
+            <div style="font-family:Arial,sans-serif;color:#25271F;line-height:1.6;max-width:620px;margin:auto;padding:32px;">
+              <p style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;">Reformer Pilates Malta</p>
+              <h1 style="font-family:Georgia,serif;font-size:44px;font-weight:400;line-height:1;margin:32px 0;">Your session is confirmed.</h1>
+              <p>Hello ${escapeHtml(displayName)},</p>
+              <p>Your booking has been confirmed automatically.</p>
+              <div style="border-top:1px solid #D8D3C9;border-bottom:1px solid #D8D3C9;padding:24px 0;margin:28px 0;">
+                <strong>${escapeHtml(booking.classNameSnapshot)}</strong><br/>
+                ${escapeHtml(dateLabel)} · ${escapeHtml(timeLabel)}<br/>
+                ${escapeHtml(booking.studioNameSnapshot)}<br/>
+                with ${escapeHtml(booking.instructorNameSnapshot)}
+              </div>
+              <p>St Julian's · Malta</p>
+            </div>
+          `,
+        });
+        await bookingRef.update({ emailStatus: "sent", emailSentAt: new Date().toISOString() });
+      }
+
+      if (newlyQueuedCancellation) {
+        await resend.emails.send({
+          from: RESEND_FROM.value(),
+          to: email,
+          replyTo: "info@reformerpilatesmalta.com",
+          subject: `Session cancelled — ${booking.classNameSnapshot}`,
+          html: `
+            <div style="font-family:Arial,sans-serif;color:#25271F;line-height:1.6;max-width:620px;margin:auto;padding:32px;">
+              <p style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;">Reformer Pilates Malta</p>
+              <h1 style="font-family:Georgia,serif;font-size:44px;font-weight:400;line-height:1;margin:32px 0;">Your session has been cancelled.</h1>
+              <p>Hello ${escapeHtml(displayName)},</p>
+              <p>We’re sorry, the studio has cancelled the session below.</p>
+              <div style="border-top:1px solid #D8D3C9;border-bottom:1px solid #D8D3C9;padding:24px 0;margin:28px 0;">
+                <strong>${escapeHtml(booking.classNameSnapshot)}</strong><br/>
+                ${escapeHtml(dateLabel)} · ${escapeHtml(timeLabel)}<br/>
+                ${escapeHtml(booking.studioNameSnapshot)}<br/>
+                with ${escapeHtml(booking.instructorNameSnapshot)}
+              </div>
+              <p>${escapeHtml(booking.cancellationReason || "Class cancelled by the studio")}</p>
+              <p>Your place has been removed automatically. You can choose another available session from your account.</p>
+            </div>
+          `,
+        });
+        await bookingRef.update({
+          cancellationEmailStatus: "sent",
+          cancellationEmailSentAt: new Date().toISOString(),
+        });
+      }
     } catch (error) {
-      console.error("Booking confirmation email failed:", error);
-      await bookingRef.update({ emailStatus: "failed", emailFailedAt: new Date().toISOString() });
+      console.error("Booking email delivery failed:", error);
+      if (newlyQueuedConfirmation) {
+        await bookingRef.update({ emailStatus: "failed", emailFailedAt: new Date().toISOString() });
+      }
+      if (newlyQueuedCancellation) {
+        await bookingRef.update({
+          cancellationEmailStatus: "failed",
+          cancellationEmailFailedAt: new Date().toISOString(),
+        });
+      }
     }
   }
 );
