@@ -11,6 +11,7 @@ import {
   ensureStudioConfigurationSeed,
   listenToStudioConfiguration,
   persistStudioConfigurationDiff,
+  updateBookingAttendance,
 } from "./services/studioRepository";
 import type { StudioConfiguration } from "./domain/studio";
 import type { AuthRequest, ManagementState, UserType } from "./types";
@@ -115,6 +116,7 @@ export default function App() {
         <InstructorDashboard
           user={loggedInUser}
           configuration={studioConfiguration}
+          onUpdateAttendance={updateBookingAttendance}
           onBackToSite={() => setDashboardOpen(false)}
           onLogout={logout}
         />
