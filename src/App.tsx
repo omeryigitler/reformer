@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AdminDashboard } from "./components/AdminDashboard";
 import { MemberDashboard } from "./components/MemberDashboard";
 import { PremiumLandingPage } from "./components/PremiumLandingPage";
 import { ThemeMenu } from "./components/ThemeMenu";
 import { createInitialStudioConfiguration } from "./domain/studioSeed";
+import { observeAccount, signOutAccount } from "./services/authService";
+import {
+  bookPublishedSession,
+  ensureStudioConfigurationSeed,
+  listenToStudioConfiguration,
+  persistStudioConfigurationDiff,
+} from "./services/studioRepository";
+import type { StudioConfiguration } from "./domain/studio";
 import type { AuthRequest, ManagementState, UserType } from "./types";
 
 const managementState: ManagementState = {
@@ -22,7 +30,56 @@ export default function App() {
   const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
   const [authRequest, setAuthRequest] = useState<AuthRequest>(null);
   const [dashboardOpen, setDashboardOpen] = useState(false);
-  const [studioConfiguration, setStudioConfiguration] = useState(createInitialStudioConfiguration());
+  const [studioConfiguration, setStudioConfiguration] = useState<StudioConfiguration>(() =>
+    createInitialStudioConfiguration()
+  );
+
+  useEffect(() => observeAccount(setLoggedInUser), []);
+
+  useEffect(() => {
+    if (!loggedInUser) {
+      setStudioConfiguration(createInitialStudioConfiguration());
+      return;
+    }
+
+    let unsubscribe: (() => void) | undefined;
+    let disposed = false;
+
+    const connect = async () => {
+      try {
+        if (loggedInUser.role === "admin") await ensureStudioConfigurationSeed();
+        if (disposed) return;
+        unsubscribe = listenToStudioConfiguration(
+          loggedInUser,
+          setStudioConfiguration,
+          (error) => console.error("Live studio data unavailable:", error)
+        );
+      } catch (error) {
+        console.error("Studio data could not be initialized:", error);
+      }
+    };
+
+    void connect();
+    return () => {
+      disposed = true;
+      unsubscribe?.();
+    };
+  }, [loggedInUser]);
+
+  const updateStudioConfiguration = useCallback(
+    (updater: (current: StudioConfiguration) => StudioConfiguration) => {
+      setStudioConfiguration((current) => {
+        const next = updater(current);
+        if (loggedInUser?.role === "admin") {
+          void persistStudioConfigurationDiff(current, next).catch((error) => {
+            console.error("Admin configuration change could not be saved:", error);
+          });
+        }
+        return next;
+      });
+    },
+    [loggedInUser]
+  );
 
   const openDashboard = () => {
     if (!loggedInUser) {
@@ -33,6 +90,7 @@ export default function App() {
   };
 
   const logout = () => {
+    void signOutAccount().catch((error) => console.error("Sign out failed:", error));
     setLoggedInUser(null);
     setDashboardOpen(false);
     setAuthRequest(null);
@@ -44,7 +102,7 @@ export default function App() {
         <AdminDashboard
           user={loggedInUser}
           configuration={studioConfiguration}
-          setConfiguration={setStudioConfiguration}
+          setConfiguration={updateStudioConfiguration}
           onBackToSite={() => setDashboardOpen(false)}
           onLogout={logout}
         />
@@ -54,6 +112,8 @@ export default function App() {
     return (
       <MemberDashboard
         user={loggedInUser}
+        configuration={studioConfiguration}
+        onBookSession={bookPublishedSession}
         onBackToSite={() => setDashboardOpen(false)}
         onLogout={logout}
       />
