@@ -19,6 +19,7 @@ type LegacyUser = {
   registered?: string;
   registeredAt?: string;
   displayName?: string;
+  instructorId?: string;
 };
 
 type RegistrationInput = {
@@ -42,6 +43,7 @@ function normalizeProfile(firebaseUser: FirebaseUser, source?: LegacyUser): User
     displayName: source?.displayName?.trim() || legacyName || firebaseUser.displayName || undefined,
     phone: source?.phone?.trim() || undefined,
     registeredAt: source?.registeredAt || source?.registered || undefined,
+    instructorId: source?.instructorId,
   };
 }
 
@@ -50,7 +52,6 @@ async function tryUidProfile(firebaseUser: FirebaseUser) {
     const snapshot = await getDoc(doc(db, "users", firebaseUser.uid));
     return snapshot.exists() ? (snapshot.data() as LegacyUser) : null;
   } catch (error) {
-    // The production project can still be running legacy email-keyed rules during migration.
     console.warn("UID profile is not readable yet; trying the legacy profile:", error);
     return null;
   }
@@ -106,7 +107,6 @@ export async function registerMemberAccount(input: RegistrationInput): Promise<U
   try {
     await setDoc(doc(db, "users", credential.user.uid), profile);
   } catch (uidWriteError) {
-    // Temporary bridge for the existing production rules, which key users by email and require role=user.
     const [firstName = displayName || "Member", ...lastParts] = displayName.split(/\s+/).filter(Boolean);
     await setDoc(doc(db, "users", email), {
       email,
