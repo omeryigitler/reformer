@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MemberDashboard } from "./components/MemberDashboard";
 import { PremiumLandingPage } from "./components/PremiumLandingPage";
 import { ThemeMenu } from "./components/ThemeMenu";
 import type { AuthRequest, ManagementState, UserType } from "./types";
@@ -18,10 +19,31 @@ const managementState: ManagementState = {
 export default function App() {
   const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
   const [authRequest, setAuthRequest] = useState<AuthRequest>(null);
+  const [dashboardOpen, setDashboardOpen] = useState(false);
 
   const openDashboard = () => {
-    alert("Dashboard mock!");
+    if (!loggedInUser) {
+      setAuthRequest("login");
+      return;
+    }
+    setDashboardOpen(true);
   };
+
+  const logout = () => {
+    setLoggedInUser(null);
+    setDashboardOpen(false);
+    setAuthRequest(null);
+  };
+
+  if (dashboardOpen && loggedInUser) {
+    return (
+      <MemberDashboard
+        user={loggedInUser}
+        onBackToSite={() => setDashboardOpen(false)}
+        onLogout={logout}
+      />
+    );
+  }
 
   return (
     <>
@@ -37,7 +59,7 @@ export default function App() {
         setAuthRequest={setAuthRequest}
         loggedInUser={loggedInUser}
         onLogin={setLoggedInUser}
-        onLogout={() => setLoggedInUser(null)}
+        onLogout={logout}
         onOpenDashboard={openDashboard}
       />
     </>
