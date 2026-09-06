@@ -83,7 +83,22 @@ async function writeChangedCollection<T extends { id: string }>(
   await batch.commit();
 }
 
+export async function provisionInstructorAccount(instructorId: string) {
+  const callable = httpsCallable<{ instructorId: string }, ProvisionInstructorResponse>(
+    functions,
+    "provisionInstructorAccess"
+  );
+  const result = await callable({ instructorId });
+  return result.data;
+}
+
 export async function persistStudioConfigurationDiff(previous: StudioConfiguration, next: StudioConfiguration) {
+  const previousInstructorMap = new Map(previous.instructors.map((item) => [item.id, item]));
+  const instructorsToProvision = next.instructors.filter((instructor) => {
+    const before = previousInstructorMap.get(instructor.id);
+    return instructor.accountAccess && !instructor.userId && (!before || !before.accountAccess);
+  });
+
   await Promise.all([
     writeChangedCollection(COLLECTIONS.locations, previous.locations, next.locations),
     writeChangedCollection(COLLECTIONS.studios, previous.studios, next.studios),
@@ -91,6 +106,8 @@ export async function persistStudioConfigurationDiff(previous: StudioConfigurati
     writeChangedCollection(COLLECTIONS.instructors, previous.instructors, next.instructors),
     writeChangedCollection(COLLECTIONS.sessions, previous.sessions, next.sessions),
   ]);
+
+  await Promise.all(instructorsToProvision.map((instructor) => provisionInstructorAccount(instructor.id)));
 }
 
 export async function ensureStudioConfigurationSeed() {
@@ -178,15 +195,6 @@ export function listenToStudioConfiguration(
 export async function bookPublishedSession(sessionId: string) {
   const callable = httpsCallable<{ sessionId: string }, BookSessionResponse>(functions, "bookSession");
   const result = await callable({ sessionId });
-  return result.data;
-}
-
-export async function provisionInstructorAccount(instructorId: string) {
-  const callable = httpsCallable<{ instructorId: string }, ProvisionInstructorResponse>(
-    functions,
-    "provisionInstructorAccess"
-  );
-  const result = await callable({ instructorId });
   return result.data;
 }
 
