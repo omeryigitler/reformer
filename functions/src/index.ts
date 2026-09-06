@@ -1,0 +1,189 @@
+import { initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
+import { defineSecret, defineString } from "firebase-functions/params";
+import { onDocumentWritten } from "firebase-functions/v2/firestore";
+import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { Resend } from "resend";
+
+initializeApp();
+
+const db = getFirestore();
+const REGION = "europe-west1";
+const RESEND_API_KEY = defineSecret("RESEND_API_KEY");
+const RESEND_FROM = defineString("RESEND_FROM");
+
+type SessionDocument = {
+  status: "draft" | "published" | "cancelled" | "completed";
+  startAt: string;
+  endAt: string;
+  capacity: number;
+  bookedCount: number;
+  classNameSnapshot: string;
+  studioNameSnapshot: string;
+  instructorNameSnapshot: string;
+};
+
+type BookingDocument = {
+  id: string;
+  sessionId: string;
+  memberId: string;
+  status: "confirmed" | "cancelled" | "attended" | "no_show";
+  source: "member" | "admin";
+  bookedAt: string;
+  emailStatus: "queued" | "sent" | "failed";
+  classNameSnapshot: string;
+  studioNameSnapshot: string;
+  instructorNameSnapshot: string;
+  startAt: string;
+  endAt: string;
+};
+
+function requireString(value: unknown, field: string) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new HttpsError("invalid-argument", `${field} is required.`);
+  }
+  return value.trim();
+}
+
+export const bookSession = onCall({ region: REGION }, async (request) => {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Sign in before booking a session.");
+
+  const sessionId = requireString(request.data?.sessionId, "sessionId");
+  const memberId = request.auth.uid;
+  const bookingId = `${sessionId}__${memberId}`;
+  const sessionRef = db.collection("sessions").doc(sessionId);
+  const bookingRef = db.collection("bookings").doc(bookingId);
+
+  await db.runTransaction(async (transaction) => {
+    const [sessionSnapshot, bookingSnapshot] = await Promise.all([
+      transaction.get(sessionRef),
+      transaction.get(bookingRef),
+    ]);
+
+    if (!sessionSnapshot.exists) {
+      throw new HttpsError("not-found", "The selected session no longer exists.");
+    }
+
+    const session = sessionSnapshot.data() as SessionDocument;
+    if (session.status !== "published") {
+      throw new HttpsError("failed-precondition", "This session is not open for booking.");
+    }
+    if (new Date(session.startAt).getTime() <= Date.now()) {
+      throw new HttpsError("failed-precondition", "This session has already started.");
+    }
+
+    const bookedCount = Number(session.bookedCount || 0);
+    const capacity = Number(session.capacity || 0);
+    if (!Number.isInteger(capacity) || capacity < 1 || bookedCount >= capacity) {
+      throw new HttpsError("resource-exhausted", "This session is full.");
+    }
+
+    if (bookingSnapshot.exists) {
+      const existing = bookingSnapshot.data() as BookingDocument;
+      if (existing.status === "confirmed" || existing.status === "attended") {
+        throw new HttpsError("already-exists", "You already have this session booked.");
+      }
+    }
+
+    const booking: BookingDocument = {
+      id: bookingId,
+      sessionId,
+      memberId,
+      status: "confirmed",
+      source: "member",
+      bookedAt: new Date().toISOString(),
+      emailStatus: "queued",
+      classNameSnapshot: session.classNameSnapshot,
+      studioNameSnapshot: session.studioNameSnapshot,
+      instructorNameSnapshot: session.instructorNameSnapshot,
+      startAt: session.startAt,
+      endAt: session.endAt,
+    };
+
+    transaction.update(sessionRef, { bookedCount: bookedCount + 1 });
+    transaction.set(bookingRef, booking);
+  });
+
+  return { bookingId, status: "confirmed" as const };
+});
+
+export const sendBookingConfirmation = onDocumentWritten(
+  {
+    document: "bookings/{bookingId}",
+    region: REGION,
+    secrets: [RESEND_API_KEY],
+  },
+  async (event) => {
+    const after = event.data?.after;
+    if (!after?.exists) return;
+
+    const booking = after.data() as BookingDocument;
+    const before = event.data?.before.exists ? (event.data.before.data() as BookingDocument) : null;
+    const newlyQueued =
+      booking.status === "confirmed" &&
+      booking.emailStatus === "queued" &&
+      before?.emailStatus !== "queued";
+
+    if (!newlyQueued) return;
+
+    const bookingRef = after.ref;
+    try {
+      const memberSnapshot = await db.collection("users").doc(booking.memberId).get();
+      const memberData = memberSnapshot.exists ? memberSnapshot.data() : undefined;
+      const authUser = await getAuth().getUser(booking.memberId);
+      const email = String(memberData?.email || authUser.email || "").trim();
+      if (!email) throw new Error("Member email is missing.");
+
+      const displayName = String(memberData?.displayName || authUser.displayName || "Member").trim();
+      const start = new Date(booking.startAt);
+      const dateLabel = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Malta",
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }).format(start);
+      const timeLabel = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/Malta",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(start);
+
+      const resend = new Resend(RESEND_API_KEY.value());
+      await resend.emails.send({
+        from: RESEND_FROM.value(),
+        to: email,
+        replyTo: "info@reformerpilatesmalta.com",
+        subject: `Booking confirmed — ${booking.classNameSnapshot}`,
+        html: `
+          <div style="font-family:Arial,sans-serif;color:#25271F;line-height:1.6;max-width:620px;margin:auto;padding:32px;">
+            <p style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;">Reformer Pilates Malta</p>
+            <h1 style="font-family:Georgia,serif;font-size:44px;font-weight:400;line-height:1;margin:32px 0;">Your session is confirmed.</h1>
+            <p>Hello ${displayName},</p>
+            <p>Your booking has been confirmed automatically.</p>
+            <div style="border-top:1px solid #D8D3C9;border-bottom:1px solid #D8D3C9;padding:24px 0;margin:28px 0;">
+              <strong>${booking.classNameSnapshot}</strong><br/>
+              ${dateLabel} · ${timeLabel}<br/>
+              ${booking.studioNameSnapshot}<br/>
+              with ${booking.instructorNameSnapshot}
+            </div>
+            <p>St Julian's · Malta</p>
+          </div>
+        `,
+      });
+
+      await bookingRef.update({
+        emailStatus: "sent",
+        emailSentAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Booking confirmation email failed:", error);
+      await bookingRef.update({
+        emailStatus: "failed",
+        emailFailedAt: new Date().toISOString(),
+      });
+    }
+  }
+);
