@@ -17,6 +17,7 @@ import { db, functions } from "../firebase";
 import { createInitialStudioConfiguration } from "../domain/studioSeed";
 import type {
   Booking,
+  BookingStatus,
   ClassDefinition,
   Instructor,
   Studio,
@@ -47,19 +48,17 @@ type ProvisionInstructorResponse = {
   invitationSent: boolean;
 };
 
+type AttendanceResponse = {
+  bookingId: string;
+  status: "attended" | "no_show";
+};
+
 function snapshotToArray<T extends { id: string }>(snapshot: QuerySnapshot<DocumentData>): T[] {
   return snapshot.docs.map((item) => ({ ...(item.data() as Omit<T, "id">), id: item.id } as T));
 }
 
 function createEmptyConfiguration(): StudioConfiguration {
-  return {
-    locations: [],
-    studios: [],
-    classes: [],
-    instructors: [],
-    sessions: [],
-    bookings: [],
-  };
+  return { locations: [], studios: [], classes: [], instructors: [], sessions: [], bookings: [] };
 }
 
 function stableEntity(value: unknown) {
@@ -71,11 +70,7 @@ function changedEntities<T extends { id: string }>(previous: T[], next: T[]) {
   return next.filter((item) => stableEntity(previousMap.get(item.id)) !== stableEntity(item));
 }
 
-async function writeChangedCollection<T extends { id: string }>(
-  collectionName: string,
-  previous: T[],
-  next: T[]
-) {
+async function writeChangedCollection<T extends { id: string }>(collectionName: string, previous: T[], next: T[]) {
   const changed = changedEntities(previous, next);
   if (changed.length === 0) return;
   const batch = writeBatch(db);
@@ -84,10 +79,7 @@ async function writeChangedCollection<T extends { id: string }>(
 }
 
 export async function provisionInstructorAccount(instructorId: string) {
-  const callable = httpsCallable<{ instructorId: string }, ProvisionInstructorResponse>(
-    functions,
-    "provisionInstructorAccess"
-  );
+  const callable = httpsCallable<{ instructorId: string }, ProvisionInstructorResponse>(functions, "provisionInstructorAccess");
   const result = await callable({ instructorId });
   return result.data;
 }
@@ -195,6 +187,15 @@ export function listenToStudioConfiguration(
 export async function bookPublishedSession(sessionId: string) {
   const callable = httpsCallable<{ sessionId: string }, BookSessionResponse>(functions, "bookSession");
   const result = await callable({ sessionId });
+  return result.data;
+}
+
+export async function updateBookingAttendance(bookingId: string, status: Extract<BookingStatus, "attended" | "no_show">) {
+  const callable = httpsCallable<{ bookingId: string; status: "attended" | "no_show" }, AttendanceResponse>(
+    functions,
+    "markBookingAttendance"
+  );
+  const result = await callable({ bookingId, status });
   return result.data;
 }
 
