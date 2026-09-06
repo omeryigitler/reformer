@@ -45,31 +45,42 @@ function normalizeProfile(firebaseUser: FirebaseUser, source?: LegacyUser): User
   };
 }
 
+async function tryUidProfile(firebaseUser: FirebaseUser) {
+  try {
+    const snapshot = await getDoc(doc(db, "users", firebaseUser.uid));
+    return snapshot.exists() ? (snapshot.data() as LegacyUser) : null;
+  } catch (error) {
+    // The production project can still be running legacy email-keyed rules during migration.
+    console.warn("UID profile is not readable yet; trying the legacy profile:", error);
+    return null;
+  }
+}
+
 async function loadProfile(firebaseUser: FirebaseUser): Promise<UserType> {
   const uidRef = doc(db, "users", firebaseUser.uid);
-  const uidSnapshot = await getDoc(uidRef);
-  if (uidSnapshot.exists()) {
-    return normalizeProfile(firebaseUser, uidSnapshot.data() as LegacyUser);
-  }
+  const uidProfile = await tryUidProfile(firebaseUser);
+  if (uidProfile) return normalizeProfile(firebaseUser, uidProfile);
 
   const email = firebaseUser.email?.trim().toLowerCase();
   if (email) {
-    const legacySnapshot = await getDoc(doc(db, "users", email));
-    if (legacySnapshot.exists()) {
-      const profile = normalizeProfile(firebaseUser, legacySnapshot.data() as LegacyUser);
-      try {
-        await setDoc(uidRef, profile, { merge: true });
-      } catch (error) {
-        // Legacy rules can block UID migration until the new Firestore rules are deployed.
-        console.warn("Legacy profile loaded but UID migration is not writable yet:", error);
+    try {
+      const legacySnapshot = await getDoc(doc(db, "users", email));
+      if (legacySnapshot.exists()) {
+        const profile = normalizeProfile(firebaseUser, legacySnapshot.data() as LegacyUser);
+        try {
+          await setDoc(uidRef, profile, { merge: true });
+        } catch (error) {
+          console.warn("Legacy profile loaded but UID migration is not writable yet:", error);
+        }
+        return profile;
       }
-      return profile;
+    } catch (error) {
+      console.warn("Legacy account profile could not be read:", error);
     }
   }
 
-  const fallback = normalizeProfile(firebaseUser);
   const profile: UserType = {
-    ...fallback,
+    ...normalizeProfile(firebaseUser),
     role: "member",
     registeredAt: new Date().toISOString(),
   };
@@ -83,14 +94,30 @@ export async function registerMemberAccount(input: RegistrationInput): Promise<U
   const credential = await createUserWithEmailAndPassword(auth, email, input.password);
   if (displayName) await updateProfile(credential.user, { displayName });
 
+  const registeredAt = new Date().toISOString();
   const profile: UserType = {
     uid: credential.user.uid,
     email,
     role: "member",
     displayName: displayName || undefined,
-    registeredAt: new Date().toISOString(),
+    registeredAt,
   };
-  await setDoc(doc(db, "users", credential.user.uid), profile);
+
+  try {
+    await setDoc(doc(db, "users", credential.user.uid), profile);
+  } catch (uidWriteError) {
+    // Temporary bridge for the existing production rules, which key users by email and require role=user.
+    const [firstName = displayName || "Member", ...lastParts] = displayName.split(/\s+/).filter(Boolean);
+    await setDoc(doc(db, "users", email), {
+      email,
+      role: "user",
+      firstName,
+      lastName: lastParts.join(" "),
+      registered: registeredAt.slice(0, 10),
+    });
+    console.warn("Account created with legacy profile shape until new Firestore rules are deployed:", uidWriteError);
+  }
+
   return profile;
 }
 
