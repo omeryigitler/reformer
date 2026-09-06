@@ -5,6 +5,8 @@ export type UserType = {
   email: string;
   role: UserRole;
   displayName?: string;
+  phone?: string;
+  registeredAt?: string;
 };
 
 export type AuthRequest = "login" | "register" | null;
