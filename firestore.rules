@@ -44,15 +44,15 @@ service cloud.firestore {
       return isAdmin() || isInstructor();
     }
 
-    function ownsUserDocument() {
+    function ownsUserDocument(userId) {
       return signedIn() && (
-        resource.id == request.auth.uid
+        userId == request.auth.uid
         || resource.data.email == currentEmail()
       );
     }
 
     match /users/{userId} {
-      allow read: if isAdmin() || ownsUserDocument();
+      allow read: if isAdmin() || ownsUserDocument(userId);
 
       allow create: if isAdmin() || (
         signedIn()
@@ -63,7 +63,7 @@ service cloud.firestore {
       );
 
       allow update: if isAdmin() || (
-        ownsUserDocument()
+        ownsUserDocument(userId)
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.email == resource.data.email
         && request.resource.data.role == resource.data.role
