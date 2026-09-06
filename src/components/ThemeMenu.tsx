@@ -129,7 +129,7 @@ export function ThemeMenu({
     if (!email.trim() || password.length < 6) return;
 
     // Prototype adapter only. Replace with the production authentication API.
-    onLogin({ uid: `prototype-${Date.now()}`, email: email.trim(), role: "user" });
+    onLogin({ uid: `prototype-${Date.now()}`, email: email.trim(), role: "member" });
     setPassword("");
     setName("");
     setAccountView("choices");
