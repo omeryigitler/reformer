@@ -36,11 +36,15 @@ const COLLECTIONS = {
 } as const;
 
 type ConfigurationKey = keyof StudioConfiguration;
-type PersistableKey = Exclude<ConfigurationKey, "bookings">;
 
 type BookSessionResponse = {
   bookingId: string;
   status: "confirmed";
+};
+
+type ProvisionInstructorResponse = {
+  userId: string;
+  invitationSent: boolean;
 };
 
 function snapshotToArray<T extends { id: string }>(snapshot: QuerySnapshot<DocumentData>): T[] {
@@ -75,20 +79,18 @@ async function writeChangedCollection<T extends { id: string }>(
   const changed = changedEntities(previous, next);
   if (changed.length === 0) return;
   const batch = writeBatch(db);
-  changed.forEach((item) => {
-    batch.set(doc(db, collectionName, item.id), item, { merge: true });
-  });
+  changed.forEach((item) => batch.set(doc(db, collectionName, item.id), item, { merge: true }));
   await batch.commit();
 }
 
-export async function persistStudioConfigurationDiff(
-  previous: StudioConfiguration,
-  next: StudioConfiguration
-) {
-  const keys: PersistableKey[] = ["locations", "studios", "classes", "instructors", "sessions"];
-  await Promise.all(
-    keys.map((key) => writeChangedCollection(COLLECTIONS[key], previous[key], next[key]))
-  );
+export async function persistStudioConfigurationDiff(previous: StudioConfiguration, next: StudioConfiguration) {
+  await Promise.all([
+    writeChangedCollection(COLLECTIONS.locations, previous.locations, next.locations),
+    writeChangedCollection(COLLECTIONS.studios, previous.studios, next.studios),
+    writeChangedCollection(COLLECTIONS.classes, previous.classes, next.classes),
+    writeChangedCollection(COLLECTIONS.instructors, previous.instructors, next.instructors),
+    writeChangedCollection(COLLECTIONS.sessions, previous.sessions, next.sessions),
+  ]);
 }
 
 export async function ensureStudioConfigurationSeed() {
@@ -112,11 +114,14 @@ export function listenToStudioConfiguration(
   const loaded = new Set<ConfigurationKey>();
   const subscriptions: Unsubscribe[] = [];
 
-  const emit = () => {
-    const required: ConfigurationKey[] =
-      user.role === "admin"
-        ? ["locations", "studios", "classes", "instructors", "sessions", "bookings"]
+  const required: ConfigurationKey[] =
+    user.role === "admin"
+      ? ["locations", "studios", "classes", "instructors", "sessions", "bookings"]
+      : user.role === "instructor"
+        ? ["instructors", "sessions", "bookings"]
         : ["sessions", "bookings"];
+
+  const emit = () => {
     if (required.every((key) => loaded.has(key))) callback({ ...current });
   };
 
@@ -144,38 +149,26 @@ export function listenToStudioConfiguration(
   };
 
   if (user.role === "admin") {
-    subscribe<StudioLocation>("locations", query(collection(db, COLLECTIONS.locations)), (items) => {
-      current.locations = items;
-    });
-    subscribe<Studio>("studios", query(collection(db, COLLECTIONS.studios)), (items) => {
-      current.studios = items;
-    });
-    subscribe<ClassDefinition>("classes", query(collection(db, COLLECTIONS.classes)), (items) => {
-      current.classes = items;
-    });
-    subscribe<Instructor>("instructors", query(collection(db, COLLECTIONS.instructors)), (items) => {
-      current.instructors = items;
-    });
-    subscribe<StudioSession>("sessions", query(collection(db, COLLECTIONS.sessions)), (items) => {
-      current.sessions = items;
-    });
-    subscribe<Booking>("bookings", query(collection(db, COLLECTIONS.bookings)), (items) => {
-      current.bookings = items;
-    });
+    subscribe<StudioLocation>("locations", query(collection(db, COLLECTIONS.locations)), (items) => { current.locations = items; });
+    subscribe<Studio>("studios", query(collection(db, COLLECTIONS.studios)), (items) => { current.studios = items; });
+    subscribe<ClassDefinition>("classes", query(collection(db, COLLECTIONS.classes)), (items) => { current.classes = items; });
+    subscribe<Instructor>("instructors", query(collection(db, COLLECTIONS.instructors)), (items) => { current.instructors = items; });
+    subscribe<StudioSession>("sessions", query(collection(db, COLLECTIONS.sessions)), (items) => { current.sessions = items; });
+    subscribe<Booking>("bookings", query(collection(db, COLLECTIONS.bookings)), (items) => { current.bookings = items; });
+  } else if (user.role === "instructor") {
+    subscribe<Instructor>("instructors", query(collection(db, COLLECTIONS.instructors)), (items) => { current.instructors = items; });
+    subscribe<StudioSession>("sessions", query(collection(db, COLLECTIONS.sessions)), (items) => { current.sessions = items; });
+    subscribe<Booking>("bookings", query(collection(db, COLLECTIONS.bookings)), (items) => { current.bookings = items; });
   } else {
     subscribe<StudioSession>(
       "sessions",
       query(collection(db, COLLECTIONS.sessions), where("status", "==", "published")),
-      (items) => {
-        current.sessions = items;
-      }
+      (items) => { current.sessions = items; }
     );
     subscribe<Booking>(
       "bookings",
       query(collection(db, COLLECTIONS.bookings), where("memberId", "==", user.uid)),
-      (items) => {
-        current.bookings = items;
-      }
+      (items) => { current.bookings = items; }
     );
   }
 
@@ -185,6 +178,15 @@ export function listenToStudioConfiguration(
 export async function bookPublishedSession(sessionId: string) {
   const callable = httpsCallable<{ sessionId: string }, BookSessionResponse>(functions, "bookSession");
   const result = await callable({ sessionId });
+  return result.data;
+}
+
+export async function provisionInstructorAccount(instructorId: string) {
+  const callable = httpsCallable<{ instructorId: string }, ProvisionInstructorResponse>(
+    functions,
+    "provisionInstructorAccess"
+  );
+  const result = await callable({ instructorId });
   return result.data;
 }
 
