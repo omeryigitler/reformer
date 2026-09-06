@@ -76,6 +76,11 @@ export type Booking = {
   bookedAt: string;
   cancelledAt?: string;
   emailStatus?: "queued" | "sent" | "failed";
+  classNameSnapshot: string;
+  studioNameSnapshot: string;
+  instructorNameSnapshot: string;
+  startAt: string;
+  endAt: string;
 };
 
 export type StudioConfiguration = {
