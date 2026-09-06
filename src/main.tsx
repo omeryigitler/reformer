@@ -10,6 +10,7 @@ import './footer-map.css';
 import './action-motion.css';
 import './member-dashboard.css';
 import './admin-dashboard.css';
+import './booking-runtime.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
