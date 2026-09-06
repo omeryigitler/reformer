@@ -136,6 +136,7 @@ export function ThemeMenu({
   };
 
   const accountLabel = accountView === "signup" ? "create account" : "sign in";
+  const showMemberGrid = accountView === "choices" && !!loggedInUser;
 
   return (
     <aside
@@ -145,7 +146,16 @@ export function ThemeMenu({
       data-open={open ? "true" : "false"}
       className="rpm-theme-menu fixed inset-0 z-[90]"
     >
-      <div className="rpm-menu-grid" aria-hidden="true" />
+      {showMemberGrid ? (
+        <div
+          className="pointer-events-none absolute inset-0 max-[900px]:hidden"
+          aria-hidden="true"
+        >
+          <span className="absolute inset-y-0 left-1/3 w-px bg-[var(--auth-line)]" />
+        </div>
+      ) : (
+        <div className="rpm-menu-grid" aria-hidden="true" />
+      )}
 
       <div className="rpm-menu-shell">
         <header className="rpm-menu-header">
