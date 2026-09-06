@@ -9,6 +9,7 @@ import './mobile-hero.css';
 import './footer-map.css';
 import './action-motion.css';
 import './member-dashboard.css';
+import './admin-dashboard.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
