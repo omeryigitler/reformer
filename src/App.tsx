@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { AdminDashboard } from "./components/AdminDashboard";
+import { InstructorDashboard } from "./components/InstructorDashboard";
 import { MemberDashboard } from "./components/MemberDashboard";
 import { PremiumLandingPage } from "./components/PremiumLandingPage";
 import { ThemeMenu } from "./components/ThemeMenu";
@@ -103,6 +104,17 @@ export default function App() {
           user={loggedInUser}
           configuration={studioConfiguration}
           setConfiguration={updateStudioConfiguration}
+          onBackToSite={() => setDashboardOpen(false)}
+          onLogout={logout}
+        />
+      );
+    }
+
+    if (loggedInUser.role === "instructor") {
+      return (
+        <InstructorDashboard
+          user={loggedInUser}
+          configuration={studioConfiguration}
           onBackToSite={() => setDashboardOpen(false)}
           onLogout={logout}
         />
