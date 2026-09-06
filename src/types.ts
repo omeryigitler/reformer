@@ -1,7 +1,10 @@
+export type UserRole = "admin" | "instructor" | "member";
+
 export type UserType = {
   uid: string;
   email: string;
-  role: "admin" | "user";
+  role: UserRole;
+  displayName?: string;
 };
 
 export type AuthRequest = "login" | "register" | null;
