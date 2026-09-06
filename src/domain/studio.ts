@@ -76,6 +76,8 @@ export type Booking = {
   bookedAt: string;
   cancelledAt?: string;
   emailStatus?: "queued" | "sent" | "failed";
+  memberNameSnapshot?: string;
+  memberEmailSnapshot?: string;
   classNameSnapshot: string;
   studioNameSnapshot: string;
   instructorNameSnapshot: string;
