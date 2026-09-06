@@ -39,11 +39,37 @@ type BookingDocument = {
   endAt: string;
 };
 
+type InstructorDocument = {
+  id: string;
+  name: string;
+  email: string;
+  accountAccess: boolean;
+  status: "active" | "archived";
+  userId?: string;
+};
+
 function requireString(value: unknown, field: string) {
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new HttpsError("invalid-argument", `${field} is required.`);
   }
   return value.trim();
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+async function requestIsAdmin(uid: string, email?: string) {
+  const uidProfile = await db.collection("users").doc(uid).get();
+  if (uidProfile.exists && uidProfile.data()?.role === "admin") return true;
+  if (!email) return false;
+  const legacyProfile = await db.collection("users").doc(email.toLowerCase()).get();
+  return legacyProfile.exists && legacyProfile.data()?.role === "admin";
 }
 
 export const bookSession = onCall({ region: REGION }, async (request) => {
@@ -108,6 +134,75 @@ export const bookSession = onCall({ region: REGION }, async (request) => {
   return { bookingId, status: "confirmed" as const };
 });
 
+export const provisionInstructorAccess = onCall(
+  { region: REGION, secrets: [RESEND_API_KEY] },
+  async (request) => {
+    if (!request.auth) throw new HttpsError("unauthenticated", "Sign in as an administrator.");
+    const adminEmail = typeof request.auth.token.email === "string" ? request.auth.token.email : undefined;
+    if (!(await requestIsAdmin(request.auth.uid, adminEmail))) {
+      throw new HttpsError("permission-denied", "Administrator access is required.");
+    }
+
+    const instructorId = requireString(request.data?.instructorId, "instructorId");
+    const instructorRef = db.collection("instructors").doc(instructorId);
+    const instructorSnapshot = await instructorRef.get();
+    if (!instructorSnapshot.exists) throw new HttpsError("not-found", "Instructor profile not found.");
+
+    const instructor = instructorSnapshot.data() as InstructorDocument;
+    if (instructor.status !== "active" || !instructor.accountAccess) {
+      throw new HttpsError("failed-precondition", "Enable account access for this active instructor first.");
+    }
+
+    const email = instructor.email.trim().toLowerCase();
+    if (!email) throw new HttpsError("failed-precondition", "Instructor email is missing.");
+
+    const adminAuth = getAuth();
+    let authUser;
+    try {
+      authUser = await adminAuth.getUserByEmail(email);
+    } catch (error) {
+      const code = typeof error === "object" && error && "code" in error ? String(error.code) : "";
+      if (!code.includes("user-not-found")) throw error;
+      authUser = await adminAuth.createUser({ email, displayName: instructor.name, disabled: false });
+    }
+
+    const registeredAt = new Date().toISOString();
+    await db.collection("users").doc(authUser.uid).set(
+      {
+        uid: authUser.uid,
+        email,
+        role: "instructor",
+        displayName: instructor.name,
+        instructorId,
+        registeredAt,
+      },
+      { merge: true }
+    );
+    await instructorRef.update({ userId: authUser.uid });
+
+    const resetLink = await adminAuth.generatePasswordResetLink(email);
+    const resend = new Resend(RESEND_API_KEY.value());
+    await resend.emails.send({
+      from: RESEND_FROM.value(),
+      to: email,
+      replyTo: "info@reformerpilatesmalta.com",
+      subject: "Your Reformer Pilates Malta instructor account",
+      html: `
+        <div style="font-family:Arial,sans-serif;color:#25271F;line-height:1.6;max-width:620px;margin:auto;padding:32px;">
+          <p style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;">Reformer Pilates Malta</p>
+          <h1 style="font-family:Georgia,serif;font-size:44px;font-weight:400;line-height:1;margin:32px 0;">Your instructor account is ready.</h1>
+          <p>Hello ${escapeHtml(instructor.name)},</p>
+          <p>Your studio instructor access has been created. Use the secure link below to set your password.</p>
+          <p style="margin:32px 0;"><a href="${escapeHtml(resetLink)}" style="color:#25271F;">Set your password →</a></p>
+          <p>St Julian's · Malta</p>
+        </div>
+      `,
+    });
+
+    return { userId: authUser.uid, invitationSent: true };
+  }
+);
+
 export const sendBookingConfirmation = onDocumentWritten(
   {
     document: "bookings/{bookingId}",
@@ -120,11 +215,7 @@ export const sendBookingConfirmation = onDocumentWritten(
 
     const booking = after.data() as BookingDocument;
     const before = event.data?.before.exists ? (event.data.before.data() as BookingDocument) : null;
-    const newlyQueued =
-      booking.status === "confirmed" &&
-      booking.emailStatus === "queued" &&
-      before?.emailStatus !== "queued";
-
+    const newlyQueued = booking.status === "confirmed" && booking.emailStatus === "queued" && before?.emailStatus !== "queued";
     if (!newlyQueued) return;
 
     const bookingRef = after.ref;
@@ -161,29 +252,23 @@ export const sendBookingConfirmation = onDocumentWritten(
           <div style="font-family:Arial,sans-serif;color:#25271F;line-height:1.6;max-width:620px;margin:auto;padding:32px;">
             <p style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;">Reformer Pilates Malta</p>
             <h1 style="font-family:Georgia,serif;font-size:44px;font-weight:400;line-height:1;margin:32px 0;">Your session is confirmed.</h1>
-            <p>Hello ${displayName},</p>
+            <p>Hello ${escapeHtml(displayName)},</p>
             <p>Your booking has been confirmed automatically.</p>
             <div style="border-top:1px solid #D8D3C9;border-bottom:1px solid #D8D3C9;padding:24px 0;margin:28px 0;">
-              <strong>${booking.classNameSnapshot}</strong><br/>
-              ${dateLabel} · ${timeLabel}<br/>
-              ${booking.studioNameSnapshot}<br/>
-              with ${booking.instructorNameSnapshot}
+              <strong>${escapeHtml(booking.classNameSnapshot)}</strong><br/>
+              ${escapeHtml(dateLabel)} · ${escapeHtml(timeLabel)}<br/>
+              ${escapeHtml(booking.studioNameSnapshot)}<br/>
+              with ${escapeHtml(booking.instructorNameSnapshot)}
             </div>
             <p>St Julian's · Malta</p>
           </div>
         `,
       });
 
-      await bookingRef.update({
-        emailStatus: "sent",
-        emailSentAt: new Date().toISOString(),
-      });
+      await bookingRef.update({ emailStatus: "sent", emailSentAt: new Date().toISOString() });
     } catch (error) {
       console.error("Booking confirmation email failed:", error);
-      await bookingRef.update({
-        emailStatus: "failed",
-        emailFailedAt: new Date().toISOString(),
-      });
+      await bookingRef.update({ emailStatus: "failed", emailFailedAt: new Date().toISOString() });
     }
   }
 );
