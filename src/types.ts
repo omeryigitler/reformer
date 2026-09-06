@@ -7,6 +7,7 @@ export type UserType = {
   displayName?: string;
   phone?: string;
   registeredAt?: string;
+  instructorId?: string;
 };
 
 export type AuthRequest = "login" | "register" | null;
