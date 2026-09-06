@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { AdminDashboard } from "./components/AdminDashboard";
 import { MemberDashboard } from "./components/MemberDashboard";
 import { PremiumLandingPage } from "./components/PremiumLandingPage";
 import { ThemeMenu } from "./components/ThemeMenu";
+import { createInitialStudioConfiguration } from "./domain/studioSeed";
 import type { AuthRequest, ManagementState, UserType } from "./types";
 
 const managementState: ManagementState = {
@@ -20,6 +22,7 @@ export default function App() {
   const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
   const [authRequest, setAuthRequest] = useState<AuthRequest>(null);
   const [dashboardOpen, setDashboardOpen] = useState(false);
+  const [studioConfiguration, setStudioConfiguration] = useState(createInitialStudioConfiguration());
 
   const openDashboard = () => {
     if (!loggedInUser) {
@@ -36,6 +39,18 @@ export default function App() {
   };
 
   if (dashboardOpen && loggedInUser) {
+    if (loggedInUser.role === "admin") {
+      return (
+        <AdminDashboard
+          user={loggedInUser}
+          configuration={studioConfiguration}
+          setConfiguration={setStudioConfiguration}
+          onBackToSite={() => setDashboardOpen(false)}
+          onLogout={logout}
+        />
+      );
+    }
+
     return (
       <MemberDashboard
         user={loggedInUser}
