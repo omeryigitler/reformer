@@ -75,7 +75,10 @@ export type Booking = {
   source: BookingSource;
   bookedAt: string;
   cancelledAt?: string;
+  cancelledBy?: string;
+  cancellationReason?: string;
   emailStatus?: "queued" | "sent" | "failed";
+  cancellationEmailStatus?: "queued" | "sent" | "failed";
   memberNameSnapshot?: string;
   memberEmailSnapshot?: string;
   classNameSnapshot: string;
