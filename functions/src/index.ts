@@ -15,6 +15,7 @@ const RESEND_FROM = defineString("RESEND_FROM");
 
 type SessionDocument = {
   status: "draft" | "published" | "cancelled" | "completed";
+  instructorId: string;
   startAt: string;
   endAt: string;
   capacity: number;
@@ -32,6 +33,8 @@ type BookingDocument = {
   source: "member" | "admin";
   bookedAt: string;
   emailStatus: "queued" | "sent" | "failed";
+  memberNameSnapshot?: string;
+  memberEmailSnapshot?: string;
   classNameSnapshot: string;
   studioNameSnapshot: string;
   instructorNameSnapshot: string;
@@ -46,6 +49,16 @@ type InstructorDocument = {
   accountAccess: boolean;
   status: "active" | "archived";
   userId?: string;
+};
+
+type UserDocument = {
+  uid?: string;
+  email?: string;
+  role?: "admin" | "user" | "member" | "instructor";
+  displayName?: string;
+  firstName?: string;
+  lastName?: string;
+  instructorId?: string;
 };
 
 function requireString(value: unknown, field: string) {
@@ -64,12 +77,33 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
-async function requestIsAdmin(uid: string, email?: string) {
+async function getCallerProfile(uid: string, email?: string) {
   const uidProfile = await db.collection("users").doc(uid).get();
-  if (uidProfile.exists && uidProfile.data()?.role === "admin") return true;
-  if (!email) return false;
+  if (uidProfile.exists) return uidProfile.data() as UserDocument;
+  if (!email) return undefined;
   const legacyProfile = await db.collection("users").doc(email.toLowerCase()).get();
-  return legacyProfile.exists && legacyProfile.data()?.role === "admin";
+  return legacyProfile.exists ? (legacyProfile.data() as UserDocument) : undefined;
+}
+
+async function requestIsAdmin(uid: string, email?: string) {
+  const profile = await getCallerProfile(uid, email);
+  return profile?.role === "admin";
+}
+
+async function getMemberIdentity(uid: string) {
+  const authUser = await getAuth().getUser(uid);
+  const email = authUser.email?.trim().toLowerCase() ?? "";
+  const uidProfile = await db.collection("users").doc(uid).get();
+  let profile = uidProfile.exists ? (uidProfile.data() as UserDocument) : undefined;
+  if (!profile && email) {
+    const legacy = await db.collection("users").doc(email).get();
+    if (legacy.exists) profile = legacy.data() as UserDocument;
+  }
+  const legacyName = [profile?.firstName, profile?.lastName].filter(Boolean).join(" ").trim();
+  return {
+    email: String(profile?.email || authUser.email || "").trim().toLowerCase(),
+    name: String(profile?.displayName || legacyName || authUser.displayName || "Member").trim(),
+  };
 }
 
 export const bookSession = onCall({ region: REGION }, async (request) => {
@@ -77,6 +111,7 @@ export const bookSession = onCall({ region: REGION }, async (request) => {
 
   const sessionId = requireString(request.data?.sessionId, "sessionId");
   const memberId = request.auth.uid;
+  const memberIdentity = await getMemberIdentity(memberId);
   const bookingId = `${sessionId}__${memberId}`;
   const sessionRef = db.collection("sessions").doc(sessionId);
   const bookingRef = db.collection("bookings").doc(bookingId);
@@ -120,6 +155,8 @@ export const bookSession = onCall({ region: REGION }, async (request) => {
       source: "member",
       bookedAt: new Date().toISOString(),
       emailStatus: "queued",
+      memberNameSnapshot: memberIdentity.name,
+      memberEmailSnapshot: memberIdentity.email,
       classNameSnapshot: session.classNameSnapshot,
       studioNameSnapshot: session.studioNameSnapshot,
       instructorNameSnapshot: session.instructorNameSnapshot,
@@ -132,6 +169,47 @@ export const bookSession = onCall({ region: REGION }, async (request) => {
   });
 
   return { bookingId, status: "confirmed" as const };
+});
+
+export const markBookingAttendance = onCall({ region: REGION }, async (request) => {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Sign in before updating attendance.");
+
+  const bookingId = requireString(request.data?.bookingId, "bookingId");
+  const status = requireString(request.data?.status, "status");
+  if (status !== "attended" && status !== "no_show") {
+    throw new HttpsError("invalid-argument", "Attendance status must be attended or no_show.");
+  }
+
+  const bookingRef = db.collection("bookings").doc(bookingId);
+  const bookingSnapshot = await bookingRef.get();
+  if (!bookingSnapshot.exists) throw new HttpsError("not-found", "Booking not found.");
+  const booking = bookingSnapshot.data() as BookingDocument;
+  if (booking.status === "cancelled") throw new HttpsError("failed-precondition", "Cancelled bookings cannot receive attendance.");
+
+  const sessionSnapshot = await db.collection("sessions").doc(booking.sessionId).get();
+  if (!sessionSnapshot.exists) throw new HttpsError("not-found", "Session not found.");
+  const session = sessionSnapshot.data() as SessionDocument;
+
+  const callerEmail = typeof request.auth.token.email === "string" ? request.auth.token.email : undefined;
+  const isAdmin = await requestIsAdmin(request.auth.uid, callerEmail);
+  if (!isAdmin) {
+    const profile = await getCallerProfile(request.auth.uid, callerEmail);
+    if (profile?.role !== "instructor" || profile.instructorId !== session.instructorId) {
+      throw new HttpsError("permission-denied", "Only the assigned instructor or an administrator can update attendance.");
+    }
+  }
+
+  if (Date.now() < new Date(session.startAt).getTime() - 15 * 60_000) {
+    throw new HttpsError("failed-precondition", "Attendance opens 15 minutes before the session starts.");
+  }
+
+  await bookingRef.update({
+    status,
+    attendanceUpdatedAt: new Date().toISOString(),
+    attendanceUpdatedBy: request.auth.uid,
+  });
+
+  return { bookingId, status };
 });
 
 export const provisionInstructorAccess = onCall(
@@ -220,13 +298,11 @@ export const sendBookingConfirmation = onDocumentWritten(
 
     const bookingRef = after.ref;
     try {
-      const memberSnapshot = await db.collection("users").doc(booking.memberId).get();
-      const memberData = memberSnapshot.exists ? memberSnapshot.data() : undefined;
       const authUser = await getAuth().getUser(booking.memberId);
-      const email = String(memberData?.email || authUser.email || "").trim();
+      const email = String(booking.memberEmailSnapshot || authUser.email || "").trim();
       if (!email) throw new Error("Member email is missing.");
+      const displayName = String(booking.memberNameSnapshot || authUser.displayName || "Member").trim();
 
-      const displayName = String(memberData?.displayName || authUser.displayName || "Member").trim();
       const start = new Date(booking.startAt);
       const dateLabel = new Intl.DateTimeFormat("en-GB", {
         timeZone: "Europe/Malta",
